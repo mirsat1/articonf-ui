@@ -1,4 +1,4 @@
-import React, {useState} from "react"
+import React, {useState, useEffect} from "react"
 import https from "https"
 import axios from "./axios-conf"
 
@@ -61,6 +61,38 @@ function uploadToscaButton() {
   //   .catch(error => console.log('error', error));
   alert('This UI is still in early development, so the TOSCA file is manualy uploaded by the server administrator')
 }
+
+  useEffect(() => {
+    const requestOptions = {
+      method: 'GET',
+      redirect: 'follow'
+    };
+    
+    axios.get(`planner/plan/${id}`, requestOptions)
+      .then(result => {
+        console.log(result)
+        setPlannedToscaTemplate(result.data)
+        setIsLoading(false)
+      })
+      .catch(error => console.log('error', error))
+  }, [])
+
+  useEffect(() => {
+    if(plannedToscaTemplate !== undefined) {
+      const requestOptions = {
+        method: 'GET',
+        redirect: 'follow'
+      };
+  
+      axios.get(`provisioner/provision/${plannedToscaTemplate}`, requestOptions)
+        .then(result => {
+          console.log(result)
+          setProvisionToscaTemplate(result.data)
+          setIsLoading(false)
+        })
+        .catch(error => console.log('error', error));
+    }
+  }, [plannedToscaTemplate])
 
   function topoBtnClick() {
     let h = new Headers()
