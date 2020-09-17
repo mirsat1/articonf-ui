@@ -1,0 +1,7 @@
+@charset 'UTF-8';
+
+@import "./style/header.css";
+@import "./style/home.css";
+@import "./style/footer.css";
+@import "./style/contactus.css";
+@import "./style//timer.css"
