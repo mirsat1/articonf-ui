@@ -1,8 +1,9 @@
-import React, { useContext, useEffect, useState } from "react"
+import React, { useContext, useState } from "react"
 import { Context } from "../Context"
 import Loader from 'react-loader-spinner'
 import JSONPretty from 'react-json-prettify'
 import useToggler from "../hooks/useToggler"
+import CopyToClipboard from "../components/CopyToClipboard"
 import { Header, Icon, Button, Input, Form } from 'semantic-ui-react'
 import { Link } from "react-router-dom"
 
@@ -19,18 +20,23 @@ function Deployed() {
         setDeploymentId,
         plannedToscaTemplate,
         provisionToscaTemplate,
-        deployedToscaId
+        deployedToscaId,
+        setDeletedId,
+        findDeleted,
+        deleted,
+        initialiseIds
     } = useContext(Context)
-    console.log(deployment)
+    
     const [show, toggle] = useToggler()
+    const [showDeployed, toggleShow] = useToggler()
+    const [showDeleted, toggleDeleted] = useToggler()
+    const [showDialog, toggleDialog] = useToggler()
     const [planerId, setPlanerId] = useState()
     const [provisionerId, setProvisionerId] = useState()
     const [deployerId, setDeployerId] = useState()
-
-    useEffect(() => {
-        findDeployed()
-        return () => !hasError
-    }, [])
+    const [deleterId, setDeleterId] = useState()
+    const [message, setMessage] = useState("")
+    const [yesDisabler, setYesDisabler] = useState(false)
 
 
     //<JSONPretty json={deployment.topology_template.node_templates.tic.attributes.service_urls}/>
@@ -41,16 +47,30 @@ function Deployed() {
     const blockChain = deployment && JSON.stringify(deployment.topology_template.node_templates.tic.attributes.service_urls[2])
     const blockChainLink = deployment && blockChain.substring(1, hyperLedger.length-1)
 
+    function eraser() {
+        setYesDisabler(true)
+        initialiseIds()
+        setMessage("Erased!")
+        setTimeout(() => {
+            toggleDialog()
+            setYesDisabler(false)
+            setMessage("")
+        }, 3000) 
+    }
+    console.log(yesDisabler)
+    
+    
     return (
         <div className='theBody'>
             <div className='deployed'>
                 <h1>Find deployed topology template by ID</h1>
                 <Button onClick={toggle} disabled={!deployment}>{show ? "Hide" : "Show"} links</Button>
                 <Button onClick={findDeployed} disabled={!deployedToscaId}>Find deployed topology</Button>
+                <Button onClick={toggleShow} disabled={!deployment}>{showDeployed ? "Hide" : "Show"} Deployment</Button>
                 <Button onClick={deleteProvision} disabled={!provisionToscaTemplate}>Delete deployed topology</Button>
-                
-                
-                
+                <Button onClick={findDeleted} disabled={!isDeleted}>Find deleted provision</Button>
+                <Button onClick={toggleDeleted} disabled={!deleted}>{showDeleted ? "Hide" : "Show"} deleted provision</Button> 
+                <h5 style={{display: isDeleted ? "block" : "none", marginBottom: "40px"}}><CopyToClipboard name="Deleted ID" inputValue={isDeleted}/></h5>
             {
                 isLoading 
                 && 
@@ -61,7 +81,6 @@ function Deployed() {
                     width={100}
                 /> 
             }
-            
             {
                 show 
                 && 
@@ -113,10 +132,18 @@ function Deployed() {
                         </Form>  
                 </div>
                 <div style={{display: !deployedToscaId ? "block" : "none"}}>
-                    <Form onSubmit={async e => setDeploymentId(deployerId)}>
+                    <Form onSubmit={e => setDeploymentId(deployerId)}>
                         <Form.Field>
                             <label style={{textAlign: "start"}}>Enter deployment ID here</label>
                             <Input action={<Button type="submit">SET DEPLOYMENT ID</Button>} placeholder="Deployment ID" onChange={e => setDeployerId(e.target.value)}/>
+                        </Form.Field>
+                    </Form>
+                </div>
+                <div style={{display : !isDeleted ? "block" : "none"}}>
+                    <Form onSubmit={e => setDeletedId(deleterId)}>
+                        <Form.Field>
+                            <label style={{textAlign: "start"}}>Enter deleted ID here</label>
+                            <Input action={<Button type="submit">SET DELETED ID</Button>} placeholder="Deleted ID" onChange={e => setDeleterId(e.target.value)}/>
                         </Form.Field>
                     </Form>
                 </div>          
@@ -130,10 +157,28 @@ function Deployed() {
                     CAUTION: DO NOT enter false ID's beacause that will erase all your progress that you have made in the deployment so far
                 </h3>
 
+            }         
+            {
+                showDeployed
+                &&
+                <h5 style={{textAlign: "start"}}>Deployment: <JSONPretty json={deployment}/></h5>
             }
-            <h5 style={{display: deployment ? "block" : "none", marginBottom: "40px", textAlign: "left"}}>Deployment: <JSONPretty json={deployment}/></h5>
-            <h5 style={{display: isDeleted ? "block" : "none", marginBottom: "40px"}}>Deleted ID: {isDeleted}</h5>
+            {
+                showDeleted
+                &&
+                <h5 style={{textAlign: "start"}}>Deleted provision: <JSONPretty json={deleted}/></h5>
+            }
             <br />
+            <Button icon labelPosition="left" color="red" onClick={toggleDialog} disabled={yesDisabler}><Icon name="cancel"/>Initialize all ID's</Button>
+            {
+                showDialog
+                &&
+                <div>
+                    <h3>Are you sure you want to erase all your ID's that you have obtained or entered?</h3>
+                    <Button onClick={eraser} disabled={yesDisabler}>Yes</Button><Button onClick={toggleDialog} disabled={yesDisabler}>No</Button>
+                    <p>{message}</p>
+                </div>
+            }
             </div>           
         </div>
     )

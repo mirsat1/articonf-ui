@@ -17,9 +17,12 @@ function Dashboard() {
     findProvisioned, 
     callDummyButton, 
     hasError, 
-    isLoading
+    isLoading,
+    findDeleted,
+    deleted
   } = useContext(Context)
   // console.log(topologyTemplate)
+
   return (
     <div className="theBody">
       <Dummy 
@@ -48,6 +51,11 @@ function Dashboard() {
         info={"Returns a single topolog template."}
       />
       <Dummy 
+        callApi={findDeleted} 
+        btnName={"Find deleted provision topology template"} 
+        info={"Finds and returns a deleted provision topology template"}
+      />
+      <Dummy 
         callApi={callDummyButton} 
         btnName={"Dummy API"} 
         info={"This is just for testing!"}
@@ -64,6 +72,7 @@ function Dashboard() {
   <h5 style={{display: topologyTemplate ? "block" : "none"}}>Topology template: <JSONPretty json={topologyTemplate}/></h5>
   <h5 style={{display: plannedTopologyTemplate ? "block" : "none"}}>Planned topology template: <JSONPretty json={plannedTopologyTemplate}/></h5>
   <h5 style={{display: provisionedToscaTemplate ? "block" : "none"}}>Provisioned topology template: <JSONPretty json={provisionedToscaTemplate}/></h5>
+  <h5 style={{display: deleted ? "block" : "none"}}>Provisioned topology template: <JSONPretty json={deleted}/></h5>
     </div>
   )
 }

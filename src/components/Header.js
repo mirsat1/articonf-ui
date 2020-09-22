@@ -5,7 +5,7 @@ import app from "../firebase"
 // import logo from "../articonf-logo.jpg"
 
 export default function Header() {
-    const {currentUser, deleteProvision} = useContext(Context)
+    const {currentUser} = useContext(Context)
     return (
         <div className="container blue circleBehind">
             <Link to="/beta/testing"className="img"><img src="https://i.imgur.com/tgkmCTc.png" alt="articonflogo" /></Link>
@@ -18,7 +18,6 @@ export default function Header() {
             {currentUser ? 
             <Link to="/login" className="a" onClick={() => {
                 app.auth().signOut()
-                deleteProvision()
             }}>Sing Out</Link>
             :
             <Link to="/login" className="a">Sing In</Link>

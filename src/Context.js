@@ -23,6 +23,7 @@ function ContextProvider({children}) {
   const [deploymentLoading, setDeploymentLoading] = useState(false)
   const [isDeleted, setIsDeleted] = useState()
   const [deployment, setDeployment] = useState()
+  const [deleted, setDeleted] = useState()
   
   const [timeRemaining, setIsTimeRemaining, isTimeRemaining] = useTimer()
   const id = '5f4e1092ebc9f217b66fa382'
@@ -34,12 +35,16 @@ function ContextProvider({children}) {
   }, [])
 
   useEffect(() => {
-    return () => {
-      alert("cancelling...")
-
+    window.onbeforeunload = confirmExit;
+    function confirmExit()
+    {
       cancelSource.current.cancel()
+      console.log("Canceling")
+      return "show warning";
     }
   }, [])
+
+
   
   function ecBtnClick() {
   //   let myHeaders = new Headers()
@@ -356,6 +361,34 @@ function uploadToscaButton() {
     });
   }
 
+  function findDeleted() {
+    setIsLoading(true)
+    let h = new Headers()
+    h.append('Accept', 'text/plain')
+    cancelSource.current = CancelToken.source()
+    const requestOptions = {
+      method: 'GET',
+      redirect: 'follow',
+      headers: h,
+      cancelToken: cancelSource.current.token
+    };
+
+    //${isDeleted} => 5f634e6f23c5cb25e708a73c
+    
+    axios.get(`/tosca_template/${isDeleted}`, requestOptions)
+      .then(result => {
+        console.log(result)
+        setDeleted(result.data)
+        setIsLoading(false)
+        setHasError(false)
+      })
+      .catch(error => {
+        console.log('error', error)
+        setIsLoading(false)
+        setHasError(true)
+    });
+  }
+
   function callDummyButton() {
     // setDeploymentLoading(true)
     // setIsTimeRemaining(false)
@@ -368,7 +401,7 @@ function uploadToscaButton() {
   }
 
   function cancelRequest() {
-    console.log("cancelling...");
+    alert("cancelling...");
 
     cancelSource.current.cancel();
   }
@@ -385,7 +418,17 @@ function uploadToscaButton() {
     setDeployedToscaId(id)
   }
 
-  // console.log("Plan ID: ", plannedToscaTemplate)
+  function setDeletedId(id) {
+    setIsDeleted(id)
+  }
+
+  function initialiseIds() {
+    alert("This will erase all your ID's that you have obtained or entered!")
+    setPlannedToscaTemplate(undefined)
+    setProvisionToscaTemplate(undefined)
+    setDeployedToscaId(undefined)
+    setIsDeleted(undefined)
+  }
 
   return (
     <Context.Provider value={{
@@ -418,7 +461,11 @@ function uploadToscaButton() {
       cancelRequest,
       setPlanId,
       setProvisionId,
-      setDeploymentId
+      setDeploymentId,
+      setDeletedId,
+      findDeleted,
+      deleted,
+      initialiseIds
     }}>
       {children}
     </Context.Provider>

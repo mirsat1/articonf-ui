@@ -1,8 +1,9 @@
-import React, { useContext, useState, useRef } from "react"
+import React, { useContext } from "react"
 import {Link} from "react-router-dom"
 import {Context} from "../Context"
 import Loader from 'react-loader-spinner'
-import { Button, Icon, Input } from "semantic-ui-react"
+import { Button, Icon } from "semantic-ui-react"
+import CopyToClipboard from "../components/CopyToClipboard"
 // import axios from "../axios-conf"
 
 
@@ -24,13 +25,10 @@ function Deployment() {
         cancelRequest,
     } = useContext(Context)
 
-    const [copySuccess, setCopySuccess] = useState('')
-    const textAreaRef = useRef(null)
-
     const hours = Math.floor(timeRemaining / 60 / 60)
     const minutes = Math.floor(timeRemaining / 60) - (hours * 60)
     const secounds = timeRemaining % 60
-
+    console.log(deploymentLoading)
     const bottomText = <div>
             {deploymentLoading && (isTimeRemaining ? 
                         <div>
@@ -46,22 +44,17 @@ function Deployment() {
                         </div> 
                     :
                     alert(`The software is deployed with ID: ${deployedToscaId}`))}
-            <p>Planned tosca topology template ID: {plannedToscaTemplate}</p><br />
-            <p>Provisioned tosca topology template ID: {provisionToscaTemplate}</p><br />
-            <p>Deployment ID: {deployedToscaId}</p>
+            <h1>Planned tosca topology template ID: {plannedToscaTemplate}</h1><br />
+            <CopyToClipboard name="Plan ID" inputValue={plannedToscaTemplate} />
+            <h1>Provisioned tosca topology template ID: {provisionToscaTemplate}</h1><br />
+            <CopyToClipboard name="Provision ID" inputValue={provisionToscaTemplate} />
+            <h1>Deployment ID: {deployedToscaId}</h1>
+            <CopyToClipboard name="Deployment ID" inputValue={deployedToscaId} />
 
         </div>
 
     const disabler = !plannedToscaTemplate || provisionToscaTemplate ? true : false
-    
-    function copyToClipboard(e) {
-        textAreaRef.current.select();
-        document.execCommand('copy');
-        // This is just personal preference.
-        // I prefer to not show the whole text area selected.
-        e.target.focus();
-        setCopySuccess('Copied!');
-      };
+    const deploymentDisabler = deployedToscaId || !provisionToscaTemplate ? true : false
 
     return (
         <div className="theBody">
@@ -78,22 +71,25 @@ function Deployment() {
             15 minutes. In order for you to stay on track we have created a timer that will show you how much time has passed since you have started
             the deployment process. When this stage is finished an Alert will show up stating that the software is deployed with an ID of something. 
             After you have finished with deployment and you've got an ID, it is time for you to head to <Link to="/beta/testing/deployed">find 
-            your deployment.</Link> Here at this page you can see 2 buttons, if the "Show Links" is disabled you probably do not have a deployment ID. 
-            If it is not, you need to press it. After pressin it you will see 3 icons: HyperLedger explorer, Portainer and BlockChain explorer. 
+            your deployment.</Link> Here at this page you can see a couple of buttons, if the "Show Links" is disabled you probably do not have a deployment ID. 
+            If you have already obtained it in the past trough the platfrom, you can set it at the same page. If it is not, you need to press it. After pressing it you will see 3 icons: HyperLedger explorer, Portainer and BlockChain explorer. 
             Further instructions will be presented at that page.</p>
             <p>Bellow the buttons you can see 3 different ID's which are empty. Each one of them will fill out as you go trough the process</p>
             <p><strong>Side note: Beside the 3 main buttons you can see a red button labeled "Cancel all request". If by any chance you need to 
                 leave or refresh this UI and the process is already in progress, please press this button because it is not OK to leave our 
                 servers hanging. Thank you in advance <Icon name="smile outline" /></strong></p>
+            <p><strong>Tip: When you get your ID's, a good thing to do is to copy the ID's and store them. Because when you come back to our
+                platfrom you will just need to go to <Link to="/beta/testing/deployed">this </Link> site and just enter them there and continue
+                with your work where ever you stopped!</strong></p>
             <div style={{textAlign: "center"}}>
             <Button onClick={planToscaBtn} disabled={plannedToscaTemplate}>Plan</Button>
             {plannedToscaTemplate ? <Icon name="arrow alternate circle right" size="big"></Icon> : <Icon name="arrow alternate circle right outline" size="big"/>}
             <Button onClick={provisionToscaBtn} disabled={disabler}>Provision</Button> 
             {provisionToscaTemplate ? <Icon name="arrow alternate circle right" size="big"></Icon> : <Icon name="arrow alternate circle right outline" size="big"/>}
-            <Button onClick={platformDeployer} disabled={!provisionToscaTemplate}>Deploy</Button>
+            <Button onClick={platformDeployer} disabled={deploymentDisabler}>Deploy</Button>
             <Button icon labelPosition="left" color="red" onClick={cancelRequest}><Icon name="cancel"/>Cancel all requests</Button>
             </div>
-            <h1 style={{textAlign: "center"}}>
+            <div style={{textAlign: "center"}}>
                 { hasError ? "Sorry about this, but we have encountered an error!" :
                 (
                 isLoading ? 
@@ -110,43 +106,15 @@ function Deployment() {
                 bottomText
                 )
                 }
-                <div className="login-form">
-                    <Input
-                        action={{
-                        color: 'teal',
-                        labelPosition: 'right',
-                        icon: 'copy',
-                        content: 'Copy Planned ID',
-                        onClick: copyToClipboard
-                        }}
-                        ref={textAreaRef}
-                        value={plannedToscaTemplate}
-                    /><br /><hr />
-                    <Input
-                        action={{
-                        color: 'teal',
-                        labelPosition: 'right',
-                        icon: 'copy',
-                        content: 'Copy Provision ID',
-                        onClick: copyToClipboard
-                        }}
-                        ref={textAreaRef}
-                        value={provisionToscaTemplate}
-                    /><br /><hr />
-                    <Input
-                        action={{
-                        color: 'teal',
-                        labelPosition: 'right',
-                        icon: 'copy',
-                        content: 'Copy Deployment ID',
-                        onClick: copyToClipboard
-                        }}
-                        ref={textAreaRef}
-                        value={deployedToscaId}
-                    />
-                </div>
+                
                  
-            </h1>
+            </div>
+            <div style={{textAlign: "center"}}>
+                
+                
+               
+            </div>
+            
             <div className="deployLinks">
                 <Link to="/beta/testing/"><Button icon labelPosition="left"><Icon name="home"/>Home</Button></Link>
                 <Link to="/beta/testing/dashboard"><Button icon labelPosition="left"><Icon name="setting"/>Advanced configuration</Button></Link>

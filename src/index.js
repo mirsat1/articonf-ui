@@ -22,9 +22,7 @@ axios.defaults.headers.common['Authorization'] = auth;
 ReactDOM.render(
   <ContextProvider>
     <Router>
-      <React.StrictMode>
         <App />
-      </React.StrictMode>
     </Router>
   </ContextProvider>,
   document.getElementById('root')

@@ -11,10 +11,8 @@ function Deploy() {
                 So please, if you encounter any bug report it trough the "Contac Us" button above in the navigation bar.
                 Also the ARTICONF platfrom is in early development, so there will be limitations.<br />
                 If you want to deploy our software, the only thing you need to do for now is to press the "Deploy" button which
-                is presented bellow.<br /> When the button is pressed you will be redirected to another page, if everyhing goes well 
-                you will get a message that the platfrom is beeing deployed. This process takes 15 minutes, so you will have a timer that
-                will keep track of how much time has passed. Please do not change or refresh this page until you get the ID of your deployment. 
-                And if you encounter an error, there will be a message stating that you have enountered an error.
+                is presented bellow.<br /> When the button is pressed you will be redirected to another page. Follow the instructions
+                presented there and you will be able to deploy and use our platfrom.
             </p>
             <Header as="h1">While in the process of deployment or the platfrom has been already been deployed, <em>please DO NOT leave or refresh this UI </em> 
             because you will lose all progress that you made so far. Thank you in advance <Icon name="smile outline" /></Header>
