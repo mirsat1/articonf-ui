@@ -5,7 +5,6 @@ import { Button } from 'semantic-ui-react'
 // import {Context} from "../Context"
 
 export default function Dummy(props) {
-  // const {callDummyButton, hasError} = useContext(Context)
    const [show, toggle] = useToggler()
 
   return (

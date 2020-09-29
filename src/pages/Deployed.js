@@ -5,11 +5,9 @@ import JSONPretty from 'react-json-prettify'
 import useToggler from "../hooks/useToggler"
 import CopyToClipboard from "../components/CopyToClipboard"
 import { Header, Icon, Button, Input, Form } from 'semantic-ui-react'
-import { Link } from "react-router-dom"
 
 function Deployed() {
     const {
-        hasError, 
         isLoading, 
         isDeleted, 
         findDeployed, 
@@ -57,8 +55,6 @@ function Deployed() {
             setMessage("")
         }, 3000) 
     }
-    console.log(yesDisabler)
-    
     
     return (
         <div className='theBody'>
@@ -147,17 +143,7 @@ function Deployed() {
                         </Form.Field>
                     </Form>
                 </div>          
-            </div>
-            {
-                hasError
-                &&
-                <h3 style={{textAlign: "justify"}}>Something went wrong, we are sorry about this! You probably are missing
-                    the deployment ID. If you have previously obtained the ID's, please insert them above. And if you do not, please 
-                    obtain them <Link to="/beta/testing/deploy/deployment">here</Link>.<br />
-                    CAUTION: DO NOT enter false ID's beacause that will erase all your progress that you have made in the deployment so far
-                </h3>
-
-            }         
+            </div>        
             {
                 showDeployed
                 &&

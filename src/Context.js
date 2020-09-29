@@ -3,6 +3,7 @@ import https from "https"
 import axios from "axios"
 import YAML from "js-yaml"
 import app from "./firebase"
+// import axiosBase from "./axios/axios-base"
 
 import useTimer from "./hooks/useTimer"
 
@@ -11,7 +12,6 @@ const CancelToken = axios.CancelToken
 
 function ContextProvider({children}) {
   const [currentUser, setCurrentUser] = useState(null)
-  const [hasError, setHasError] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [topologyTemplate, setTopologyTemplate] = useState()
   const [plannedTopologyTemplate, setPlannedTopologyTemplate] = useState()
@@ -24,24 +24,27 @@ function ContextProvider({children}) {
   const [isDeleted, setIsDeleted] = useState()
   const [deployment, setDeployment] = useState()
   const [deleted, setDeleted] = useState()
+  const [name, setName] = useState()
   
   const [timeRemaining, setIsTimeRemaining, isTimeRemaining] = useTimer()
   const id = '5f4e1092ebc9f217b66fa382'
 
   const cancelSource = useRef(null)
   
-  useEffect(() => {
-    app.auth().onAuthStateChanged(setCurrentUser)
-  }, [])
+  // useEffect(() => {
+  //   app.auth().onAuthStateChanged(setCurrentUser)
+  // }, [])
 
   useEffect(() => {
-    window.onbeforeunload = confirmExit;
-    function confirmExit()
-    {
+    app.auth().onAuthStateChanged(setCurrentUser)
+    cancelSource.current = CancelToken.source()
+    window.addEventListener("beforeunload", function (e) {
+      e.preventDefault();
       cancelSource.current.cancel()
-      console.log("Canceling")
-      return "show warning";
-    }
+      console.log("Canceling all requests to the server!");
+      (e || window.event).returnValue = null;
+      return null;
+    })
   }, [])
 
 
@@ -154,11 +157,10 @@ function uploadToscaButton() {
         console.log(result)
         setTopologyTemplate(YAML.load(result.data))
         setIsLoading(false)
-        setHasError(false)
       })
       .catch(error => {
         console.log(error)
-        setHasError(true)
+        alert(error)
         setIsLoading(false)
       })
   }
@@ -183,12 +185,11 @@ function uploadToscaButton() {
         setPlannedToscaTemplate(result.data)
         setMessage("Planning the CONF!")
         setIsLoading(false)
-        setHasError(false)
       })
       .catch(error => {
         console.log('error', error)
         setIsLoading(false)
-        setHasError(true)
+        alert(error)
     });
   }
 
@@ -211,12 +212,11 @@ function uploadToscaButton() {
         console.log(result)
         setPlannedTopologyTemplate(result.data)
         setIsLoading(false)
-        setHasError(false)
       })
       .catch(error => {
         console.log('error', error)
-        setHasError(true)
         setIsLoading(false)
+        alert(error)
     });
   }
   // console.log(plannedTopologyTemplate)
@@ -238,12 +238,11 @@ function uploadToscaButton() {
         console.log(result)
         setProvisionToscaTemplate(result.data)
         setIsLoading(false)
-        setHasError(false)
       })
       .catch(error => {
         console.log('error', error)
         setIsLoading(false)
-        setHasError(true)
+        alert(error)
     });
   }
   // console.log("Provisioner: ", provisionToscaTemplate)
@@ -265,12 +264,11 @@ function uploadToscaButton() {
         console.log(result)
         setProvisionedToscaTemplate(result.data)
         setIsLoading(false)
-        setHasError(false)
       })
       .catch(error => {
         console.log('error', error)
         setIsLoading(false)
-        setHasError(true)
+        alert(error)
     });
   }
 
@@ -292,14 +290,13 @@ function uploadToscaButton() {
           setMessage("OK")
           setIsTimeRemaining(false)
           setDeploymentLoading(false)
-          setHasError(false)
       })
       .catch(error => {
           console.log('error', error)
           setMessage("Ops something went wrong! Please contact our developers by pressing the 'Contact Us' botton bellow this message, sorry for the inconvenience!")
           setDeploymentLoading(false)
           setIsTimeRemaining(false)
-          setHasError(true)
+          alert(error)
           })
   }
 
@@ -322,12 +319,11 @@ function uploadToscaButton() {
         console.log(result)
         setDeployment(YAML.load(result.data))
         setIsLoading(false)
-        setHasError(false)
       })
       .catch(error => {
         console.log('error', error)
-        setHasError(true)
         setIsLoading(false)
+        alert(error)
     });
   }
 
@@ -352,12 +348,11 @@ function uploadToscaButton() {
         console.log(result)
         setIsDeleted(result.data)
         setIsLoading(false)
-        setHasError(false)
       })
       .catch(error => {
         console.log('error', error)
         setIsLoading(false)
-        setHasError(true)
+        alert(error)
     });
   }
 
@@ -380,12 +375,11 @@ function uploadToscaButton() {
         console.log(result)
         setDeleted(result.data)
         setIsLoading(false)
-        setHasError(false)
       })
       .catch(error => {
         console.log('error', error)
         setIsLoading(false)
-        setHasError(true)
+        alert(error)
     });
   }
 
@@ -401,7 +395,7 @@ function uploadToscaButton() {
   }
 
   function cancelRequest() {
-    alert("cancelling...");
+    console.log("cancelling...");
 
     cancelSource.current.cancel();
   }
@@ -430,6 +424,28 @@ function uploadToscaButton() {
     setIsDeleted(undefined)
   }
 
+  function setUserName(username) {
+    setName(username)
+  }
+
+//   function saveIds() {
+//     const ids = {
+//         name: name,
+//         planId: plannedToscaTemplate,
+//         provisionId: provisionedToscaTemplate,
+//         deploymentId: deployedToscaId,
+//         deleptedId: isDeleted
+//     }
+//     axiosBase.post(`/ids.json`, ids)
+//         .then(response => console.log(response))
+//         .catch(error => console.log(error))
+// }
+  // function getIds() {
+  //   db.collection('articonf2')
+  //     .get()
+  //     .then(response => console.log(response))
+  // }
+
   return (
     <Context.Provider value={{
       currentUser,
@@ -446,7 +462,6 @@ function uploadToscaButton() {
       provisionToscaBtn,
       findProvisioned,
       callDummyButton,
-      hasError,
       isLoading,
       deploymentLoading,
       platformDeployer,
@@ -465,7 +480,9 @@ function uploadToscaButton() {
       setDeletedId,
       findDeleted,
       deleted,
-      initialiseIds
+      initialiseIds,
+      setUserName,
+      name
     }}>
       {children}
     </Context.Provider>

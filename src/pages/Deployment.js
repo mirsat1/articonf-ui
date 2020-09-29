@@ -15,7 +15,6 @@ function Deployment() {
         provisionToscaTemplate,
         planToscaBtn,
         provisionToscaBtn,
-        hasError,
         isLoading,
         deploymentLoading,
         platformDeployer,
@@ -23,12 +22,16 @@ function Deployment() {
         timeRemaining,
         isTimeRemaining,
         cancelRequest,
+        name
     } = useContext(Context)
 
     const hours = Math.floor(timeRemaining / 60 / 60)
     const minutes = Math.floor(timeRemaining / 60) - (hours * 60)
     const secounds = timeRemaining % 60
-    console.log(deploymentLoading)
+    // const [uname, setUName] = useState()
+
+    console.log(name)
+
     const bottomText = <div>
             {deploymentLoading && (isTimeRemaining ? 
                         <div>
@@ -90,8 +93,7 @@ function Deployment() {
             <Button icon labelPosition="left" color="red" onClick={cancelRequest}><Icon name="cancel"/>Cancel all requests</Button>
             </div>
             <div style={{textAlign: "center"}}>
-                { hasError ? "Sorry about this, but we have encountered an error!" :
-                (
+                {
                 isLoading ? 
                 <div>
                   <h3>Just a moment please</h3>
@@ -104,9 +106,7 @@ function Deployment() {
                 </div>
                 : 
                 bottomText
-                )
                 }
-                
                  
             </div>
             <div style={{textAlign: "center"}}>
@@ -114,7 +114,19 @@ function Deployment() {
                 
                
             </div>
-            
+            {/* <div className="login-form">
+                {
+                    !name
+                    &&
+                    <Form onSubmit={e => setUserName(uname)}>
+                        <Form.Field>
+                            <Input action={<Button type="submit">SET your name</Button>} placeholder="Name" onChange={e => setUName(e.target.value)}/>
+                            <Label pointing style={{textAlign: "start"}}>Enter your name here if you want to save your ID's on our database</Label>
+                        </Form.Field>
+                    </Form>
+                }
+                <Button onClick={saveIds} disabled={!name}>Save</Button>
+            </div> */}
             <div className="deployLinks">
                 <Link to="/beta/testing/"><Button icon labelPosition="left"><Icon name="home"/>Home</Button></Link>
                 <Link to="/beta/testing/dashboard"><Button icon labelPosition="left"><Icon name="setting"/>Advanced configuration</Button></Link>
@@ -126,6 +138,7 @@ function Deployment() {
                     :
                     `The software is deployed with id: ${plannedToscaTemplate}`
             */}
+            
         </div>
     )
 }

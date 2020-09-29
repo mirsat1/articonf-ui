@@ -15,8 +15,7 @@ function Dashboard() {
     topoBtnClick, 
     planTopoBtn, 
     findProvisioned, 
-    callDummyButton, 
-    hasError, 
+    callDummyButton,  
     isLoading,
     findDeleted,
     deleted
@@ -68,7 +67,6 @@ function Dashboard() {
       height={100}
       width={100}
     /></h1>
-  <h1>{hasError && "Ops something went wrong!"}</h1>
   <h5 style={{display: topologyTemplate ? "block" : "none"}}>Topology template: <JSONPretty json={topologyTemplate}/></h5>
   <h5 style={{display: plannedTopologyTemplate ? "block" : "none"}}>Planned topology template: <JSONPretty json={plannedTopologyTemplate}/></h5>
   <h5 style={{display: provisionedToscaTemplate ? "block" : "none"}}>Provisioned topology template: <JSONPretty json={provisionedToscaTemplate}/></h5>
