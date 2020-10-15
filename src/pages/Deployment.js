@@ -36,7 +36,7 @@ function Deployment() {
             {deploymentLoading && (isTimeRemaining ? 
                         <div>
                             <h3>
-                                The server needs around 15 minutes to deploy the platform.<br />Time elapsed: {hours}h:{minutes}m:{secounds}s
+                                The server needs 15 to 25 minutes to deploy the platform. Please wait<br />Time elapsed: {hours}h:{minutes}m:{secounds}s
                             </h3>
                             <Loader
                                 type="Watch"
@@ -47,17 +47,32 @@ function Deployment() {
                         </div> 
                     :
                     alert(`The software is deployed with ID: ${deployedToscaId}`))}
-            <h1>Planned tosca topology template ID: {plannedToscaTemplate}</h1><br />
-            <CopyToClipboard name="Plan ID" inputValue={plannedToscaTemplate} />
-            <h1>Provisioned tosca topology template ID: {provisionToscaTemplate}</h1><br />
-            <CopyToClipboard name="Provision ID" inputValue={provisionToscaTemplate} />
-            <h1>Deployment ID: {deployedToscaId}</h1>
-            <CopyToClipboard name="Deployment ID" inputValue={deployedToscaId} />
-
+            {   
+                plannedToscaTemplate &&
+                <div>
+                    <h1>Planned tosca topology template ID: {plannedToscaTemplate}</h1><br />
+                    <CopyToClipboard name="Plan ID" inputValue={plannedToscaTemplate} />
+                </div>
+            }
+            {
+                provisionToscaTemplate &&
+                <div>
+                <h1>Provisioned tosca topology template ID: {provisionToscaTemplate}</h1><br />
+                <CopyToClipboard name="Provision ID" inputValue={provisionToscaTemplate} />  
+                </div>
+            }
+            {
+                deployedToscaId &&
+                <div>
+                   <h1>Deployment ID: {deployedToscaId}</h1>
+                    <CopyToClipboard name="Deployment ID" inputValue={deployedToscaId} /> 
+                </div>
+            }
         </div>
 
-    const disabler = !plannedToscaTemplate || provisionToscaTemplate ? true : false
-    const deploymentDisabler = deployedToscaId || !provisionToscaTemplate ? true : false
+    const disabler = !plannedToscaTemplate || provisionToscaTemplate || isLoading ? true : false
+    const deploymentDisabler = deployedToscaId || !provisionToscaTemplate || deploymentLoading ? true : false
+    const plannerDisabler = plannedToscaTemplate || isLoading ? true : false
 
     return (
         <div className="theBody">
@@ -84,8 +99,8 @@ function Deployment() {
             <p><strong>Tip: When you get your ID's, a good thing to do is to copy the ID's and store them. Because when you come back to our
                 platfrom you will just need to go to <Link to="/beta/testing/deployed">this </Link> site and just enter them there and continue
                 with your work where ever you stopped!</strong></p>
-            <div style={{textAlign: "center"}}>
-            <Button onClick={planToscaBtn} disabled={plannedToscaTemplate}>Plan</Button>
+            <div style={{textAlign: "center", paddingBottom: "20px"}}>
+            <Button onClick={planToscaBtn} disabled={plannerDisabler}>Plan</Button>
             {plannedToscaTemplate ? <Icon name="arrow alternate circle right" size="big"></Icon> : <Icon name="arrow alternate circle right outline" size="big"/>}
             <Button onClick={provisionToscaBtn} disabled={disabler}>Provision</Button> 
             {provisionToscaTemplate ? <Icon name="arrow alternate circle right" size="big"></Icon> : <Icon name="arrow alternate circle right outline" size="big"/>}
@@ -96,13 +111,14 @@ function Deployment() {
                 {
                 isLoading ? 
                 <div>
-                  <h3>Just a moment please</h3>
-                  <Loader
-                    type="Watch"
-                    color="#08335e"
-                    height={100}
-                    width={100}
-                />  
+                  <h3>Just a moment please! The request is beeing processed in the server.
+                    <Loader
+                        type="ThreeDots"
+                        color="#08335e"
+                        height={50}
+                        width={50}
+                    />
+                  </h3>
                 </div>
                 : 
                 bottomText
@@ -127,11 +143,11 @@ function Deployment() {
                 }
                 <Button onClick={saveIds} disabled={!name}>Save</Button>
             </div> */}
-            <div className="deployLinks">
+            {/* <div className="deployLinks">
                 <Link to="/beta/testing/"><Button icon labelPosition="left"><Icon name="home"/>Home</Button></Link>
                 <Link to="/beta/testing/dashboard"><Button icon labelPosition="left"><Icon name="setting"/>Advanced configuration</Button></Link>
                 <Link to="/beta/testing/contact"><Button icon labelPosition="left"><Icon name="mail"/>Contact Us</Button></Link>
-            </div>
+            </div> */}
             {/* 
             timeRemaining !== 0 ? 
                     `The server needs time to deploy the platfrom so please wait: ${Math.floor(timeRemaining / 60)}:${timeRemaining - minutes * 60} until deployed`

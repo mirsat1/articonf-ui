@@ -63,22 +63,26 @@ function Deployed() {
                 <Button onClick={toggle} disabled={!deployment}>{show ? "Hide" : "Show"} links</Button>
                 <Button onClick={findDeployed} disabled={!deployedToscaId}>Find deployed topology</Button>
                 <Button onClick={toggleShow} disabled={!deployment}>{showDeployed ? "Hide" : "Show"} Deployment</Button>
-                <Button onClick={deleteProvision} disabled={!provisionToscaTemplate}>Delete deployed topology</Button>
+                <Button onClick={deleteProvision} disabled={!provisionToscaTemplate}>Delete provisioned topology</Button>
                 <Button onClick={findDeleted} disabled={!isDeleted}>Find deleted provision</Button>
                 <Button onClick={toggleDeleted} disabled={!deleted}>{showDeleted ? "Hide" : "Show"} deleted provision</Button> 
                 <h5 style={{display: isDeleted ? "block" : "none", marginBottom: "40px"}}><CopyToClipboard name="Deleted ID" inputValue={isDeleted}/></h5>
             {
                 isLoading 
                 && 
-                <Loader
+                <h3>
+                   Just a moment please! The request is beeing processed in the server.
+                   <Loader
                     type="Watch"
                     color="#08335e"
                     height={100}
                     width={100}
-                /> 
+                    /> 
+                </h3>
+                 
             }
             {
-                show 
+                !show 
                 && 
                 <div>
                     <Header as="a" href={hyperLedgerLink} icon>
@@ -106,6 +110,13 @@ function Deployed() {
                         BlockChain explorer
                         <Header.Subheader>
                         Click this icont to go to blockchain explorer
+                        </Header.Subheader>
+                    </Header><i className="ri-arrow-right-circle-fill ri-fw ri-3x"></i>
+                    <Header as="a" href={blockChainLink} icon>
+                        <Icon name="bitcoin" height="100" width="100" />
+                        Token bank
+                        <Header.Subheader>
+                        Click this icont to go to token bank sample app
                         </Header.Subheader>
                     </Header>
                 </div> 

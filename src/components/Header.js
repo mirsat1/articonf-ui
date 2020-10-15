@@ -13,7 +13,7 @@ export default function Header() {
             <Link to="/beta/testing/deploy" className="a">Deploy</Link>
             <Link to="/beta/testing/dashboard" className="a">Advance Configuration</Link>
             <Link to="/beta/testing/deployed" className="a">Find Deployed Topology</Link>
-            <Link to="/beta/testing/bank" className="a">Token Bank</Link>
+            <Link to="/beta/testing/bank" className="a">SMART and TAC</Link>
             <Link to="/beta/testing/contact" className="a">Contact Us</Link>
             {currentUser ? 
             <Link to="/login" className="a" onClick={() => {
