@@ -1,4 +1,4 @@
-import React, { memo } from "react"
+import React, { memo, useEffect } from "react"
 import { Route } from "react-router-dom"
 import Header from "./components/Header"
 import Footer from "./components/Footer"
@@ -14,6 +14,17 @@ import SingUp from "./pages/SingUp"
 import TokenBank from "./pages/TokenBank"
 
 function App() {
+  useEffect(() => {
+    window.$crisp=[];
+    window.CRISP_WEBSITE_ID="6d88474b-e371-4d77-bf41-8e0a5500e3d7";
+    (function(){
+      const d=document;
+      const s=d.createElement("script");
+      s.src="https://client.crisp.chat/l.js";
+      s.async=1;
+      d.getElementsByTagName("head")[0].appendChild(s);
+    })();
+  }, [])
   return (
     <div>
       <Header />

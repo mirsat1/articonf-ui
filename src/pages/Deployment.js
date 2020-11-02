@@ -21,16 +21,21 @@ function Deployment() {
         deployedToscaId,
         timeRemaining,
         isTimeRemaining,
-        cancelRequest,
-        name
+        cancelRequest
     } = useContext(Context)
 
     const hours = Math.floor(timeRemaining / 60 / 60)
     const minutes = Math.floor(timeRemaining / 60) - (hours * 60)
     const secounds = timeRemaining % 60
-    // const [uname, setUName] = useState()
-
-    console.log(name)
+    
+    function downloadTxtFile() {
+        const element = document.createElement("a");
+        const file = new Blob([document.getElementById('toBeDownloaded').innerHTML], {type: 'text/plain;charset=utf-8'});
+        element.href = URL.createObjectURL(file);
+        element.download = "myArticonfIDs.html";
+        document.body.appendChild(element);
+        element.click();
+    }
 
     const bottomText = <div>
             {deploymentLoading && (isTimeRemaining ? 
@@ -73,6 +78,7 @@ function Deployment() {
     const disabler = !plannedToscaTemplate || provisionToscaTemplate || isLoading ? true : false
     const deploymentDisabler = deployedToscaId || !provisionToscaTemplate || deploymentLoading ? true : false
     const plannerDisabler = plannedToscaTemplate || isLoading ? true : false
+    const downloadDisabler = plannedToscaTemplate || provisionToscaTemplate || deployedToscaId ? false : true
 
     return (
         <div className="theBody">
@@ -125,10 +131,14 @@ function Deployment() {
                 }
                  
             </div>
-            <div style={{textAlign: "center"}}>
-                
-                
-               
+                <div style={{textAlign: "center"}}>
+                <pre><p id="toBeDownloaded" style={{display: "none"}}>
+                    Planned tosca topology template ID: {plannedToscaTemplate}<br />
+                    Provisioned tosca topology template ID: {provisionToscaTemplate}<br />
+                    Deployment ID: {deployedToscaId}
+                </p> 
+                </pre>  
+                <Button onClick={downloadTxtFile} disabled={downloadDisabler}>Download ID's</Button> 
             </div>
             {/* <div className="login-form">
                 {

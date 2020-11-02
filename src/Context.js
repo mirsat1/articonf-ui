@@ -27,7 +27,7 @@ function ContextProvider({children}) {
   const [name, setName] = useState()
   
   const [timeRemaining, setIsTimeRemaining, isTimeRemaining] = useTimer()
-  const id = '5f4e1092ebc9f217b66fa382'
+  const id = '5f9a8fe32ad768635e45a4bf'
 
   const cancelSource = useRef(null)
   
@@ -134,7 +134,6 @@ function uploadToscaButton() {
     setIsLoading(true) 
     let h = new Headers()
     h.append('Accept', 'text/plain')
-    console.log("Headers: ", h)
     const agent = new https.Agent({  
       rejectUnauthorized: false
     })
@@ -154,7 +153,6 @@ function uploadToscaButton() {
 
     axios.get(`tosca_template/${id}`, requestOptions)
       .then(result => {
-        console.log(result)
         setTopologyTemplate(YAML.load(result.data))
         setIsLoading(false)
       })
@@ -181,7 +179,6 @@ function uploadToscaButton() {
     
     axios.get(`planner/plan/${id}`, requestOptions)
       .then(result => {
-        console.log(result)
         setPlannedToscaTemplate(result.data)
         setMessage("Planning the CONF!")
         setIsLoading(false)
@@ -209,7 +206,6 @@ function uploadToscaButton() {
     //${plannedToscaTemplate} => 5f60ad4e5695046700eed8bd
     axios.get(`tosca_template/${plannedToscaTemplate}`, requestOptions)
       .then(result => {
-        console.log(result)
         setPlannedTopologyTemplate(result.data)
         setIsLoading(false)
       })
@@ -235,7 +231,6 @@ function uploadToscaButton() {
     //${plannedToscaTemplate} => 5f60ad4e5695046700eed8bd
     axios.get(`provisioner/provision/${plannedToscaTemplate}`, requestOptions)
       .then(result => {
-        console.log(result)
         setProvisionToscaTemplate(result.data)
         setIsLoading(false)
       })
@@ -261,7 +256,6 @@ function uploadToscaButton() {
     //${provisionToscaTemplate} => 5f60ad9a5695046700eed8be
     axios.get(`tosca_template/${provisionToscaTemplate}`, requestOptions)
       .then(result => {
-        console.log(result)
         setProvisionedToscaTemplate(result.data)
         setIsLoading(false)
       })
@@ -285,7 +279,6 @@ function uploadToscaButton() {
     // ${provisionToscaTemplate} => 5f60ad9a5695046700eed8be
     axios.get(`deployer/deploy/${provisionToscaTemplate}`, requestOptions)
       .then(result => {
-          console.log(result)
           setDeployedToscaId(result.data)
           setMessage("OK")
           setIsTimeRemaining(false)
@@ -316,7 +309,6 @@ function uploadToscaButton() {
     // ${deployedToscaId} => 5f58a9a0a98b2f5fc6ca830f
     axios.get(`tosca_template/${deployedToscaId}`, requestOptions)
       .then(result => {
-        console.log(result)
         setDeployment(YAML.load(result.data))
         setIsLoading(false)
       })
@@ -345,7 +337,6 @@ function uploadToscaButton() {
     
     axios.delete(`/tosca_template/${provisionToscaTemplate}`, requestOptions)
       .then(result => {
-        console.log(result)
         setIsDeleted(result.data)
         setIsLoading(false)
       })
@@ -372,7 +363,6 @@ function uploadToscaButton() {
     
     axios.get(`/tosca_template/${isDeleted}`, requestOptions)
       .then(result => {
-        console.log(result)
         setDeleted(result.data)
         setIsLoading(false)
       })

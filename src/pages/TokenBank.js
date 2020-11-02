@@ -8,11 +8,14 @@ function TokenBank() {
     const [show, toggle] = useToggler()
     const [postCode, setPostCode] = useState("")
     const [production, setProduction] = useState(null)
-    const [consumption, setConsumption] = useState(null)
-    const roi = consumption && (production / consumption) * 100
+    const [energyConsumption, setEnergyConsumption] = useState(null)
+    const [heatingConsumption, setHeatingConsumption] = useState(null)
+    const energyRoi = energyConsumption && (production / energyConsumption) * 100
+    const heatRoi = heatingConsumption && (production / heatingConsumption) * 100
     
     const client = new elasticsearch.Client({
-        host: "localhost:9200"
+        host: "localhost:9200",
+        auth: "elastic:mirsat"
     })
 
     client.ping({
@@ -44,15 +47,33 @@ function TokenBank() {
             .then(
                 body => { setProduction(body.aggregations.sum_production.value) }, 
                 error => { alert(error.message) })
-
+        
+        client.search({
+            index: 'smart_smart_energy_heating_consumtion_layer_nodes',
+            body: {
+                // "query": {
+                //     "match": {
+                //         "Postcode": postCode
+                //     }
+                // },
+                "size": 0,
+                "aggs": {
+                    "sum_consumption": { "sum": { "field": "Heating_Consumption_kWh" } }
+                }
+            }
+        })
+            .then(
+                body => { setHeatingConsumption(body.aggregations.sum_consumption.value) },
+                error => { alert(error.message) }
+            )
         client.search({
             index: 'smart_smart_energy_energy_consumtion_layer_nodes',
             body: {
-                "query": {
-                    "match": {
-                        "Postcode": postCode
-                    }
-                },
+                // "query": {
+                //     "match": {
+                //         "Postcode": postCode
+                //     }
+                // },
                 "size": 0,
                 "aggs": {
                     "sum_consumption": { "sum": { "field": "Energy_Consumption_kWh" } }
@@ -60,14 +81,16 @@ function TokenBank() {
             }
         })
             .then(
-                body => { setConsumption(body.aggregations.sum_consumption.value) },
+                body => { setEnergyConsumption(body.aggregations.sum_consumption.value) },
                 error => { alert(error.message) }
             )       
       }
 
       console.log("Production", production)
-      console.log("Consumption", consumption)
-      console.log("ROI", Math.round(roi))
+      console.log("Energy Consumption", energyConsumption)
+      console.log("Heating Consumption", heatingConsumption)
+      console.log("Energy ROI", energyRoi)
+      console.log("Heating ROI", heatRoi)
     
     return (
         <div className="theBody">
@@ -76,9 +99,15 @@ function TokenBank() {
             {
                 show &&
                 <div>
-                    <Iframe src="http://localhost:5601/app/kibana#/dashboard/b61ab4a0-0d8f-11eb-82c9-d9cbef764e2b?embed=true&_g=(refreshInterval%3A(pause%3A!t%2Cvalue%3A0)%2Ctime%3A(from%3Anow-15y%2Cto%3Anow))" height="665px" width="100%"></Iframe>
+                    <Iframe src="http://localhost:5601/app/kibana#/dashboard/b61ab4a0-0d8f-11eb-82c9-d9cbef764e2b?embed=true&_g=(refreshInterval%3A(pause%3A!t%2Cvalue%3A0)%2Ctime%3A(from%3Anow-15y%2Cto%3Anow))" height="665px" width="100%" frameBorder="0"></Iframe>
                     <Input onChange={e => setPostCode(e.target.value)} action={<Button onClick={esAggs} type='submit'>Calculate ROI</Button>} placeholder='Enter your UniqueID' />
-                    {roi && <h3>Your Return of investment is: {roi}$</h3>}  
+                    {   
+                        (energyConsumption || heatingConsumption) &&
+                        <div>
+                            <h3>Your Return of investment is: {energyRoi}$</h3>
+                            <h3>Your Return of investment is: {heatRoi}$</h3>
+                        </div>
+                    }  
                 </div>
             }
         </div>

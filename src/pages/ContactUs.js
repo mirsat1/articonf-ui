@@ -42,7 +42,7 @@ export default function ContactUs() {
             <textarea rows="4" cols="50" name="message" placeholder="Please enter your message" required></textarea>
             <Label pointing>Please enter your message here</Label>
           </Form.Field>
-          <div style={{textAlign: "center"}}><Button icon name="submit" type="submit" labelPosition="right">Send<Icon name="paper plane"/></Button></div>
+          <div style={{textAlign: "center"}}><Button icon className="btncontactus" name="submit" type="submit" labelPosition="right">Send<Icon name="paper plane"/></Button></div>
         {/*<input name="submit" className="contactInput btn" type="submit" value="Send" />*/}
         </Form>
       </div>

@@ -25,10 +25,10 @@ function Deployed() {
         initialiseIds
     } = useContext(Context)
     
-    const [show, toggle] = useToggler()
     const [showDeployed, toggleShow] = useToggler()
     const [showDeleted, toggleDeleted] = useToggler()
     const [showDialog, toggleDialog] = useToggler()
+    const [deleteDialog, toggleDeleteDialog] = useToggler()
     const [planerId, setPlanerId] = useState()
     const [provisionerId, setProvisionerId] = useState()
     const [deployerId, setDeployerId] = useState()
@@ -44,7 +44,9 @@ function Deployed() {
     const portainerLink = deployment && portainer.substring(1, hyperLedger.length-1)
     const blockChain = deployment && JSON.stringify(deployment.topology_template.node_templates.tic.attributes.service_urls[2])
     const blockChainLink = deployment && blockChain.substring(1, hyperLedger.length-1)
-
+    const ip_addr = deployment && JSON.stringify(deployment.topology_template.node_templates.compute.attributes.public_ip)
+    const tokenBank = deployment && "http://" + ip_addr.substring(1, ip_addr.length-1) + ":3000"
+    console.log(ip_addr)
     function eraser() {
         setYesDisabler(true)
         initialiseIds()
@@ -55,18 +57,18 @@ function Deployed() {
             setMessage("")
         }, 3000) 
     }
-    
+
     return (
         <div className='theBody'>
             <div className='deployed'>
                 <h1>Find deployed topology template by ID</h1>
-                <Button onClick={toggle} disabled={!deployment}>{show ? "Hide" : "Show"} links</Button>
                 <Button onClick={findDeployed} disabled={!deployedToscaId}>Find deployed topology</Button>
                 <Button onClick={toggleShow} disabled={!deployment}>{showDeployed ? "Hide" : "Show"} Deployment</Button>
-                <Button onClick={deleteProvision} disabled={!provisionToscaTemplate}>Delete provisioned topology</Button>
+                <Button onClick={toggleDeleteDialog} disabled={!provisionToscaTemplate}>Delete provisioned topology</Button>
                 <Button onClick={findDeleted} disabled={!isDeleted}>Find deleted provision</Button>
                 <Button onClick={toggleDeleted} disabled={!deleted}>{showDeleted ? "Hide" : "Show"} deleted provision</Button> 
                 <h5 style={{display: isDeleted ? "block" : "none", marginBottom: "40px"}}><CopyToClipboard name="Deleted ID" inputValue={isDeleted}/></h5>
+                <h5 style={{display: !isDeleted ? "block" : "none" }}>{deleteDialog && <div><Button onClick={deleteProvision} disabled={isLoading}>Yes</Button> <Button onClick={toggleDeleteDialog} disabled={isLoading}>No</Button></div>}</h5>
             {
                 isLoading 
                 && 
@@ -82,10 +84,10 @@ function Deployed() {
                  
             }
             {
-                !show 
+                deployment 
                 && 
                 <div>
-                    <Header as="a" href={hyperLedgerLink} icon>
+                    <Header as="a" href={hyperLedgerLink} target="_blank" icon>
                         <Icon>
                         <img src="https://www.gemsdigitalmedia.com/wp-content/uploads/2019/01/Hyperledger-icon.png" alt="HyperLedger" height="100" width="100"/>
                         </Icon>
@@ -94,7 +96,7 @@ function Deployed() {
                         Click this icont to go to hyperledger explorer
                         </Header.Subheader>
                     </Header><i className="ri-arrow-right-circle-fill ri-fw ri-3x"></i>
-                    <Header as="a" href={portainerLink} icon>
+                    <Header as="a" href={portainerLink} target="_blank" icon>
                         <Icon>
                         <img src="https://avatars2.githubusercontent.com/u/22225832?s=280&v=4" alt="portainer" height="100" width="100"/>
                         </Icon>
@@ -103,7 +105,7 @@ function Deployed() {
                         Click this icont to go to portainer
                         </Header.Subheader>
                     </Header><i className="ri-arrow-right-circle-fill ri-fw ri-3x"></i>
-                    <Header as="a" href={blockChainLink} icon>
+                    <Header as="a" href={blockChainLink} target="_blank" icon>
                         <Icon>
                             <img src="https://www.uokpl.rs/fpng/f/29-292865_black-blockchain-icon.png" alt="blockchain" height="100" width="100"/>
                         </Icon>
@@ -112,8 +114,10 @@ function Deployed() {
                         Click this icont to go to blockchain explorer
                         </Header.Subheader>
                     </Header><i className="ri-arrow-right-circle-fill ri-fw ri-3x"></i>
-                    <Header as="a" href={blockChainLink} icon>
-                        <Icon name="bitcoin" height="100" width="100" />
+                    <Header as="a" href={tokenBank} target="_blank" icon>
+                        <Icon>
+                            <img src="https://static.thenounproject.com/png/91988-200.png" alt="token-bank" height="100" width="100"/>
+                        </Icon>
                         Token bank
                         <Header.Subheader>
                         Click this icont to go to token bank sample app

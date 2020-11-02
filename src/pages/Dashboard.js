@@ -20,7 +20,6 @@ function Dashboard() {
     findDeleted,
     deleted
   } = useContext(Context)
-  // console.log(topologyTemplate)
 
   return (
     <div className="theBody">

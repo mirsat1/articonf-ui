@@ -40,3 +40,8 @@
 .theBody .deployed button {
     margin-right: 5px;
 }
+
+.theBody .btncontactus {
+    color: blue;
+    background: brown;
+}
