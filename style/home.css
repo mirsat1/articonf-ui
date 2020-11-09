@@ -1,0 +1,47 @@
+.theBody {
+    margin-left: 10%;
+    margin-right: 10%;
+    margin-top: 1%;
+    align-content: center;
+    text-align: justify;
+}
+
+.theBody .bank {
+    margin-left: 30%;
+    margin-right: 30%;
+    margin-bottom: 3%;
+}
+
+.theBody .login-form {
+    margin-left: 30%;
+    margin-right: 30%;
+}
+
+.text-section {
+	margin: 3em auto;
+}
+
+.theBody .deployLinks {
+    text-align: right;
+}
+
+.theBody .deployLinks button {
+    margin-right: 5px;
+}
+
+.theBody .homeDeploy {
+    text-align: center;
+}
+
+.theBody .deployed {
+    text-align: center;
+}
+
+.theBody .deployed button {
+    margin-right: 5px;
+}
+
+.theBody .btncontactus {
+    color: blue;
+    background: brown;
+}

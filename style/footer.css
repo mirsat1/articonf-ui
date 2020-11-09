@@ -1,0 +1,32 @@
+@import 'https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css';
+
+.footer {
+    right: 0;
+    bottom: 0;
+    left: 0;
+    padding: 1rem;
+    height: 249px;
+    background-color: #08335e;
+    align-content: center;
+    text-align: left;
+    padding-bottom: 15px;;
+}
+
+.footer .footerImg {
+    float: left;
+    margin-top: 15px;
+}
+
+.footer p {
+    text-align: left;
+    color: #FFF;
+}
+
+.footer i {
+    font-size: xx-large;
+    margin-left: 5px;
+}
+
+.footer a:link {
+    text-decoration: none;
+}
