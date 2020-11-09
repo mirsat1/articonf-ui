@@ -12,8 +12,11 @@ import PrivateRoute from "./PrivateRoute"
 import Login from "./pages/Login"
 import SingUp from "./pages/SingUp"
 import TokenBank from "./pages/TokenBank"
+import Heap from "reactjs-heap"
 
 function App() {
+  Heap.initialize('3168635468');
+  
   useEffect(() => {
     window.$crisp=[];
     window.CRISP_WEBSITE_ID="6d88474b-e371-4d77-bf41-8e0a5500e3d7";

@@ -82,6 +82,7 @@ function Deployment() {
 
     return (
         <div className="theBody">
+<<<<<<< HEAD
             <div><strong>Instructions:</strong><br />
             <p>How to use (deploy) the platform?</p>
             <p><strong>Step 1: </strong>“Plan”. Please select the "Plan" button to initialize the deployment. Once you press this button, please wait 
@@ -99,6 +100,32 @@ function Deployment() {
             proceed to this site and by entering your ID’s you can continue with your work from the point where you stop! You can find "Download ID's" 
             button bellow the obtained ID's. Press this button and it will download the obtained ID's in a HTML file.</strong>        
             </div>
+=======
+            <h1 style={{textAlign: "center"}}>Deployment</h1>
+            <p><strong>Instructions: </strong>Bellow you can see 3 buttons. The first button is labeled as "Plan" and is the only button 
+            that is not disabled initialy. In order to deploy our platfrom first thing you need to do here is to press the "Plan" button.
+            When you press this button you will wait a couple of seconds to call an API that will plan and return the ID of the planed 
+            topolog template. When the planning process is finished, the "Plan" button will get disabled and the arrow pointing to the
+            "Provision" will get filled out, you are ready to start the provisioning. To provision a tosca template you will need to press 
+            the "Provison" button. By clicking the "Provision" button you will can an API that will provison an operational ID (Plan Tosca 
+            Template. Returns the provision ID). This process takes around 1-3 minutes. When this process is finished the "Provision" button 
+            will get disabled, the arrow pointing to the "Deploy" button will get filled out and the "Deploy" button will be enabled for clicking 
+            and now you are ready for the last stage which is the deployment. In this stage you need to press the "Deploy" button. By pressin 
+            the "Deploy" button you will call an API that will deploy the ARTICONF platfrom and return a deployment ID. This process takes around 
+            15 minutes. In order for you to stay on track we have created a timer that will show you how much time has passed since you have started
+            the deployment process. When this stage is finished an Alert will show up stating that the software is deployed with an ID of something. 
+            After you have finished with deployment and you've got an ID, it is time for you to head to <Link to="/beta/testing/deployed">find 
+            your deployment.</Link> Here at this page you can see a couple of buttons, if the "Show Links" is disabled you probably do not have a deployment ID. 
+            If you have already obtained it in the past trough the platfrom, you can set it at the same page. If it is not, you need to press it. After pressing it you will see 3 icons: HyperLedger explorer, Portainer and BlockChain explorer. 
+            Further instructions will be presented at that page.</p>
+            <p>Bellow the buttons you can see 3 different ID's which are empty. Each one of them will fill out as you go trough the process</p>
+            <p><strong>Side note: Beside the 3 main buttons you can see a red button labeled "Cancel all request". If by any chance you need to 
+                leave or refresh this UI and the process is already in progress, please press this button because it is not OK to leave our 
+                servers hanging. Thank you in advance <Icon name="smile outline" /></strong></p>
+            <p><strong>Tip: When you get your ID's, a good thing to do is to copy the ID's and store them. Because when you come back to our
+                platfrom you will just need to go to <Link to="/beta/testing/deployed">this </Link> site and just enter them there and continue
+                with your work where ever you stopped!</strong></p>
+>>>>>>> f42b2c5dc2122b1ad9c71b83601aeacb111a80ad
             <div style={{textAlign: "center", paddingBottom: "20px"}}>
             <Button onClick={planToscaBtn} disabled={plannerDisabler}>Plan</Button>
             {plannedToscaTemplate ? <Icon name="arrow alternate circle right" size="big"></Icon> : <Icon name="arrow alternate circle right outline" size="big"/>}
