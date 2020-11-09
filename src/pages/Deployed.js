@@ -30,6 +30,7 @@ function Deployed() {
     const [showDialog, toggleDialog] = useToggler()
     const [deleteDialog, toggleDeleteDialog] = useToggler()
     const [instuctions, toggleInstructions] = useToggler()
+    const [showVid, toggleShowVid] = useToggler()
     const [planerId, setPlanerId] = useState()
     const [provisionerId, setProvisionerId] = useState()
     const [deployerId, setDeployerId] = useState()
@@ -39,13 +40,10 @@ function Deployed() {
 
 
     //<JSONPretty json={deployment.topology_template.node_templates.tic.attributes.service_urls}/>
-    const hyperLedger = deployment && JSON.stringify(deployment.topology_template.node_templates.tic.attributes.service_urls[0])
-    const hyperLedgerLink = deployment && hyperLedger.substring(1, hyperLedger.length-1)
-    const portainer = deployment && JSON.stringify(deployment.topology_template.node_templates.tic.attributes.service_urls[1])
-    const portainerLink = deployment && portainer.substring(1, hyperLedger.length-1)
-    const blockChain = deployment && JSON.stringify(deployment.topology_template.node_templates.tic.attributes.service_urls[2])
-    const blockChainLink = deployment && blockChain.substring(1, hyperLedger.length-1)
     const ip_addr = deployment && JSON.stringify(deployment.topology_template.node_templates.compute.attributes.public_ip)
+    const hyperLedgerLink = deployment && "http://" + ip_addr.substring(1, ip_addr.length-1) + ":8090"
+    const portainerLink = deployment && "http://" + ip_addr.substring(1, ip_addr.length-1) + ":9000"
+    const blockChainLink = deployment && "http://" + ip_addr.substring(1, ip_addr.length-1) + ":9090"
     const tokenBank = deployment && "http://" + ip_addr.substring(1, ip_addr.length-1) + ":3000"
     console.log(ip_addr)
     function eraser() {
@@ -76,6 +74,7 @@ function Deployed() {
                    <li>user_name: admin</li>
                    <li>password: adminpw</li>
                </ul><br />
+               <p>Video example:<Button onClick={toggleShowVid}>Show Example</Button><br /> <span style={{display: showVid ? "block" : "none"}}><video src={process.env.PUBLIC_URL + "/videos/explorer_transactions_with_comments.mp4"} controls={true} playsInline width="100%"/></span></p>
                <strong>Portainer (Docker Network Management and Monitoring):</strong><br />
                The network management microservice Portainer provides a dynamic overview of all the microservices of the deployed network.  It is useful in monitoring the 
                health of the various microservices deployed. Furthermore, it also provides facilities to dynamically update specific microservices, based upon the business 
