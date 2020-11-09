@@ -18,9 +18,9 @@ export default function Header() {
             {currentUser ? 
             <Link to="/login" className="a" onClick={() => {
                 app.auth().signOut()
-            }}>Sing Out</Link>
+            }}>Sign Out</Link>
             :
-            <Link to="/login" className="a">Sing In</Link>
+            <Link to="/login" className="a">Sign In</Link>
             }
         </div>
     )

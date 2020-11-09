@@ -24,7 +24,7 @@ export default function ContactUs() {
 
   return (
     <div className="theBody">
-      <h1 style={{textAlign: "center"}}>Contact us by filling out the form bellow.</h1>
+      <h1 style={{textAlign: "center"}}>Contact us by filling out the form below.</h1>
       <div className="login-form">
         <Form onSubmit={sendEmail}>
           <Form.Field>
