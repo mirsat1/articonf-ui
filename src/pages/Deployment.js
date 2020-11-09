@@ -82,6 +82,7 @@ function Deployment() {
 
     return (
         <div className="theBody">
+            <h1 style={{textAlign: "center"}}>Deployment</h1>
             <p><strong>Instructions: </strong>Bellow you can see 3 buttons. The first button is labeled as "Plan" and is the only button 
             that is not disabled initialy. In order to deploy our platfrom first thing you need to do here is to press the "Plan" button.
             When you press this button you will wait a couple of seconds to call an API that will plan and return the ID of the planed 
