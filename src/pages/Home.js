@@ -8,7 +8,10 @@ function Home() {
             <div>
             <section className='text-section'>
                 <h1>Welcome to ARTICONF!</h1>
-                <h3>Welcome to ARTICONF and thank you for using our platform. If you want to deploy our platfrom please go to <Link to="/beta/testing/deploy">deploy page</Link> and follow the instructions and steps presented there.</h3>
+                <h3>Welcome to ARTICONF and thank you for using our platform. If you want to deploy our platfrom please go to <Link to="/beta/testing/deploy">deploy page</Link> and follow the instructions and steps presented there or watch our tutorial videos:<br />
+                Part 1: <a href="https://youtu.be/3qbMak1kdLk" target="_blank" rel="noopener noreferrer">Introduction to ARTICONF and deploying the platform (using the CONF tool)</a><br />
+                Part 2: <a href="https://youtu.be/laOXIJvC_nI" target="_blank" rel="noopener noreferrer">Interacting with the ARTICONF platform (using the TIC tool)</a>
+                </h3>
                 <h3>This application demonstrates the ARTICONF platform, which is a collection of 4 different tools:</h3>
                 <ul>
                 <li>CONF

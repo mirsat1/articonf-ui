@@ -5,7 +5,7 @@ import Iframe from "react-iframe"
 import elasticsearch from "elasticsearch"
 
 function TokenBank() {
-    const [show, toggle] = useToggler()
+    const [show] = useToggler()
     const [postCode, setPostCode] = useState("")
     const [production, setProduction] = useState(null)
     const [energyConsumption, setEnergyConsumption] = useState(null)
@@ -86,16 +86,16 @@ function TokenBank() {
             )       
       }
 
-      console.log("Production", production)
-      console.log("Energy Consumption", energyConsumption)
-      console.log("Heating Consumption", heatingConsumption)
-      console.log("Energy ROI", energyRoi)
-      console.log("Heating ROI", heatRoi)
+    //   console.log("Production", production)
+    //   console.log("Energy Consumption", energyConsumption)
+    //   console.log("Heating Consumption", heatingConsumption)
+    //   console.log("Energy ROI", energyRoi)
+    //   console.log("Heating ROI", heatRoi)
     
     return (
         <div className="theBody">
-            <h3>Work for this UI for SMART and TAC is still in progress. If you want to check SMART and TAC for Smart Energy use case please click the button bellow</h3>
-            <Button onClick={toggle}>Check</Button>
+            <h3>Work for this UI for SMART and TAC is still in progress.</h3>
+            <Button onClick={() => alert("Work in progress!")}>Check</Button>
             {
                 show &&
                 <div>

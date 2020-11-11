@@ -61,6 +61,7 @@ function Deployed() {
         <div className='theBody'>
             <h1 style={{textAlign: "center"}}>Find deployed topology template by ID</h1>
             <div style={{display: instuctions ? "block" : "none"}}>
+               <a style={{fontSize: "1.2em"}} href="https://youtu.be/laOXIJvC_nI" target="_blank" rel="noopener noreferrer">Check out this video tutorial</a>
                <p><strong>Instructions: </strong>After you have deployed ARTICONF platform and got all the ID's or you had them 
                prevously and insrted them trough the form bellow, now you have to click the "Find deployed topology". If everything goes well this button should show 4 icons:<br />
                <strong>Hyperledger Explorer (Blockchain explorer):</strong><br />
@@ -177,35 +178,54 @@ function Deployed() {
                         <img src={process.env.PUBLIC_URL + "/images/Hyperledger.png"} alt="HyperLedger" height="100" width="100"/>
                         </Icon>
                         HyperLedger Explorer
-                        <Header.Subheader>
-                        Click this icont to go to hyperledger explorer
+                        <Header.Subheader style={{textAlign: "left"}}>
+                        Click this icont to go to HyperLedger explorer.<br />
+                        Hyperledger Explorer is a user-friendly<br />
+                        Web application tool used to view, invoke, deploy<br /> 
+                        or query blocks, transactions and associated data,<br /> 
+                        network information (name, status, list of nodes),<br />
+                        chain codes and transaction families, as well as any <br />
+                        other relevant information stored in the ledger.
                         </Header.Subheader>
-                    </Header><i className="ri-arrow-right-circle-fill ri-fw ri-3x"></i>
+                    </Header>
+                    {/* <i className="ri-arrow-right-circle-fill ri-fw ri-3x"></i> */}
                     <Header as="a" href={portainerLink} target="_blank" icon>
                         <Icon>
                         <img src={process.env.PUBLIC_URL + "/images/portainerimg.png"} alt="Portainer" height="100" width="100"/>
                         </Icon>
                         Portainer
-                        <Header.Subheader>
-                        Click this icont to go to portainer
+                        <Header.Subheader style={{textAlign: "left", marginLeft: "1.5em"}}>
+                        Click this icon to go to Portainer. <br />
+                        Portainer makes managing containerized software <br />
+                        environments quick and easy by giving users a <br />
+                        simple 'click-to-configure' UI that anyone can learn
                         </Header.Subheader>
-                    </Header><i className="ri-arrow-right-circle-fill ri-fw ri-3x"></i>
+                    </Header>
+                    {/* <i className="ri-arrow-right-circle-fill ri-fw ri-3x"></i> */}
                     <Header as="a" href={blockChainLink} target="_blank" icon>
                         <Icon>
                             <img src={process.env.PUBLIC_URL + "/images/docker.png"} alt="Docker Swarm" height="100" width="100"/>
                         </Icon>
                         Docker Swarm Visualizer
-                        <Header.Subheader>
-                        Click this icont to go to docker swarm explorer
+                        <Header.Subheader style={{textAlign: "left", marginLeft: "1.5em"}}>
+                        Click this icon to go to Docker swarm visualizer. <br />
+                        Docker swarm visualizer is a fancy tool which <br />
+                        visualized the Swarm Cluster setup. It displays <br />
+                        containers running on each node in the form of visuals.
                         </Header.Subheader>
-                    </Header><i className="ri-arrow-right-circle-fill ri-fw ri-3x"></i>
+                    </Header>
+                    {/* <i className="ri-arrow-right-circle-fill ri-fw ri-3x"></i> */}
                     <Header as="a" href={tokenBank} target="_blank" icon>
                         <Icon>
                             <img src={process.env.PUBLIC_URL + "/images/bank.png"} alt="Token Bank" height="100" width="100"/>
                         </Icon>
                         Token Bank
-                        <Header.Subheader>
-                        Click this icont to go to token bank sample app
+                        <Header.Subheader style={{textAlign: "left", marginLeft: "1.5em"}}>
+                        Click this icon to go to the sample app. <br />
+                        The Articonf bank app is a simple application to <br />
+                        demonstrate the interaction of a web application <br />
+                        with the deployed blockchain network with a sample <br />
+                        smart contract.
                         </Header.Subheader>
                     </Header>
                 </div> 
