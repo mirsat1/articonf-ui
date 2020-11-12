@@ -83,7 +83,7 @@ function Deployment() {
     return (
         <div className="theBody">
             <div><strong>Instructions how to use (deploy) the platform:</strong><br />
-                <h3>Tutorial video for deployment: <a href="https://youtu.be/3qbMak1kdLk" target="_blank" rel="noopener noreferrer">Introduction to ARTICONF and deploying the platform (using the CONF tool)</a></h3>
+                <h3>Tutorial video for deployment: <a href="https://youtu.be/2J_b4oVjWgs" target="_blank" rel="noopener noreferrer">Introduction to ARTICONF and deploying the platform (using the CONF tool)</a></h3>
                 <h3>Plan the Infrastructure</h3>
                 <p>To deploy our platform first press the "Plan" button so CONF will generate an optimal virtual inftaracure on the Cloud.  After the planning phase 
                     is finished you will get back an ID of the planned virtual infrastructure.</p> 
