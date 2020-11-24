@@ -61,6 +61,7 @@ function Deployed() {
         <div className='theBody'>
             <h1 style={{textAlign: "center"}}>Find deployed topology template by ID</h1>
             <div style={{display: instuctions ? "block" : "none"}}>
+                <Button onClick={toggleInstructions}>Hide Instructions</Button><br />
                <a style={{fontSize: "1.2em"}} href="https://youtu.be/gdBDajWyUFY" target="_blank" rel="noopener noreferrer">Check out this video tutorial</a>
                <p><strong>Instructions: </strong>After you have deployed ARTICONF platform and got all the ID's or you had them 
                prevously and insrted them trough the form bellow, now you have to click the "Find deployed topology". If everything goes well this button should show 4 icons:<br />

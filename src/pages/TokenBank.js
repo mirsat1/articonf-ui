@@ -1,11 +1,9 @@
 import React, { useState } from 'react'
 import { Button, Input } from 'semantic-ui-react'
-import useToggler from "../hooks/useToggler"
 import Iframe from "react-iframe"
 import elasticsearch from "elasticsearch"
 
 function TokenBank() {
-    const [show] = useToggler()
     const [postCode, setPostCode] = useState("")
     const [production, setProduction] = useState(null)
     const [energyConsumption, setEnergyConsumption] = useState(null)
@@ -94,22 +92,20 @@ function TokenBank() {
     
     return (
         <div className="theBody">
-            <h3>Work for this UI for SMART and TAC is still in progress.</h3>
-            <Button onClick={() => alert("Work in progress!")}>Check</Button>
-            {
-                show &&
-                <div>
-                    <Iframe src="http://localhost:5601/app/kibana#/dashboard/b61ab4a0-0d8f-11eb-82c9-d9cbef764e2b?embed=true&_g=(refreshInterval%3A(pause%3A!t%2Cvalue%3A0)%2Ctime%3A(from%3Anow-15y%2Cto%3Anow))" height="665px" width="100%" frameBorder="0"></Iframe>
-                    <Input onChange={e => setPostCode(e.target.value)} action={<Button onClick={esAggs} type='submit'>Calculate ROI</Button>} placeholder='Enter your UniqueID' />
-                    {   
-                        (energyConsumption || heatingConsumption) &&
-                        <div>
-                            <h3>Your Return of investment is: {energyRoi}$</h3>
-                            <h3>Your Return of investment is: {heatRoi}$</h3>
-                        </div>
-                    }  
-                </div>
-            }
+            <div>
+                <h3>Token bank dashboard:</h3><br />
+                <Iframe src="http://localhost:5601/app/dashboards#/view/6fa33710-29bc-11eb-bb5f-cf98de25c706?embed=true&_g=(filters%3A!()%2CrefreshInterval%3A(pause%3A!t%2Cvalue%3A0)%2Ctime%3A(from%3Anow-15y%2Cto%3Anow))" height="2050px" width="100%" frameBorder="0"></Iframe>
+                <h3>External data dashboard: </h3><br/>
+                <Iframe src="http://localhost:5601/app/dashboards#/view/9b36c490-29d6-11eb-bb5f-cf98de25c706?embed=true&_g=(filters%3A!()%2CrefreshInterval%3A(pause%3A!t%2Cvalue%3A0)%2Ctime%3A(from%3A'2016-01-04T16%3A25%3A49.782Z'%2Cto%3A'2018-02-22T05%3A51%3A41.995Z'))" height="1150px" width="100%" frameBorder="0"></Iframe>
+                {(energyConsumption || heatingConsumption) && <Input onChange={e => setPostCode(e.target.value)} action={<Button onClick={esAggs} type='submit'>Calculate ROI</Button>} placeholder='Enter your UniqueID' />}
+                {   
+                    (energyConsumption || heatingConsumption) &&
+                    <div>
+                        <h3>Your Return of investment is: {energyRoi}$</h3>
+                        <h3>Your Return of investment is: {heatRoi}$</h3>
+                    </div>
+                }  
+            </div>
         </div>
     )
 }
