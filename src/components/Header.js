@@ -2,6 +2,7 @@ import React, { useContext } from "react"
 import {Link} from "react-router-dom"
 import { Context } from "../Context"
 import app from "../firebase"
+import firebase from "firebase/app";
 // import logo from "../articonf-logo.jpg"
 
 export default function Header() {
@@ -18,6 +19,9 @@ export default function Header() {
             {currentUser ? 
             <Link to="/login" className="a" onClick={() => {
                 app.auth().signOut()
+                firebase.database().ref('user/').update({
+                    isLogged: 0
+                  });
             }}>Sign Out</Link>
             :
             <Link to="/login" className="a">Sign In</Link>

@@ -3,6 +3,8 @@ import https from "https"
 import axios from "axios"
 import YAML from "js-yaml"
 import app from "./firebase"
+import firebase from "firebase/app";
+import "firebase/database";
 // import axiosBase from "./axios/axios-base"
 
 import useTimer from "./hooks/useTimer"
@@ -36,6 +38,20 @@ function ContextProvider({children}) {
   // }, [])
 
   useEffect(() => {
+    if (currentUser != null) {
+      firebase.database().ref('user/').update({
+        isLogged: 1
+      });
+    }
+    window.addEventListener("beforeunload", function(e) {
+      e.preventDefault();
+      firebase.database().ref('user/').update({
+        isLogged: 0
+      });
+    })
+  }, [currentUser])
+
+  useEffect(() => {
     app.auth().onAuthStateChanged(setCurrentUser)
     cancelSource.current = CancelToken.source()
     window.addEventListener("beforeunload", function (e) {
@@ -46,8 +62,6 @@ function ContextProvider({children}) {
       return null;
     })
   }, [])
-
-
   
   function ecBtnClick() {
   //   let myHeaders = new Headers()
@@ -381,7 +395,13 @@ function uploadToscaButton() {
     //   axios.get(proxyurl + url)
     //       .then(result => console.log(result))
     //       .catch(error => console.log(error))
-    alert('This is a dummy function used to test out things in development')
+    // alert('This is a dummy function used to test out things in development')
+    const userId = "123"
+    firebase.database().ref('users/' + userId).set({
+      username: "Mirsat",
+      email: "email"
+    });
+
   }
 
   function cancelRequest() {

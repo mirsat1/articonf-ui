@@ -1,13 +1,19 @@
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import { withRouter, Redirect } from "react-router";
 import app from "../firebase";
+import firebase from "firebase/app";
+import axiosBase from "../axios/axios-base"
 import { Context } from "../Context";
 import { Link } from "react-router-dom";
 import { Button, Form } from 'semantic-ui-react'
 import Loader from 'react-loader-spinner'
 
 const Login = ({ history }) => {
+  const [userLogged, setUserLogged] = useState(null)
   useEffect(() => {
+    axiosBase.get('/user.json')
+      .then(response => setUserLogged(response.data.isLogged))
+      .catch(err => console.log(err))
     return function cleanup() {
       setIsLogging(false)
     }
@@ -19,10 +25,14 @@ const Login = ({ history }) => {
       setIsLogging(true)
       const { email, password } = event.target.elements;
       try {
+        firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION)
         await app
           .auth()
           .signInWithEmailAndPassword(email.value, password.value);
         history.push("/beta/testing");
+        firebase.database().ref('user/').update({
+          isLogged: 1
+        });
       } catch (error) {
         alert(error);
         setIsLogging(false)
@@ -55,7 +65,7 @@ const Login = ({ history }) => {
           </label>
           </Form.Field>
           
-          <Button type="submit">Log in</Button>
+          <Button type="submit" disabled={userLogged}>Log in</Button>
         </Form>
       </div>
       {
@@ -72,6 +82,8 @@ const Login = ({ history }) => {
         </div>
       }
       <h3 style={{textAlign: "center"}}><Link to="/beta/testing/contact">You can contact us for beta testing account here by pressing this link</Link></h3>
+      <h3>Since we are still in early beta, only one user at a time can use the platform</h3>
+      <h3>Users logged at this time: {userLogged}</h3>
     </div>
   );
 };

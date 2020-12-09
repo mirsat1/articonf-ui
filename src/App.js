@@ -31,6 +31,7 @@ function App() {
   return (
     <div>
       <Header />
+      <PrivateRoute exact path="/articonf-ui" component={Home} />
       <PrivateRoute exact path="/beta/testing" component={Home} />
       <PrivateRoute exact path="/beta/testing/dashboard" component={Dashboard} />
       <PrivateRoute exact path="/beta/testing/deploy" component={Deploy} />
