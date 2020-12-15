@@ -1,6 +1,7 @@
 import React, {useState, useEffect, useRef} from "react"
 import https from "https"
 import axios from "axios"
+import smart from "./axios/axios-smart"
 import YAML from "js-yaml"
 import app from "./firebase"
 import firebase from "firebase/app";
@@ -27,29 +28,30 @@ function ContextProvider({children}) {
   const [deployment, setDeployment] = useState()
   const [deleted, setDeleted] = useState()
   const [name, setName] = useState()
+  const [amountLayer, setAmountLayer] = useState()
   
   const [timeRemaining, setIsTimeRemaining, isTimeRemaining] = useTimer()
   const id = '5f9a8fe32ad768635e45a4bf'
 
   const cancelSource = useRef(null)
   
-  // useEffect(() => {
-  //   app.auth().onAuthStateChanged(setCurrentUser)
-  // }, [])
+  const user = app.auth().currentUser;
+  const userUID = user && user.uid;
+  const userEmail = user && user.email;
+  console.log("UID: ", userUID)
+  console.log("Email: ", userEmail)
 
+  const usersRef = firebase.database().ref("users/" + userUID + "/");
+  console.log("usersRef", usersRef)
+  userUID && usersRef.onDisconnect().remove()
+  
   useEffect(() => {
-    if (currentUser != null) {
-      firebase.database().ref('user/').update({
-        isLogged: 1
-      });
+    if (currentUser !== null) {
+      firebase.database().ref('users/' + userUID).set({
+        email: userEmail
+      })
     }
-    window.addEventListener("beforeunload", function(e) {
-      e.preventDefault();
-      firebase.database().ref('user/').update({
-        isLogged: 0
-      });
-    })
-  }, [currentUser])
+  }, [currentUser, userUID, userEmail])
 
   useEffect(() => {
     app.auth().onAuthStateChanged(setCurrentUser)
@@ -387,6 +389,27 @@ function uploadToscaButton() {
     });
   }
 
+  function getAmountLayer(){
+    setIsLoading(true)
+    cancelSource.current = CancelToken.source()
+    const requestOptions = {
+      method: 'GET',
+      redirect: 'follow',
+      cancelToken: cancelSource.current.token
+    }
+    smart.get('Amount_Layer/clusters', requestOptions)
+      .then(reslut => {
+        setIsLoading(false)
+        setAmountLayer(reslut.data)
+        console.log(reslut.data)
+      })
+      .catch(err => {
+        setIsLoading(false)
+        console.log(err)
+      })
+  }
+  console.log(amountLayer)
+
   function callDummyButton() {
     // setDeploymentLoading(true)
     // setIsTimeRemaining(false)
@@ -459,6 +482,7 @@ function uploadToscaButton() {
   return (
     <Context.Provider value={{
       currentUser,
+      usersRef,
       topologyTemplate,
       plannedToscaTemplate,
       plannedTopologyTemplate,
@@ -492,7 +516,9 @@ function uploadToscaButton() {
       deleted,
       initialiseIds,
       setUserName,
-      name
+      name,
+      amountLayer,
+      getAmountLayer
     }}>
       {children}
     </Context.Provider>

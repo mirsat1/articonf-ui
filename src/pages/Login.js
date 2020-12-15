@@ -2,21 +2,31 @@ import React, { useCallback, useContext, useEffect, useState } from "react";
 import { withRouter, Redirect } from "react-router";
 import app from "../firebase";
 import firebase from "firebase/app";
-import axiosBase from "../axios/axios-base"
+// import axiosBase from "../axios/axios-base"
 import { Context } from "../Context";
 import { Link } from "react-router-dom";
 import { Button, Form } from 'semantic-ui-react'
 import Loader from 'react-loader-spinner'
 
 const Login = ({ history }) => {
-  const [userLogged, setUserLogged] = useState(null)
+  // const [userLogged, setUserLogged] = useState(null)
+  // useEffect(() => {
+  //   axiosBase.get('/user.json')
+  //     .then(response => setUserLogged(response.data.isLogged))
+  //     .catch(err => console.log(err))
+  //   return function cleanup() {
+  //     setIsLogging(false)
+  //   }
+  // }, [])
+  const [userCount, setUserCount] = useState(null)
+  
   useEffect(() => {
-    axiosBase.get('/user.json')
-      .then(response => setUserLogged(response.data.isLogged))
-      .catch(err => console.log(err))
-    return function cleanup() {
-      setIsLogging(false)
-    }
+    const usersRef = firebase.database().ref('users/')
+    usersRef.once("value")
+    .then(snapshot => {
+      let a = snapshot.numChildren()
+      setUserCount(a)
+    })
   }, [])
   const [isLogging, setIsLogging] = useState(false)
   const handleLogin = useCallback(
@@ -30,9 +40,6 @@ const Login = ({ history }) => {
           .auth()
           .signInWithEmailAndPassword(email.value, password.value);
         history.push("/beta/testing");
-        firebase.database().ref('user/').update({
-          isLogged: 1
-        });
       } catch (error) {
         alert(error);
         setIsLogging(false)
@@ -65,7 +72,7 @@ const Login = ({ history }) => {
           </label>
           </Form.Field>
           
-          <Button type="submit" disabled={userLogged}>Log in</Button>
+          <Button type="submit" disabled={userCount >= 9}>Log in</Button>
         </Form>
       </div>
       {
@@ -81,9 +88,9 @@ const Login = ({ history }) => {
           </h3>  
         </div>
       }
-      <h3 style={{textAlign: "center"}}><Link to="/beta/testing/contact">You can contact us for beta testing account here by pressing this link</Link></h3>
-      <h3>Since we are still in early beta, only one user at a time can use the platform</h3>
-      <h3>Users logged at this time: {userLogged}</h3>
+      <h3 style={{textAlign: "center"}}><Link to="/beta/testing/contact">Please sign up here!</Link></h3>
+      <h3>Since we are still in early beta, only 8 user at the same time can use the platform</h3>
+      <h3>Users logged at this time: {userCount - 1}</h3>
     </div>
   );
 };

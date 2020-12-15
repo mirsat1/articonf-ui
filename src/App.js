@@ -10,7 +10,7 @@ import ContactUs from "./pages/ContactUs"
 import Home from "./pages/Home"
 import PrivateRoute from "./PrivateRoute"
 import Login from "./pages/Login"
-// import SingUp from "./pages/SingUp"
+import SingUp from "./pages/SingUp"
 import TokenBank from "./pages/TokenBank"
 import Heap from "reactjs-heap"
 
@@ -31,7 +31,7 @@ function App() {
   return (
     <div>
       <Header />
-      <PrivateRoute exact path="/articonf-ui" component={Home} />
+      <PrivateRoute exact path="/" component={Home} />
       <PrivateRoute exact path="/beta/testing" component={Home} />
       <PrivateRoute exact path="/beta/testing/dashboard" component={Dashboard} />
       <PrivateRoute exact path="/beta/testing/deploy" component={Deploy} />
@@ -40,7 +40,7 @@ function App() {
       <PrivateRoute exact path="/beta/testing/bank" component={TokenBank} />
       <Route exact path="/beta/testing/contact" component={ContactUs} />
       <Route exact path="/login" component={Login} />
-      {/* <Route exact path="/singup" component={SingUp} /> */}
+      <Route exact path="/singup" component={SingUp} />
       <Footer />
     </div>
   )

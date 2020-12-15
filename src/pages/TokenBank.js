@@ -1,9 +1,15 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { Button, Input } from 'semantic-ui-react'
+import {Context} from "../Context"
 import Iframe from "react-iframe"
 import elasticsearch from "elasticsearch"
+// import Popup from 'reactjs-popup';
+import JSONPretty from 'react-json-prettify'
+import 'reactjs-popup/dist/index.css';
 
 function TokenBank() {
+    const {amountLayer} = useContext(Context)
+    
     const [postCode, setPostCode] = useState("")
     const [production, setProduction] = useState(null)
     const [energyConsumption, setEnergyConsumption] = useState(null)
@@ -94,9 +100,43 @@ function TokenBank() {
         <div className="theBody">
             <div>
                 <h3>Token bank dashboard:</h3><br />
-                <Iframe src="http://localhost:5601/app/dashboards#/view/6fa33710-29bc-11eb-bb5f-cf98de25c706?embed=true&_g=(filters%3A!()%2CrefreshInterval%3A(pause%3A!t%2Cvalue%3A0)%2Ctime%3A(from%3Anow-15y%2Cto%3Anow))" height="2050px" width="100%" frameBorder="0"></Iframe>
+                <Iframe src="http://15.237.93.29:8081/app/kibana#/dashboard/2a8485d0-3bf0-11eb-b59a-fbbddab9db15?embed=true&_g=(refreshInterval%3A(pause%3A!t%2Cvalue%3A0)%2Ctime%3A(from%3A'2019-12-31T04%3A16%3A47.619Z'%2Cto%3A'2020-10-25T09%3A32%3A04.809Z'))" height="2100px" width="100%" frameBorder="0"></Iframe>
                 <h3>External data dashboard: </h3><br/>
-                <Iframe src="http://localhost:5601/app/dashboards#/view/9b36c490-29d6-11eb-bb5f-cf98de25c706?embed=true&_g=(filters%3A!()%2CrefreshInterval%3A(pause%3A!t%2Cvalue%3A0)%2Ctime%3A(from%3A'2016-01-04T16%3A25%3A49.782Z'%2Cto%3A'2018-02-22T05%3A51%3A41.995Z'))" height="1150px" width="100%" frameBorder="0"></Iframe>
+                {/* <Popup
+                    trigger={<button className="button"> Get SMART Clustered Data </button>}
+                    modal
+                    nested
+                >
+                    {close => (
+                    <div className="modal">
+                        <button className="close" onClick={close}>
+                        &times;
+                        </button>
+                        <div className="header"> Chose Layer </div>
+                        <div className="content">
+                        {' '}
+                        Amount layer is for something something 123 123 321 312
+                        <br />
+                        Transaction layer is for something that thing and 321 123
+                        </div>
+                        <div className="actions">
+                        
+                            <button className="button" onClick={getAmountLayer} disabled={true}> Trigger </button>
+                        
+                        <button
+                            className="button"
+                            onClick={() => {
+                            console.log('modal closed ');
+                            close();
+                            }}
+                        >
+                            close modal
+                        </button>
+                        </div>
+                    </div>
+                    )}
+                </Popup> */}
+                <h5 style={{display: amountLayer ? "block" : "none"}}>Amount layer clusters: <JSONPretty json={amountLayer}/></h5>
                 {(energyConsumption || heatingConsumption) && <Input onChange={e => setPostCode(e.target.value)} action={<Button onClick={esAggs} type='submit'>Calculate ROI</Button>} placeholder='Enter your UniqueID' />}
                 {   
                     (energyConsumption || heatingConsumption) &&
