@@ -101,7 +101,6 @@ function TokenBank() {
             <div>
                 <h3>Token bank dashboard:</h3><br />
                 <Iframe src="http://15.237.93.29:8081/app/kibana#/dashboard/2a8485d0-3bf0-11eb-b59a-fbbddab9db15?embed=true&_g=(refreshInterval%3A(pause%3A!t%2Cvalue%3A0)%2Ctime%3A(from%3A'2019-12-31T04%3A16%3A47.619Z'%2Cto%3A'2020-10-25T09%3A32%3A04.809Z'))" height="2100px" width="100%" frameBorder="0"></Iframe>
-                <h3>External data dashboard: </h3><br/>
                 {/* <Popup
                     trigger={<button className="button"> Get SMART Clustered Data </button>}
                     modal

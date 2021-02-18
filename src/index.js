@@ -10,7 +10,11 @@ import 'semantic-ui-css/semantic.min.css'
 
 // const proxyurl = "https://damp-coast-51800.herokuapp.com/"
 // const url = "http://fry.lab.uvalight.net:30000/manager/"
-axios.defaults.baseURL = ("http://fry.lab.uvalight.net:30000/manager/")
+// *****************************************************************************
+//                          new CONF endpoint                                  *
+// *****************************************************************************
+// axios.defaults.baseURL = ("https://conf.lab.uvalight.net:30001/orchestrator/")
+axios.defaults.baseURL = ("http://conf.lab.uvalight.net:30000/orchestrator/")
 // const agent = new https.Agent({
 //   rejectUnauthorized: false,
 // })

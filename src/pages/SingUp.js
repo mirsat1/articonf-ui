@@ -41,7 +41,7 @@ const SignUp = ({ history }) => {
   return (
     <div className="theBody" style={{textAlign: "center"}}>
       <div className="login-form">
-        <h1 style={{textAlign: "center"}}>Log in</h1>
+        <h1 style={{textAlign: "center"}}>Register account</h1>
         <Form onSubmit={handleSignUp}>
           <Form.Field>
             <label>
@@ -72,7 +72,7 @@ const SignUp = ({ history }) => {
           </h3>  
         </div>
       }
-      <h3 style={{textAlign: "center"}}><Link to="/beta/login">Go to login page</Link></h3>
+      <h3 style={{textAlign: "center"}}><Link to="/login">Go to login page</Link></h3>
     </div>
   );
 };

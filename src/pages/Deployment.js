@@ -82,10 +82,10 @@ function Deployment() {
 
     return (
         <div className="theBody">
-            <div><strong>Instructions how to use (deploy) the platform:</strong><br />
+            <div><strong>Instructions how to deploy the platform and the application:</strong><br />
                 <h3>Tutorial video for deployment: <a href="https://youtu.be/2J_b4oVjWgs" target="_blank" rel="noopener noreferrer">Introduction to ARTICONF and deploying the platform (using the CONF tool)</a></h3>
                 <h3>Plan the Infrastructure</h3>
-                <p>To deploy our platform first press the "Plan" button so CONF will generate an optimal virtual inftaracure on the Cloud.  After the planning phase 
+                <p>To deploy our platform first press the "Plan" button so CONF will generate an optimal virtual infrastructure on the Cloud.  After the planning phase 
                     is finished you will get back an ID of the planned virtual infrastructure.</p> 
                 <h3>Provision the Infrastructure</h3>
                 <p>To provision the virtual infrastructure you will need to press the "Provision" button. By clicking the "Provision" button CONF will create the virtual 
@@ -96,7 +96,7 @@ function Deployment() {
                 <h3>Cancel all requests</h3>
                 <p><strong>If by any chance you need to leave or refresh this UI and the process is already in progress, please press this button to clear the virtual infrastructure.</strong>
                 </p>
-                <h3>Intercat with the Deployment</h3>
+                <h3>Interact with the Deployment</h3>
                 <p>After you have finished with deployment and you've got an ID, which you can use to <Link to="/beta/testing/deployed">find your deployment.</Link></p>
                 <p>After the deployment is over you will see 4 icons: </p><br />
                 <ul>
@@ -110,7 +110,7 @@ function Deployment() {
                     to our platform you can navigate directly <Link to="/beta/testing/deployed">here.</Link> and just enter them to continue with your work.</strong></p>       
             </div>
             <div style={{textAlign: "center", paddingBottom: "20px"}}>
-            <Button onClick={planToscaBtn} disabled={plannerDisabler}>Plan</Button>
+            <Button onClick={planToscaBtn} disabled={plannerDisabler} data-testid="planBtnDplPg">Plan</Button>
             {plannedToscaTemplate ? <Icon name="arrow alternate circle right" size="big"></Icon> : <Icon name="arrow alternate circle right outline" size="big"/>}
             <Button onClick={provisionToscaBtn} disabled={disabler}>Provision</Button> 
             {provisionToscaTemplate ? <Icon name="arrow alternate circle right" size="big"></Icon> : <Icon name="arrow alternate circle right outline" size="big"/>}

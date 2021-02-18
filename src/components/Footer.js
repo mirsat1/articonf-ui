@@ -4,8 +4,8 @@ import flag from "../eu-flag.jpg"
 
 function Footer() {
     return (
-        <footer className="footer">
-            <img className="footerImg" src={flag} alt="Flag"/>
+        <footer className="footer" title="footer">
+            <img title="euFlag" className="footerImg" src={flag} alt="Flag"/>
             <p className="footerP"><strong>This project has received funding from the European Union’s Horizon 2020 research 
             and innovation programme under grant agreement No 825134, the ARTICONF Project.</strong></p>
             <div>

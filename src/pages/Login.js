@@ -19,6 +19,7 @@ const Login = ({ history }) => {
   //   }
   // }, [])
   const [userCount, setUserCount] = useState(null)
+  const [hasError, setHasError] = useState("")
   
   useEffect(() => {
     const usersRef = firebase.database().ref('users/')
@@ -35,13 +36,13 @@ const Login = ({ history }) => {
       setIsLogging(true)
       const { email, password } = event.target.elements;
       try {
-        firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION)
+        // firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION)
         await app
           .auth()
           .signInWithEmailAndPassword(email.value, password.value);
         history.push("/beta/testing");
       } catch (error) {
-        alert(error);
+        setHasError(error.message)
         setIsLogging(false)
       }
     },
@@ -57,8 +58,8 @@ const Login = ({ history }) => {
   return (
     <div className="theBody" style={{textAlign: "center"}}>
       <div className="login-form">
-        <h1 style={{textAlign: "center"}}>Log in</h1>
-        <Form onSubmit={handleLogin}>
+        <h1 style={{textAlign: "center"}} title="loginPageTitle">Log in page</h1>
+        <Form onSubmit={handleLogin} title="loginForm">
           <Form.Field>
             <label>
               Email
@@ -72,7 +73,7 @@ const Login = ({ history }) => {
           </label>
           </Form.Field>
           
-          <Button type="submit" disabled={userCount >= 9}>Log in</Button>
+          <Button type="submit" disabled={userCount >= 9} title="loginButton">Log in</Button>
         </Form>
       </div>
       {
@@ -88,7 +89,16 @@ const Login = ({ history }) => {
           </h3>  
         </div>
       }
-      <h3 style={{textAlign: "center"}}><Link to="/beta/testing/contact">Please sign up here!</Link></h3>
+      {
+        hasError
+        &&
+        <div>
+          <h3 data-testid="errorMsg">
+            {hasError}
+          </h3>
+        </div>
+      }
+      <h3 style={{textAlign: "center"}}><Link to="/singup">Please sign up here!</Link></h3>
       <h3>Since we are still in early beta, only 8 user at the same time can use the platform</h3>
       <h3>Users logged at this time: {userCount - 1}</h3>
     </div>

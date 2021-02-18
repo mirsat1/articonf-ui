@@ -5,18 +5,18 @@ import { Button, Header } from "semantic-ui-react"
 function Deploy() {
     return (
         <div className="theBody">
-            <h1>Please consider the following: </h1><br />
-            <p>
-                Please consider that this GUI is still in early development and there will be flaws, bugs and erros.
-                So please, if you encounter any bug report it trough the "Contac Us" button above in the navigation bar.
-                Also the ARTICONF platfrom is in early development, so there will be limitations.<br />
+            <h1 title="deployPage">Please consider the following: </h1><br />
+            <p data-testid="paragraphInDeploy">
+                Please consider that this GUI is still in early development and there might be some flaws, bugs and erros.
+                So please, if you encounter any bug report it trough the "Contact Us" button above in the navigation bar.
+                Also the ARTICONF toolset is in early development, so currently, the environment has some limitations.<br />
                 If you want to deploy our software, the only thing you need to do for now is to press the "Deploy" button which
                 is presented bellow.<br />
             </p>
-            <Header as="h3">While using this demo, <em>please DO NOT leave or refresh this UI </em> 
-            because you will lose all progress that you made so far. Thank you in advance</Header>
+            <Header as="h3" data-testid="warningMsg">While using this demo, <em>please DO NOT leave or refresh this UI </em> 
+            otherwise you will lose the progress you made so far. Thank you in advance</Header>
             <Link to="/beta/testing/deploy/deployment">
-                <Button>Deploy</Button>
+                <Button data-testid="deployBtnDeployPg">Deploy</Button>
             </Link>
         </div>
         

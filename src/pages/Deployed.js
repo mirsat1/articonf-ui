@@ -45,7 +45,7 @@ function Deployed() {
     const portainerLink = deployment && "http://" + ip_addr.substring(1, ip_addr.length-1) + ":9000"
     const blockChainLink = deployment && "http://" + ip_addr.substring(1, ip_addr.length-1) + ":9090"
     const tokenBank = deployment && "http://" + ip_addr.substring(1, ip_addr.length-1) + ":3000"
-    console.log(ip_addr)
+    
     function eraser() {
         setYesDisabler(true)
         initialiseIds()

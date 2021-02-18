@@ -31,18 +31,15 @@ function ContextProvider({children}) {
   const [amountLayer, setAmountLayer] = useState()
   
   const [timeRemaining, setIsTimeRemaining, isTimeRemaining] = useTimer()
-  const id = '5f9a8fe32ad768635e45a4bf'
+  const id = '60212a66b686da5a629a3a81'
 
   const cancelSource = useRef(null)
   
   const user = app.auth().currentUser;
   const userUID = user && user.uid;
   const userEmail = user && user.email;
-  console.log("UID: ", userUID)
-  console.log("Email: ", userEmail)
 
   const usersRef = firebase.database().ref("users/" + userUID + "/");
-  console.log("usersRef", usersRef)
   userUID && usersRef.onDisconnect().remove()
   
   useEffect(() => {
@@ -408,7 +405,7 @@ function uploadToscaButton() {
         console.log(err)
       })
   }
-  console.log(amountLayer)
+  // console.log(amountLayer)
 
   function callDummyButton() {
     // setDeploymentLoading(true)
@@ -419,11 +416,11 @@ function uploadToscaButton() {
     //       .then(result => console.log(result))
     //       .catch(error => console.log(error))
     // alert('This is a dummy function used to test out things in development')
-    const userId = "123"
-    firebase.database().ref('users/' + userId).set({
-      username: "Mirsat",
-      email: "email"
-    });
+    // const userId = "123"
+    // firebase.database().ref('users/' + userId).set({
+    //   username: "Mirsat",
+    //   email: "email"
+    // });
 
   }
 
