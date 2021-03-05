@@ -10,6 +10,7 @@ import ContactUs from "./pages/ContactUs"
 import Home from "./pages/Home"
 import PrivateRoute from "./PrivateRoute"
 import Login from "./pages/Login"
+import UserProfile from "./pages/UserProfile"
 import SingUp from "./pages/SingUp"
 import TokenBank from "./pages/TokenBank"
 import Heap from "reactjs-heap"
@@ -38,6 +39,7 @@ function App() {
       <PrivateRoute exact path="/beta/testing/deploy/deployment" component={Deployment} />
       <PrivateRoute exact path="/beta/testing/deployed" component={Deployed} />
       <PrivateRoute exact path="/beta/testing/bank" component={TokenBank} />
+      <PrivateRoute exact path="/beta/testing/userprofile" component={UserProfile} />
       <Route exact path="/beta/testing/contact" component={ContactUs} />
       <Route exact path="/login" component={Login} />
       <Route exact path="/singup" component={SingUp} />

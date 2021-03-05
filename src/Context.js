@@ -18,10 +18,10 @@ function ContextProvider({children}) {
   const [isLoading, setIsLoading] = useState(false)
   const [topologyTemplate, setTopologyTemplate] = useState()
   const [plannedTopologyTemplate, setPlannedTopologyTemplate] = useState()
-  const [plannedToscaTemplate, setPlannedToscaTemplate] = useState()
-  const [provisionToscaTemplate, setProvisionToscaTemplate] = useState()
+  const [plannedToscaTemplate, setPlannedToscaTemplate] = useState(null)
+  const [provisionToscaTemplate, setProvisionToscaTemplate] = useState(null)
   const [provisionedToscaTemplate, setProvisionedToscaTemplate] = useState()
-  const [deployedToscaId, setDeployedToscaId] = useState()
+  const [deployedToscaId, setDeployedToscaId] = useState(null)
   const [message, setMessage] = useState("")
   const [deploymentLoading, setDeploymentLoading] = useState(false)
   const [isDeleted, setIsDeleted] = useState()
@@ -37,18 +37,52 @@ function ContextProvider({children}) {
   
   const user = app.auth().currentUser;
   const userUID = user && user.uid;
-  const userEmail = user && user.email;
+  const userEmail = user && user.email
 
   const usersRef = firebase.database().ref("users/" + userUID + "/");
+  const usersProfileRef = firebase.database().ref("user_profile/" + userUID + "/");
   userUID && usersRef.onDisconnect().remove()
   
   useEffect(() => {
-    if (currentUser !== null) {
+    if (currentUser) {
+      axios.get(`https://articonf2.firebaseio.com/user_profile/${userUID}.json`)
+        .then(res => {
+          if(res.data.planID) setPlannedToscaTemplate(res.data.planID);
+          if(res.data.provisionID) setProvisionToscaTemplate(res.data.provisionID);
+          if(res.data.deploymentID) setDeployedToscaId(res.data.deploymentID);
+          console.log(res.data)
+        })
+        .catch(err => console.log(err))
+      
       firebase.database().ref('users/' + userUID).set({
         email: userEmail
       })
+      firebase.database().ref('user_profile/' + userUID).update({
+        toscaID: id
+      })
+      if (plannedToscaTemplate){
+        firebase.database().ref('user_profile/' + userUID).update({
+          planID: plannedToscaTemplate
+        })
+      }
+      if (provisionToscaTemplate){
+        firebase.database().ref('user_profile/' + userUID).update({
+          provisionID: provisionToscaTemplate
+        })
+      }
+      if (deployedToscaId){
+        firebase.database().ref('user_profile/' + userUID).update({
+          deploymentID: deployedToscaId
+        })
+      }
     }
-  }, [currentUser, userUID, userEmail])
+    // if (!currentUser) {
+    //   setPlannedToscaTemplate(null);
+    //   setProvisionToscaTemplate(null);
+    //   setDeployedToscaId(null);
+    // }
+  }, [currentUser, userUID, userEmail, id, plannedToscaTemplate, provisionToscaTemplate, deployedToscaId])
+
 
   useEffect(() => {
     app.auth().onAuthStateChanged(setCurrentUser)
@@ -448,10 +482,19 @@ function uploadToscaButton() {
 
   function initialiseIds() {
     alert("This will erase all your ID's that you have obtained or entered!")
-    setPlannedToscaTemplate(undefined)
-    setProvisionToscaTemplate(undefined)
-    setDeployedToscaId(undefined)
-    setIsDeleted(undefined)
+    setPlannedToscaTemplate(null)
+    setProvisionToscaTemplate(null)
+    setDeployedToscaId(null)
+    setIsDeleted(null)
+    userUID && usersProfileRef.remove()
+  }
+
+  function initialiseIdsOnSignOut() {
+    setPlannedToscaTemplate(null)
+    setProvisionToscaTemplate(null)
+    setDeployedToscaId(null)
+    setIsDeleted(null)
+    console.log("User signed out and the ui initialised all ID states", plannedToscaTemplate)
   }
 
   function setUserName(username) {
@@ -512,10 +555,13 @@ function uploadToscaButton() {
       findDeleted,
       deleted,
       initialiseIds,
+      initialiseIdsOnSignOut,
       setUserName,
       name,
       amountLayer,
-      getAmountLayer
+      getAmountLayer,
+      userEmail,
+      userUID
     }}>
       {children}
     </Context.Provider>

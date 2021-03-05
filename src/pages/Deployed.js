@@ -58,9 +58,9 @@ function Deployed() {
     }
 
     return (
-        <div className='theBody'>
+        <div className='theBody' data-testid="findDeployPage">
             <h1 style={{textAlign: "center"}}>Find deployed topology template by ID</h1>
-            <div style={{display: instuctions ? "block" : "none"}}>
+            <div style={{display: instuctions ? "block" : "none"}} data-testid="instructionsInFindDpl">
                 <Button onClick={toggleInstructions}>Hide Instructions</Button><br />
                <a style={{fontSize: "1.2em"}} href="https://youtu.be/gdBDajWyUFY" target="_blank" rel="noopener noreferrer">Check out this video tutorial</a>
                <p><strong>Instructions: </strong>After you have deployed ARTICONF platform and got all the ID's or you had them 
@@ -148,7 +148,7 @@ function Deployed() {
                </p> 
             </div>
             <div className='deployed'>
-                <Button onClick={toggleInstructions}>{!instuctions ? "Show" : "Hide"} Instructions</Button>
+                <Button onClick={toggleInstructions} data-testid="instructionsBtn">{!instuctions ? "Show" : "Hide"} Instructions</Button>
                 <Button onClick={findDeployed} disabled={!deployedToscaId}>Find deployed topology</Button>
                 <Button onClick={toggleShow} disabled={!deployment}>{showDeployed ? "Hide" : "Show"} Deployment</Button>
                 <Button onClick={toggleDeleteDialog} disabled={!provisionToscaTemplate}>Delete provisioned topology</Button>
@@ -173,7 +173,7 @@ function Deployed() {
             {
                 deployment 
                 && 
-                <div>
+                <div data-testid="links">
                     <Header as="a" href={hyperLedgerLink} target="_blank" icon>
                         <Icon>
                         <img src={process.env.PUBLIC_URL + "/images/Hyperledger.png"} alt="HyperLedger" height="100" width="100"/>

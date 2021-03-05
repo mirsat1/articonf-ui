@@ -22,7 +22,7 @@ function Dashboard() {
   } = useContext(Context)
 
   return (
-    <div className="theBody">
+    <div className="theBody" data-testid="dashPage">
       <Dummy 
         callApi={ecBtnClick} 
         btnName={"Create EC2 credentials"} 
@@ -66,10 +66,10 @@ function Dashboard() {
       height={100}
       width={100}
     /></h1>
-  <h5 style={{display: topologyTemplate ? "block" : "none"}}>Topology template: <JSONPretty json={topologyTemplate}/></h5>
-  <h5 style={{display: plannedTopologyTemplate ? "block" : "none"}}>Planned topology template: <JSONPretty json={plannedTopologyTemplate}/></h5>
-  <h5 style={{display: provisionedToscaTemplate ? "block" : "none"}}>Provisioned topology template: <JSONPretty json={provisionedToscaTemplate}/></h5>
-  <h5 style={{display: deleted ? "block" : "none"}}>Provisioned topology template: <JSONPretty json={deleted}/></h5>
+  <h5 style={{display: topologyTemplate ? "block" : "none"}} data-testid="topoTemplateID">Topology template: <JSONPretty json={topologyTemplate}/></h5>
+  <h5 style={{display: plannedTopologyTemplate ? "block" : "none"}} data-testid="planTopoTemplateID">Planned topology template: <JSONPretty json={plannedTopologyTemplate}/></h5>
+  <h5 style={{display: provisionedToscaTemplate ? "block" : "none"}} data-testid="provTopoTemplateID">Provisioned topology template: <JSONPretty json={provisionedToscaTemplate}/></h5>
+  <h5 style={{display: deleted ? "block" : "none"}} data-testid="deletedProv">Provisioned topology template: <JSONPretty json={deleted}/></h5>
     </div>
   )
 }

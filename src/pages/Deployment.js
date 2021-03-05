@@ -37,7 +37,7 @@ function Deployment() {
         element.click();
     }
 
-    const bottomText = <div>
+    const bottomText = <div data-testid="innerText">
             {deploymentLoading && (isTimeRemaining ? 
                         <div>
                             <h3>
@@ -82,7 +82,7 @@ function Deployment() {
 
     return (
         <div className="theBody">
-            <div><strong>Instructions how to deploy the platform and the application:</strong><br />
+            <div data-testid="instructionsID"><strong>Instructions how to deploy the platform and the application:</strong><br />
                 <h3>Tutorial video for deployment: <a href="https://youtu.be/2J_b4oVjWgs" target="_blank" rel="noopener noreferrer">Introduction to ARTICONF and deploying the platform (using the CONF tool)</a></h3>
                 <h3>Plan the Infrastructure</h3>
                 <p>To deploy our platform first press the "Plan" button so CONF will generate an optimal virtual infrastructure on the Cloud.  After the planning phase 
@@ -112,12 +112,12 @@ function Deployment() {
             <div style={{textAlign: "center", paddingBottom: "20px"}}>
             <Button onClick={planToscaBtn} disabled={plannerDisabler} data-testid="planBtnDplPg">Plan</Button>
             {plannedToscaTemplate ? <Icon name="arrow alternate circle right" size="big"></Icon> : <Icon name="arrow alternate circle right outline" size="big"/>}
-            <Button onClick={provisionToscaBtn} disabled={disabler}>Provision</Button> 
+            <Button onClick={provisionToscaBtn} disabled={disabler} data-testid="provBtnDplPg">Provision</Button> 
             {provisionToscaTemplate ? <Icon name="arrow alternate circle right" size="big"></Icon> : <Icon name="arrow alternate circle right outline" size="big"/>}
-            <Button onClick={platformDeployer} disabled={deploymentDisabler}>Deploy</Button>
+            <Button onClick={platformDeployer} disabled={deploymentDisabler} data-testid="deployBtnDplPg">Deploy</Button>
             <Button icon labelPosition="left" color="red" onClick={cancelRequest}><Icon name="cancel"/>Cancel all requests</Button>
             </div>
-            <div style={{textAlign: "center"}}>
+            <div style={{textAlign: "center"}} data-testid="bottomText">
                 {
                 isLoading ? 
                 <div>
