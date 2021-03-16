@@ -13,6 +13,8 @@ import Login from "./pages/Login"
 import UserProfile from "./pages/UserProfile"
 import SingUp from "./pages/SingUp"
 import TokenBank from "./pages/TokenBank"
+import UserConfig from './components/UserConfig'
+import ToscaConfig from './components/ToscaConfig'
 import Heap from "reactjs-heap"
 
 function App() {
@@ -40,6 +42,8 @@ function App() {
       <PrivateRoute exact path="/beta/testing/deployed" component={Deployed} />
       <PrivateRoute exact path="/beta/testing/bank" component={TokenBank} />
       <PrivateRoute exact path="/beta/testing/userprofile" component={UserProfile} />
+      <PrivateRoute exact path="/beta/testing/userconfigtic" component={UserConfig} />
+      <PrivateRoute exact path="/beta/testing/userconfigtosca" component={ToscaConfig} />
       <Route exact path="/beta/testing/contact" component={ContactUs} />
       <Route exact path="/login" component={Login} />
       <Route exact path="/singup" component={SingUp} />

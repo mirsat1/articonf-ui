@@ -29,6 +29,200 @@ function ContextProvider({children}) {
   const [deleted, setDeleted] = useState()
   const [name, setName] = useState()
   const [amountLayer, setAmountLayer] = useState()
+  const defaultTicConfig = {
+    "LOG_LEVEL": "INFO",
+    "INSTALL_BANK_CHAINCODE": "y",
+    "gluster_cluster_volume": "gfs0",
+    "glusterd_version": "7",
+    "org": {
+        "name": "hlf",
+        "unit": "bityoga"
+    },
+    "admin_user": "admin1",
+    "admin_password": "admin1pw",
+    "tlsca_user": "tlsca",
+    "tlsca_password": "tlscapw",
+    "orgca_user": "orgca",
+    "orgca_password": "orgcapw",
+    "orderer_user": "orderer",
+    "orderer_password": "ordererpw",
+    "peer1_user": "peer1",
+    "peer1_password": "peer1pw",
+    "peer2_user": "peer2",
+    "peer2_password": "peer2pw",
+    "couchdb_user": "couchdb",
+    "couchdb_password": "couchdbpw",
+    "hlf_explorer_db_user": "hppoc",
+    "hlf_explorer_db_password": "password",
+    "hlf_explorer_admin_user": "admin",
+    "hlf_explorer_admin_password": "adminpw",
+    "swarm_network": "hlfnet",
+    "tlsca": {
+        "switch": "on",
+        "image": "hyperledger/fabric-ca",
+        "tag": "1.4",
+        "replicas": -1,
+        "port": 8081,
+        "path": "/root/{{tlsca_user}}",
+        "db": "{{sqlite}}",
+        "name": "{{tlsca_user}}",
+        "password": "{{tlsca_password}}",
+        "type": "tls"
+    },
+    "orgca": {
+        "switch": "on",
+        "image": "hyperledger/fabric-ca",
+        "tag": "1.4",
+        "replicas": -1,
+        "port": 8052,
+        "path": "/root/{{orgca_user}}",
+        "db": "{{sqlite}}",
+        "name": "{{orgca_user}}",
+        "password": "{{orgca_password}}",
+        "type": "org"
+    },
+    "orderer": {
+        "switch": "on",
+        "image": "hyperledger/fabric-orderer",
+        "tag": "2.2",
+        "replicas": -1,
+        "port": 8053,
+        "caname": "{{orgca.name}}",
+        "anchorpeer": "{{peer1.name}}",
+        "anchorport": "{{peer1.port}}",
+        "path": "/root/{{orderer_user}}",
+        "name": "{{orderer_user}}",
+        "password": "{{orderer_password}}",
+        "type": "orderer"
+    },
+    "peer1": {
+        "switch": "on",
+        "image": "hyperledger/fabric-peer",
+        "tag": "2.2",
+        "replicas": -1,
+        "port": 8054,
+        "caname": "{{orgca.name}}",
+        "path": "/root/{{peer1_user}}",
+        "bootstrap": "",
+        "dbtype": "goleveldb",
+        "name": "{{peer1_user}}",
+        "password": "{{peer1_password}}",
+        "type": "peer",
+        "leader": "{peer1_user}}"
+    },
+    "peer2": {
+        "switch": "on",
+        "image": "hyperledger/fabric-peer",
+        "tag": "2.2",
+        "replicas": -1,
+        "port": 8055,
+        "caname": "{{orgca.name}}",
+        "path": "/root/{{peer2_user}}",
+        "bootstrap": "{{peer1.name}}:7051",
+        "dbtype": "CouchDB",
+        "name": "{{peer2_user}}",
+        "password": "{{peer2_password}}",
+        "type": "peer",
+        "leader": "{{peer1_user}}"
+    },
+    "cli": {
+        "switch": "on",
+        "image": "hyperledger/fabric-tools",
+        "tag": "2.2"
+    },
+    "sqlite": {
+        "type": "sqlite3",
+        "source": "fabric-ca-server.db"
+    },
+    "couchdb": {
+        "switch": "on",
+        "image": "couchdb",
+        "tag": "2.3",
+        "replicas": -1,
+        "path": "/opt/couchdb/data",
+        "name": "{{couchdb_user}}",
+        "password": "{{couchdb_password}}"
+    },
+    "hlf_explorer_db": {
+        "image": "hyperledger/explorer-db",
+        "tag": "1.1.2",
+        "name": "hlf_explorer_db",
+        "replicas": -1,
+        "db_name": "fabricexplorer",
+        "db_user_name": "{{hlf_explorer_db_user}}",
+        "db_password": "{{hlf_explorer_db_password}}",
+        "port": 5432,
+        "switch": "on",
+        "volume": "pgdata"
+    },
+    "hlf_explorer": {
+        "image": "hyperledger/explorer",
+        "tag": "1.1.2",
+        "name": "hlf_explorer",
+        "admin_user": "{{hlf_explorer_admin_user}}",
+        "admin_password": "{{hlf_explorer_admin_password}}",
+        "replicas": -1,
+        "port": 8090,
+        "switch": "on",
+        "volume": "walletstore"
+    },
+    "swarm_visualizer": {
+        "image": "dockersamples/visualizer",
+        "tag": "latest",
+        "name": "swarm_visualizer",
+        "replicas": -1,
+        "port": 9090,
+        "switch": "on"
+    },
+    "portainer": {
+        "image": "portainer/portainer",
+        "tag": "latest",
+        "name": "portainer",
+        "replicas": -1,
+        "port": 9000,
+        "switch": "on"
+    },
+    "portainer_agent": {
+        "image": "portainer/agent",
+        "tag": "latest",
+        "name": "portainer_agent",
+        "port": 9001,
+        "switch": "on"
+    },
+    "bank_app": {
+        "git_repository": "https://github.com/bityoga/articonf-bank-app.git",
+        "image": "bank-app",
+        "tag": "latest",
+        "name": "bank-service",
+        "replicas": -1,
+        "port": 3000,
+        "switch": "on"
+    },
+    "services": [
+        "{{caservices}}",
+        "{{orderer}}",
+        "{{peerservices}}",
+        "{{explorerservices}}",
+        "{{vizservices}}"
+    ],
+    "caservices": [
+        "{{tlsca}}",
+        "{{orgca}}"
+    ],
+    "peerservices": [
+        "{{peer1}}",
+        "{{peer2}}"
+    ],
+    "explorerservices": [
+        "{{hlf_explorer_db}}",
+        "{{hlf_explorer}}"
+    ],
+    "vizservices": [
+        "{{swarm_visualizer}}",
+        "{{portainer}}",
+        "{{portainer_agent}}"
+    ]
+}
   
   const [timeRemaining, setIsTimeRemaining, isTimeRemaining] = useTimer()
   const id = '60212a66b686da5a629a3a81'
@@ -561,7 +755,8 @@ function uploadToscaButton() {
       amountLayer,
       getAmountLayer,
       userEmail,
-      userUID
+      userUID,
+      defaultTicConfig
     }}>
       {children}
     </Context.Provider>

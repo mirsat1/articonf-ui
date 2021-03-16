@@ -2,7 +2,6 @@ import * as React from 'react'
 import { Link } from "react-router-dom"
 import { Button } from "semantic-ui-react"
 
-import UserConfig from "../components/UserConfig" 
 
 function Home() {
     return (
@@ -31,7 +30,6 @@ function Home() {
                 </li>
                 </ul>
                 <Link to="/beta/testing/deploy" style={{textAlign: "center"}}><Button title="homeDeployBtn">Deploy</Button></Link>
-                <UserConfig />
             </section>
             </div>
         </article>
