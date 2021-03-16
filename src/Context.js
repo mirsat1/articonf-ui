@@ -244,7 +244,7 @@ function ContextProvider({children}) {
           if(res.data.planID) setPlannedToscaTemplate(res.data.planID);
           if(res.data.provisionID) setProvisionToscaTemplate(res.data.provisionID);
           if(res.data.deploymentID) setDeployedToscaId(res.data.deploymentID);
-          console.log(res.data)
+          // console.log(res.data)
         })
         .catch(err => console.log(err))
       

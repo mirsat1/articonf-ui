@@ -126,7 +126,7 @@ export default function UserConfig() {
                                                                 <option value="SQLite">SQLite</option>
                                                             </select></Grid.Column></Grid>}</Form.Field>
                                 <Form.Field>{ticConfig && <Input label='CA Name' placeholder={defaultTicConfig.orgca_user} onChange={e => setTicConfig({...ticConfig, peer1: {...ticConfig.peer1, leader: e.target.value}})}/>}</Form.Field>
-                                <Form.Group inline>
+                                {ticConfig && <Form.Group inline>
                                     <Label size="large">Peer type</Label>
                                     <label>Anchor<input
                                         type='radio'
@@ -149,7 +149,7 @@ export default function UserConfig() {
                                         checked={ticConfig.peer1.type === 'committer'}
                                         onChange={(e) => setTicConfig({...ticConfig, peer1: {...ticConfig.peer1, type: e.target.value}})}
                                     /></label>
-                                    </Form.Group>
+                                    </Form.Group>}
                                 <br />
                         </Segment>
                         
@@ -173,7 +173,7 @@ export default function UserConfig() {
                                                                 <option value="SQLite">SQLite</option>
                                                             </select></Grid.Column></Grid>}</Form.Field>
                                 <Form.Field>{ticConfig && <Input label='CA Name' placeholder={defaultTicConfig.orgca_user} onChange={e => setTicConfig({...ticConfig, peer2: {...ticConfig.peer2, leader: e.target.value}})}/>}</Form.Field>
-                                <Form.Group inline>
+                                {ticConfig && <Form.Group inline>
                                     <Label size="large">Peer type</Label>
                                     <label>Anchor<input
                                         type='radio'
@@ -196,7 +196,7 @@ export default function UserConfig() {
                                         checked={ticConfig.peer2.type === 'committer'}
                                         onChange={(e) => setTicConfig({...ticConfig, peer2: {...ticConfig.peer2, type: e.target.value}})}
                                     /></label>
-                                    </Form.Group>
+                                    </Form.Group>}
                                 <br />
                         </Segment>
                     </Grid.Column>
