@@ -1,7 +1,13 @@
+.pageContainer {
+    position: relative;
+    min-height: 100vh;
+}
+
 .theBody {
     margin-left: 10%;
     margin-right: 10%;
     margin-top: 1%;
+    padding-bottom: 249px;
     align-content: center;
     text-align: justify;
 }

@@ -1,6 +1,7 @@
 @import 'https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css';
 
 .footer {
+    position: absolute;
     right: 0;
     bottom: 0;
     left: 0;

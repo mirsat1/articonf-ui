@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react'
 import { Context } from '../Context'
 import axios from 'axios'
-import YAML from 'js-yaml'
+// import YAML from 'js-yaml'
 import firebase from "firebase/app";
 import { Grid, Label, Segment, Input, Button, Form } from 'semantic-ui-react'
 import Loader from 'react-loader-spinner'
@@ -19,7 +19,7 @@ export default function UserConfig() {
         axios.get(`https://articonf2.firebaseio.com/user_profile/${userUID}/user_config.json`)
             .then(res => {
                 setIsLoading(false)
-                setTicConfig(YAML.load(res.data))
+                setTicConfig(res.data)
                 if(!res.data) setTicConfig(defaultTicConfig)
             })
             .catch(e => {
@@ -38,7 +38,7 @@ export default function UserConfig() {
     async function updateToDB() {
         setIsLoading(true)
         await firebase.database().ref('user_profile/' + userUID).update({
-            user_config: YAML.dump(ticConfig)
+            user_config: ticConfig
           })
         setIsLoading(false)
     }
@@ -47,7 +47,7 @@ export default function UserConfig() {
         setIsLoading(true)
         setTicConfig(defaultTicConfig)
         await firebase.database().ref('user_profile/' + userUID).update({
-            user_config: YAML.dump(ticConfig)
+            user_config: ticConfig
           })
         setIsLoading(false)
     }
@@ -55,7 +55,7 @@ export default function UserConfig() {
 
     return(
         <div className="theBody">
-            <h1>TIC Config</h1>
+            <h1>TIC Configuration</h1>
             <h2>{hasError && errorMessage}</h2>
             <Form onSubmit={updateToDB}>
                 <Grid columns={1}>
@@ -119,7 +119,7 @@ export default function UserConfig() {
                                 <Form.Field>{ticConfig && <Input label='User Name' placeholder={defaultTicConfig.peer1_user} onChange={e => setTicConfig({...ticConfig, peer1_user: e.target.value})}/>}</Form.Field>
                                 <Form.Field>{ticConfig && <Input label='Password' placeholder={defaultTicConfig.peer1_password} onChange={e => setTicConfig({...ticConfig, peer1_password: e.target.value})}/>}</Form.Field>
                                 <Form.Field>{ticConfig && <Input label='Port' type="number" placeholder={defaultTicConfig.peer1.port} onChange={e => setTicConfig({...ticConfig, peer1: {...ticConfig.peer1, port: e.target.value}})}/>}</Form.Field>
-                                <Form.Field>{ticConfig && <Input label='Leader' placeholder={defaultTicConfig.peer1.leader} onChange={e => setTicConfig({...ticConfig, peer1: {...ticConfig.peer1, leader: e.target.value}})}/>}</Form.Field>
+                                <Form.Field>{ticConfig && <Input label='Leader' placeholder={defaultTicConfig.peer1_user} onChange={e => setTicConfig({...ticConfig, peer1: {...ticConfig.peer1, leader: e.target.value}})}/>}</Form.Field>
                                 <Form.Field>{ticConfig && <Grid columns={2}><Grid.Column width={3}><Label size="large">Database Type</Label></Grid.Column><Grid.Column width={13}><select id="lang" onChange={e => setTicConfig({...ticConfig, peer1: {...ticConfig.peer1, dbtype: e.target.value}})}>
                                                                 <option value="goleveldb">goleveldb</option>
                                                                 <option value="mongoDB">mongoDB</option>
@@ -166,7 +166,7 @@ export default function UserConfig() {
                                 <Form.Field>{ticConfig && <Input label='User Name' placeholder={defaultTicConfig.peer2_user} onChange={e => setTicConfig({...ticConfig, peer2_user: e.target.value})}/>}</Form.Field>
                                 <Form.Field>{ticConfig && <Input label='Password' placeholder={defaultTicConfig.peer2_password} onChange={e => setTicConfig({...ticConfig, peer2_password: e.target.value})}/>}</Form.Field>
                                 <Form.Field>{ticConfig && <Input label='Port' type="number" placeholder={defaultTicConfig.peer2.port} onChange={e => setTicConfig({...ticConfig, peer2: {...ticConfig.peer2, port: e.target.value}})}/>}</Form.Field>
-                                <Form.Field>{ticConfig && <Input label='Leader' placeholder={defaultTicConfig.peer2.leader} onChange={e => setTicConfig({...ticConfig, peer2: {...ticConfig.peer2, leader: e.target.value}})}/>}</Form.Field>
+                                <Form.Field>{ticConfig && <Input label='Leader' placeholder={defaultTicConfig.peer1_user} onChange={e => setTicConfig({...ticConfig, peer2: {...ticConfig.peer2, leader: e.target.value}})}/>}</Form.Field>
                                 <Form.Field>{ticConfig && <Grid columns={2}><Grid.Column width={3}><Label size="large">Database Type</Label></Grid.Column><Grid.Column width={13}><select id="lang" onChange={e => setTicConfig({...ticConfig, peer2: {...ticConfig.peer2, dbtype: e.target.value}})}>
                                                                 <option value="goleveldb">goleveldb</option>
                                                                 <option value="mongoDB">mongoDB</option>

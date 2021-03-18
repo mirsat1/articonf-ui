@@ -1,5 +1,5 @@
 import React, { memo, useEffect } from "react"
-import { Route } from "react-router-dom"
+import { Route, useHistory } from "react-router-dom"
 import Header from "./components/Header"
 import Footer from "./components/Footer"
 import Dashboard from "./pages/Dashboard"
@@ -16,8 +16,10 @@ import TokenBank from "./pages/TokenBank"
 import UserConfig from './components/UserConfig'
 import ToscaConfig from './components/ToscaConfig'
 import Heap from "reactjs-heap"
+import { Button } from "semantic-ui-react"
 
 function App() {
+  let history = useHistory();
   Heap.initialize('3168635468');
   
   useEffect(() => {
@@ -32,7 +34,7 @@ function App() {
     })();
   }, [])
   return (
-    <div>
+    <div className="pageContainer">
       <Header />
       <PrivateRoute exact path="/" component={Home} />
       <PrivateRoute exact path="/beta/testing" component={Home} />
@@ -48,6 +50,7 @@ function App() {
       <Route exact path="/login" component={Login} />
       <Route exact path="/singup" component={SingUp} />
       <Footer />
+      <Button circular icon='angle left' size="massive" onClick={() => history.goBack()} style={{margin: "0.8em", backgroundColor: "rgb(25, 114, 245)", color: "white", bottom: "0.8em", left: "0", position: "sticky", zindex: "9999"}} />
     </div>
   )
 }
