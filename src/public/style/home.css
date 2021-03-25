@@ -1,0 +1,19 @@
+.theBody {
+    margin-left: 10%;
+    margin-right: 10%;
+    margin-top: 1%;
+    align-content: center;
+    text-align: justify;
+}
+
+.text-section {
+	margin: 3em auto;
+}
+
+.theBody .deployLinks {
+    text-align: right;
+}
+
+.theBody .deployLinks button {
+    margin-right: 5px;
+}
