@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Context } from "../Context"
 import axiosBase from "../axios/axios-base"
-// import YAML from 'js-yaml'
+import YAML from 'js-yaml'
 import JSONPretty from 'react-json-prettify'
 import CustomTheme from 'react-json-prettify/dist/themes/arduinoLight'
 import { Button, Divider, Grid, Segment, Label } from 'semantic-ui-react'
@@ -39,13 +39,13 @@ export default function UserProfile() {
                     <Grid.Column>
                         <Segment>
                             <Label attached='top' size="large">Your TIC configuration: </Label>
-                            <JSONPretty theme={CustomTheme} json={ticConfig}/>
+                            <JSONPretty theme={CustomTheme} json={YAML.dump(ticConfig)}/>
                         </Segment>  
                     </Grid.Column>
                     <Grid.Column>
                         <Segment>
                             <Label attached='top' size="large">Your TOSCA configuration: </Label>
-                            <JSONPretty theme={CustomTheme} json={toscaConfig}/>
+                            <JSONPretty theme={CustomTheme} json={YAML.dump(toscaConfig)}/>
                         </Segment> 
                     </Grid.Column>
                 </Grid>

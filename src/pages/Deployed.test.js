@@ -7,10 +7,10 @@ import Deployed from './Deployed'
 
 describe('Unit testing the find deployed topology template', () => {
 
-    it('does not render the instructions initially', () => {
-        const { queryByTestId } = render(<ContextProvider><Router><Deployed /></Router></ContextProvider>)
-        expect(queryByTestId('instructionsInFindDpl').innerHTML).toBe('Litle fucker')
-    })
+//     it('does not render the instructions initially', () => {
+//         const { queryByTestId } = render(<ContextProvider><Router><Deployed /></Router></ContextProvider>)
+//         expect(queryByTestId('instructionsInFindDpl').innerHTML).toBe('Litle fucker')
+//     })
 
     it('does render the instructions initially', () => {
         const { queryByTestId } = render(<ContextProvider><Router><Deployed /></Router></ContextProvider>)

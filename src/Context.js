@@ -234,12 +234,12 @@ function ContextProvider({children}) {
   const userEmail = user && user.email
 
   const usersRef = firebase.database().ref("users/" + userUID + "/");
-  const usersProfileRef = firebase.database().ref("user_profile/" + userUID + "/");
+  const usersProfileIDsRef = firebase.database().ref("user_profile/" + userUID + "/IDs");
   userUID && usersRef.onDisconnect().remove()
   
   useEffect(() => {
     if (currentUser) {
-      axios.get(`https://articonf2.firebaseio.com/user_profile/${userUID}.json`)
+      axios.get(`https://articonf2.firebaseio.com/user_profile/${userUID}/IDs.json`)
         .then(res => {
           if(res.data.planID) setPlannedToscaTemplate(res.data.planID);
           if(res.data.provisionID) setProvisionToscaTemplate(res.data.provisionID);
@@ -248,24 +248,24 @@ function ContextProvider({children}) {
         })
         .catch(err => console.log(err))
       
-      firebase.database().ref('users/' + userUID).set({
+      firebase.database().ref('users/' + userUID + '/IDs').set({
         email: userEmail
       })
-      firebase.database().ref('user_profile/' + userUID).update({
+      firebase.database().ref('user_profile/' + userUID + '/IDs').update({
         toscaID: id
       })
       if (plannedToscaTemplate){
-        firebase.database().ref('user_profile/' + userUID).update({
+        firebase.database().ref('user_profile/' + userUID + '/IDs').update({
           planID: plannedToscaTemplate
         })
       }
       if (provisionToscaTemplate){
-        firebase.database().ref('user_profile/' + userUID).update({
+        firebase.database().ref('user_profile/' + userUID + '/IDs').update({
           provisionID: provisionToscaTemplate
         })
       }
       if (deployedToscaId){
-        firebase.database().ref('user_profile/' + userUID).update({
+        firebase.database().ref('user_profile/' + userUID + '/IDs').update({
           deploymentID: deployedToscaId
         })
       }
@@ -680,7 +680,7 @@ function uploadToscaButton() {
     setProvisionToscaTemplate(null)
     setDeployedToscaId(null)
     setIsDeleted(null)
-    userUID && usersProfileRef.remove()
+    userUID && usersProfileIDsRef.remove()
   }
 
   function initialiseIdsOnSignOut() {
