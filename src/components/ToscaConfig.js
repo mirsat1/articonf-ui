@@ -2,15 +2,17 @@ import React, { useContext, useEffect, useState } from 'react'
 import { Context } from '../Context'
 import firebase from "firebase/app";
 import axiosBase from '../axios/axios-base'
-// import YAML from 'js-yaml'
+import YAML from 'js-yaml'
 import JSONPretty from 'react-json-prettify'
-import { Button, Form, Input, Label, Grid, Segment } from 'semantic-ui-react'
+import CustomTheme from 'react-json-prettify/dist/themes/arduinoLight'
+import { Button, Form, Input, Label, Grid, Segment, Message, Icon } from 'semantic-ui-react'
 import Loader from 'react-loader-spinner'
 
 
 export default function ToscaConfig() {
     const { userUID } = useContext(Context)
     const [toscaLoaded, setToscaLoaded] = useState(null)
+    const [defaultMsg, setDefaultMsg] = useState("")
     const [isLoading, setIsLoading] = useState(false)
     const [vmProperties, setVmProperties] = useState({disk_size: "40000 MB", mem_size: "4000 MB", num_cores: 2, os_distro: "Ubuntu", os_version: "18.04", user_name: "vm_user"})
     const vmName = toscaLoaded && `compute_${toscaLoaded.topology_template.node_templates.topology.requirements.length}`
@@ -18,7 +20,15 @@ export default function ToscaConfig() {
         // axiosBase('https://raw.githubusercontent.com/qcdis-sdia/sdia-tosca/master/examples/mog.yaml')
         axiosBase.get(`user_profile/${userUID}/tosca_config.json`)
             .then(r => {
-                setToscaLoaded(r.data)
+                if(r.data) setToscaLoaded(r.data)
+                if(!r.data) {
+                    axiosBase.get('https://raw.githubusercontent.com/qcdis-sdia/sdia-tosca/master/examples/mog.yaml') 
+                        .then(r => {
+                            setToscaLoaded(YAML.load(r.data))
+                            setDefaultMsg("Haven't found TOSCA configuration, so we set a default one for you.")
+                        })
+                        .catch(e => console.log(e))
+                }
             })
             .catch(e => console.log(e))
         
@@ -112,35 +122,41 @@ export default function ToscaConfig() {
     return(
         <div className="theBody">
             <h1>TOSCA Configuration</h1>
+            {defaultMsg && <h3><Message warning attached='bottom'><Icon name='warning' />{defaultMsg}<br /><Button onClick={() => {updateToscaToDB(); setDefaultMsg("")}}>Keep it as your configuration</Button><Button onClick={() => {setToscaLoaded(null); setDefaultMsg("")}}>Discard default configuration</Button></Message></h3>}
             <span>{isLoading && "Loading..."}</span>
-            <Form onSubmit={addVm}>
-                <Segment style={{margin: "1.2em"}}>
-                    <Label color="black" ribbon>Virtual machine properties</Label><br />
-                    <br />
-                    <Form.Field>
-                        <Input label="Username" placeholder={vmProperties.user_name} onChange={e => setVmProperties({...vmProperties, user_name: e.target.value})} />
-                    </Form.Field>
-                    <Form.Group inline > 
-                        <Input label="Disck size" placeholder={vmProperties.disk_size} onChange={e => setVmProperties({...vmProperties, disk_size: e.target.value})} />
-                        <Input label="Memory size" placeholder={vmProperties.mem_size} onChange={e => setVmProperties({...vmProperties, mem_size: e.target.value})} />
-                        <Input label="Number of cores" type="number" placeholder={vmProperties.num_cores} onChange={e => setVmProperties({...vmProperties, num_cores: e.target.value})} />
-                    </Form.Group>
-                    <Form.Group inline>
-                        <Grid columns={2}><Grid.Column width={5}><Label size="large">Operating system</Label></Grid.Column><Grid.Column width={10}><select id="os_distro" onChange={e => setVmProperties({...vmProperties, os_distro: e.target.value})}>
-                            <option value="Ubuntu">Ubuntu</option>
-                            </select></Grid.Column></Grid>
-                        <Grid columns={2}><Grid.Column width={5}><Label size="large">Operating system version</Label></Grid.Column><Grid.Column width={7}><select id="os_version" onChange={e => setVmProperties({...vmProperties, os_version: e.target.value})}>
-                            <option value="18.04">18.04</option>
-                        </select></Grid.Column></Grid>
-                    </Form.Group>
-                    <Button type="submit">Add virtual machine</Button>
+            {
+                !defaultMsg && toscaLoaded !== null &&
+                <div>
+                    <Form onSubmit={addVm}>
+                        <Segment style={{margin: "1.2em"}}>
+                            <Label color="black" ribbon>Virtual machine properties</Label><br />
+                            <br />
+                            <Form.Field>
+                                <Input label="Username" placeholder={vmProperties.user_name} onChange={e => setVmProperties({...vmProperties, user_name: e.target.value})} />
+                            </Form.Field>
+                            <Form.Group inline > 
+                                <Input label="Disck size" placeholder={vmProperties.disk_size} onChange={e => setVmProperties({...vmProperties, disk_size: e.target.value})} />
+                                <Input label="Memory size" placeholder={vmProperties.mem_size} onChange={e => setVmProperties({...vmProperties, mem_size: e.target.value})} />
+                                <Input label="Number of cores" type="number" placeholder={vmProperties.num_cores} onChange={e => setVmProperties({...vmProperties, num_cores: e.target.value})} />
+                            </Form.Group>
+                            <Form.Group inline>
+                                <Grid columns={2}><Grid.Column width={5}><Label size="large">Operating system</Label></Grid.Column><Grid.Column width={10}><select id="os_distro" onChange={e => setVmProperties({...vmProperties, os_distro: e.target.value})}>
+                                    <option value="Ubuntu">Ubuntu</option>
+                                    </select></Grid.Column></Grid>
+                                <Grid columns={2}><Grid.Column width={5}><Label size="large">Operating system version</Label></Grid.Column><Grid.Column width={7}><select id="os_version" onChange={e => setVmProperties({...vmProperties, os_version: e.target.value})}>
+                                    <option value="18.04">18.04</option>
+                                </select></Grid.Column></Grid>
+                            </Form.Group>
+                            <Button type="submit">Add virtual machine</Button>
+                            {isLoading && <h4>Updating... <Loader type="ThreeDots" color="#08335e" height={50} width={50}/></h4>}
+                        </Segment>
+                    </Form>
+                    <Button floated="right" onClick={removeVm}>Remove last virtual machine</Button> 
+                    <Button onClick={updateToscaToDB}>Save Changes</Button>
                     {isLoading && <h4>Updating... <Loader type="ThreeDots" color="#08335e" height={50} width={50}/></h4>}
-                </Segment>
-            </Form>
-            <Button floated="right" onClick={removeVm}>Remove last virtual machine</Button> 
-            <Button onClick={updateToscaToDB}>Save Changes</Button>
-            {isLoading && <h4>Updating... <Loader type="ThreeDots" color="#08335e" height={50} width={50}/></h4>}
-            <JSONPretty json={toscaLoaded} />
+                    <JSONPretty theme={CustomTheme} json={toscaLoaded} />
+                </div>
+            }
         </div>
     )
 }
