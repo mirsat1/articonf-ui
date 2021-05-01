@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useContext } from 'react'
 import { Context } from '../Context'
+import { useHistory } from 'react-router-dom'
 import axios from 'axios'
 // import YAML from 'js-yaml'
 import firebase from "firebase/app";
-import { Grid, Label, Segment, Input, Button, Form } from 'semantic-ui-react'
+import { Grid, Label, Segment, Input, Button, Form, Message, Icon } from 'semantic-ui-react'
 import Loader from 'react-loader-spinner'
 
 export default function UserConfig() {
@@ -11,21 +12,33 @@ export default function UserConfig() {
     const [ticConfig, setTicConfig] = useState(defaultTicConfig)
     const [isLoading, setIsLoading] = useState(false)
     const [hasError, setHasError] = useState(false)
+    const [defaultMsg, setDefaultMsg] = useState("")
     const [errorMessage, setErrorMessage] = useState("")
+    const history = useHistory()
 
     useEffect(() => {
         
         // axios.get("https://cors-anywhere.herokuapp.com/https://raw.githubusercontent.com/bityoga/fabric_as_code/master/group_vars/all.yml")
         axios.get(`https://articonf2.firebaseio.com/user_profile/${userUID}/user_config.json`)
             .then(res => {
-                setIsLoading(false)
-                setTicConfig(res.data)
-                if(!res.data) setTicConfig(defaultTicConfig)
+                if(res.data) {
+                    setIsLoading(false)
+                    setTicConfig(res.data)
+                }
+                if(!res.data) {
+                    // axios.get("https://raw.githubusercontent.com/bityoga/fabric_as_code/master/group_vars/all.yml")
+                    //     .then(r => {
+                    //         setTicConfig(YAML.load(r.data))
+                    //         setDefaultMsg("Haven't found TIC configuration, so we set a default one for you.")
+                    //     })
+                setTicConfig(defaultTicConfig)
+                setDefaultMsg("Haven't found TIC configuration, so we set a default one for you.")
+                }
             })
             .catch(e => {
                 setIsLoading(false)
                 setHasError(true)
-                setErrorMessage("We were not able to fetch your TIC configuration, so we are assigning you with the default TIC configuration")
+                setErrorMessage("We were not able to fetch your TIC configuration, so we are assigned you with the default TIC configuration")
                 setTicConfig(defaultTicConfig)
                 console.log(e)
             })
@@ -51,12 +64,15 @@ export default function UserConfig() {
           })
         setIsLoading(false)
     }
-    console.log("TIC Config: ", ticConfig)
+    // console.log("TIC Config: ", ticConfig)
 
     return(
         <div className="theBody">
             <h1>TIC Configuration</h1>
+            {defaultMsg && <h3><Message warning attached='bottom'><Icon name='warning' />{defaultMsg}<br /><Button onClick={() => {updateToDB(); setDefaultMsg("")}}>Keep it as your configuration</Button><Button onClick={() => {setTicConfig(null); setDefaultMsg(""); history.goBack()}}>Discard default configuration</Button></Message></h3>}
             <h2>{hasError && errorMessage}</h2>
+            {!defaultMsg && ticConfig && <div>
+                
             <Form onSubmit={updateToDB}>
                 <Grid columns={1}>
                     <Grid.Column>
@@ -204,6 +220,7 @@ export default function UserConfig() {
                 <div style={{paddingTop: "1.3em", paddingBottom: "1.3em"}}><Button type="submit" onClick={updateToDB}>Save changes</Button> <Button floated="right" type="submit" onClick={restoreDefaultsToDB}>Restore default</Button></div>
                 {isLoading && <h4>Updating... <Loader type="ThreeDots" color="#08335e" height={50} width={50}/></h4>}
             </Form>
+                </div>}
             {/* <button onClick={updateToDB}>Update to DB</button>
             <button onClick={setTicConfig({tlsca_password: "newPWD"})}>Change PW</button> */}
             </div>

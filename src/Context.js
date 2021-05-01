@@ -18,6 +18,7 @@ function ContextProvider({children}) {
   const [isLoading, setIsLoading] = useState(false)
   const [topologyTemplate, setTopologyTemplate] = useState()
   const [plannedTopologyTemplate, setPlannedTopologyTemplate] = useState()
+  const [id, setId] = useState()
   const [plannedToscaTemplate, setPlannedToscaTemplate] = useState(null)
   const [provisionToscaTemplate, setProvisionToscaTemplate] = useState(null)
   const [provisionedToscaTemplate, setProvisionedToscaTemplate] = useState()
@@ -225,7 +226,8 @@ function ContextProvider({children}) {
 }
   
   const [timeRemaining, setIsTimeRemaining, isTimeRemaining] = useTimer()
-  const id = '60212a66b686da5a629a3a81'
+  // const id = '60212a66b686da5a629a3a81'
+  // const id = '6064640a312f41474c28bdea'
 
   const cancelSource = useRef(null)
   
@@ -241,19 +243,22 @@ function ContextProvider({children}) {
     if (currentUser) {
       axios.get(`https://articonf2.firebaseio.com/user_profile/${userUID}/IDs.json`)
         .then(res => {
+          if(res.data.toscaID) setId(res.data.toscaID);
           if(res.data.planID) setPlannedToscaTemplate(res.data.planID);
           if(res.data.provisionID) setProvisionToscaTemplate(res.data.provisionID);
           if(res.data.deploymentID) setDeployedToscaId(res.data.deploymentID);
-          // console.log(res.data)
+          // console.log(res)
         })
         .catch(err => console.log(err))
       
       firebase.database().ref('users/' + userUID + '/IDs').set({
         email: userEmail
       })
-      firebase.database().ref('user_profile/' + userUID + '/IDs').update({
-        toscaID: id
-      })
+      if (id){
+        firebase.database().ref('user_profile/' + userUID + '/IDs').update({
+          toscaID: id
+        })
+      }
       if (plannedToscaTemplate){
         firebase.database().ref('user_profile/' + userUID + '/IDs').update({
           planID: plannedToscaTemplate
@@ -270,11 +275,12 @@ function ContextProvider({children}) {
         })
       }
     }
-    // if (!currentUser) {
-    //   setPlannedToscaTemplate(null);
-    //   setProvisionToscaTemplate(null);
-    //   setDeployedToscaId(null);
-    // }
+    if (!currentUser) {
+      setId(null)
+      setPlannedToscaTemplate(null);
+      setProvisionToscaTemplate(null);
+      setDeployedToscaId(null);
+    }
   }, [currentUser, userUID, userEmail, id, plannedToscaTemplate, provisionToscaTemplate, deployedToscaId])
 
 
@@ -289,6 +295,8 @@ function ContextProvider({children}) {
       return null;
     })
   }, [])
+
+  
   
   function ecBtnClick() {
   //   let myHeaders = new Headers()
@@ -319,24 +327,24 @@ function ContextProvider({children}) {
   alert('This UI is still in early development, so the EC2 credentials are created manualy by the server administrator')
 }
 
-function uploadToscaButton() {
-  // let myHeaders = new Headers();
-  // myHeaders.append("Content-Type", "multipart/form-data");
-
-  // const formdata = new FormData();
-  // formdata.append("file", "tosca.yaml");
-
-  // const requestOptions = {
-  //   method: 'POST',
-  //   headers: myHeaders,
-  //   body: formdata,
-  //   redirect: 'follow'
-  // };
-
-  // axios.post("tosca_template", requestOptions)
-  //   .then(result => console.log(result))
-  //   .catch(error => console.log('error', error));
-  alert('This UI is still in early development, so the TOSCA file is manualy uploaded by the server administrator')
+function uploadToscaButton(tosca) {
+  const formData = new FormData();
+  formData.append('file', new Blob([tosca], {type:"application/octet-stream"}))
+  axios({
+    method: "post",
+    url: "tosca_template",
+    data: formData,
+    headers: { "Content-Type": "multipart/form-data" },
+  })
+    .then(function (response) {
+      setId(response.data)
+      console.log(response);
+    })
+    .catch(function (response) {
+      //handle error
+      alert(response);
+    });
+  console.log(formData.get('file'))
 }
 
   // useEffect(() => {
@@ -674,8 +682,13 @@ function uploadToscaButton() {
     setIsDeleted(id)
   }
 
+  function setToscaId(id) {
+    setId(id)
+  }
+
   function initialiseIds() {
     alert("This will erase all your ID's that you have obtained or entered!")
+    setId(null)
     setPlannedToscaTemplate(null)
     setProvisionToscaTemplate(null)
     setDeployedToscaId(null)
@@ -684,12 +697,15 @@ function uploadToscaButton() {
   }
 
   function initialiseIdsOnSignOut() {
+    setId(null)
     setPlannedToscaTemplate(null)
     setProvisionToscaTemplate(null)
     setDeployedToscaId(null)
     setIsDeleted(null)
-    console.log("User signed out and the ui initialised all ID states", plannedToscaTemplate)
+    
   }
+
+  // console.log("User signed out and the ui initialised all ID states", plannedToscaTemplate)
 
   function setUserName(username) {
     setName(username)
@@ -718,6 +734,7 @@ function uploadToscaButton() {
       currentUser,
       usersRef,
       topologyTemplate,
+      id,
       plannedToscaTemplate,
       plannedTopologyTemplate,
       provisionToscaTemplate,
@@ -746,6 +763,7 @@ function uploadToscaButton() {
       setProvisionId,
       setDeploymentId,
       setDeletedId,
+      setToscaId,
       findDeleted,
       deleted,
       initialiseIds,

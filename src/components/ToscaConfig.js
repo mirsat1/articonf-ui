@@ -5,32 +5,185 @@ import axiosBase from '../axios/axios-base'
 import YAML from 'js-yaml'
 import JSONPretty from 'react-json-prettify'
 import CustomTheme from 'react-json-prettify/dist/themes/arduinoLight'
+import FileUpload from './FileUpload'
 import { Button, Form, Input, Label, Grid, Segment, Message, Icon } from 'semantic-ui-react'
 import Loader from 'react-loader-spinner'
+import { useHistory } from 'react-router-dom';
 
 
 export default function ToscaConfig() {
-    const { userUID } = useContext(Context)
+    const { uploadToscaButton, userUID } = useContext(Context)
     const [toscaLoaded, setToscaLoaded] = useState(null)
     const [defaultMsg, setDefaultMsg] = useState("")
     const [isLoading, setIsLoading] = useState(false)
     const [vmProperties, setVmProperties] = useState({disk_size: "40000 MB", mem_size: "4000 MB", num_cores: 2, os_distro: "Ubuntu", os_version: "18.04", user_name: "vm_user"})
     const vmName = toscaLoaded && `compute_${toscaLoaded.topology_template.node_templates.topology.requirements.length}`
-    useEffect( () => {
+    const history = useHistory()
+    useEffect(() => {
+        setIsLoading(true)
         // axiosBase('https://raw.githubusercontent.com/qcdis-sdia/sdia-tosca/master/examples/mog.yaml')
         axiosBase.get(`user_profile/${userUID}/tosca_config.json`)
             .then(r => {
-                if(r.data) setToscaLoaded(r.data)
+                if(r.data) {
+                    setToscaLoaded({
+                        ...r.data, topology_template: {
+                            ...r.data.topology_template, node_templates: {
+                                ...r.data.topology_template.node_templates, tic: {
+                                    ...r.data.topology_template.node_templates.tic, interfaces: {
+                                        ...r.data.topology_template.node_templates.tic.interfaces, TIC: {
+                                            ...r.data.topology_template.node_templates.tic.interfaces.TIC, deploy_bank_app: {
+                                                ...r.data.topology_template.node_templates.tic.interfaces.TIC.deploy_bank_app, inputs: {
+                                                    ...r.data.topology_template.node_templates.tic.interfaces.TIC.deploy_bank_app.inputs, extra_variables: `https://articonf2.firebaseio.com/user_profile/${userUID}/user_config.json`
+                                                }
+                                            },
+                                            deploy_ca: {
+                                                ...r.data.topology_template.node_templates.tic.interfaces.TIC.deploy_ca, inputs: {
+                                                    ...r.data.topology_template.node_templates.tic.interfaces.TIC.deploy_ca.inputs, extra_variables: `https://articonf2.firebaseio.com/user_profile/${userUID}/user_config.json`
+                                                }
+                                            },
+                                            deploy_cli: {
+                                                ...r.data.topology_template.node_templates.tic.interfaces.TIC.deploy_cli, inputs: {
+                                                    ...r.data.topology_template.node_templates.tic.interfaces.TIC.deploy_cli.inputs, extra_variables: `https://articonf2.firebaseio.com/user_profile/${userUID}/user_config.json`
+                                                }
+                                            },
+                                            deploy_hlf_explorer: {
+                                                ...r.data.topology_template.node_templates.tic.interfaces.TIC.deploy_hlf_explorer, inputs: {
+                                                    ...r.data.topology_template.node_templates.tic.interfaces.TIC.deploy_hlf_explorer.inputs, extra_variables: `https://articonf2.firebaseio.com/user_profile/${userUID}/user_config.json`
+                                                }
+                                            },
+                                            deploy_orderer: {
+                                                ...r.data.topology_template.node_templates.tic.interfaces.TIC.deploy_orderer, inputs: {
+                                                    ...r.data.topology_template.node_templates.tic.interfaces.TIC.deploy_orderer.inputs, extra_variables: `https://articonf2.firebaseio.com/user_profile/${userUID}/user_config.json`
+                                                }
+                                            },
+                                            deploy_peers: {
+                                                ...r.data.topology_template.node_templates.tic.interfaces.TIC.deploy_peers, inputs: {
+                                                    ...r.data.topology_template.node_templates.tic.interfaces.TIC.deploy_peers.inputs, extra_variables: `https://articonf2.firebaseio.com/user_profile/${userUID}/user_config.json`
+                                                }
+                                            },
+                                            deploy_portainer: {
+                                                ...r.data.topology_template.node_templates.tic.interfaces.TIC.deploy_portainer, inputs: {
+                                                    ...r.data.topology_template.node_templates.tic.interfaces.TIC.deploy_portainer.inputs, extra_variables: `https://articonf2.firebaseio.com/user_profile/${userUID}/user_config.json`
+                                                }
+                                            },
+                                            deploy_swarm_visualizer: {
+                                                ...r.data.topology_template.node_templates.tic.interfaces.TIC.deploy_swarm_visualizer, inputs: {
+                                                    ...r.data.topology_template.node_templates.tic.interfaces.TIC.deploy_swarm_visualizer.inputs, extra_variables: `https://articonf2.firebaseio.com/user_profile/${userUID}/user_config.json`
+                                                }
+                                            },
+                                            initialize_hosts: {
+                                                ...r.data.topology_template.node_templates.tic.interfaces.TIC.initialize_hosts, inputs: {
+                                                    ...r.data.topology_template.node_templates.tic.interfaces.TIC.initialize_hosts.inputs, extra_variables: `https://articonf2.firebaseio.com/user_profile/${userUID}/user_config.json`
+                                                }
+                                            },
+                                            mount_fs: {
+                                                ...r.data.topology_template.node_templates.tic.interfaces.TIC.mount_fs, inputs: {
+                                                    ...r.data.topology_template.node_templates.tic.interfaces.TIC.mount_fs.inputs, extra_variables: `https://articonf2.firebaseio.com/user_profile/${userUID}/user_config.json`
+                                                }
+                                            },
+                                            prepare_docker_images: {
+                                                ...r.data.topology_template.node_templates.tic.interfaces.TIC.prepare_docker_images, inputs: {
+                                                    ...r.data.topology_template.node_templates.tic.interfaces.TIC.prepare_docker_images.inputs, extra_variables: `https://articonf2.firebaseio.com/user_profile/${userUID}/user_config.json`
+                                                }
+                                            },
+                                            spawn_swarm: {
+                                                ...r.data.topology_template.node_templates.tic.interfaces.TIC.spawn_swarm, inputs: {
+                                                    ...r.data.topology_template.node_templates.tic.interfaces.TIC.spawn_swarm.inputs, extra_variables: `https://articonf2.firebaseio.com/user_profile/${userUID}/user_config.json`
+                                                }
+                                            }   
+                                        }
+                                    }
+                                }
+                                }
+                            }
+                        })
+                }
                 if(!r.data) {
-                    axiosBase.get('https://raw.githubusercontent.com/qcdis-sdia/sdia-tosca/master/examples/mog.yaml') 
+                    axiosBase.get('https://raw.githubusercontent.com/qcdis-sdia/sdia-tosca/master/examples/TIC_planed_with_bank.yaml') 
                         .then(r => {
-                            setToscaLoaded(YAML.load(r.data))
+                            let data = YAML.load(r.data)
+                            setToscaLoaded({
+                                ...data, topology_template: {
+                                    ...data.topology_template, node_templates: {
+                                        ...data.topology_template.node_templates, tic: {
+                                            ...data.topology_template.node_templates.tic, interfaces: {
+                                                ...data.topology_template.node_templates.tic.interfaces, TIC: {
+                                                    ...data.topology_template.node_templates.tic.interfaces.TIC, deploy_bank_app: {
+                                                        ...data.topology_template.node_templates.tic.interfaces.TIC.deploy_bank_app, inputs: {
+                                                            ...data.topology_template.node_templates.tic.interfaces.TIC.deploy_bank_app.inputs, extra_variables: `https://articonf2.firebaseio.com/user_profile/${userUID}/user_config.json`
+                                                        }
+                                                    },
+                                                    deploy_ca: {
+                                                        ...data.topology_template.node_templates.tic.interfaces.TIC.deploy_ca, inputs: {
+                                                            ...data.topology_template.node_templates.tic.interfaces.TIC.deploy_ca.inputs, extra_variables: `https://articonf2.firebaseio.com/user_profile/${userUID}/user_config.json`
+                                                        }
+                                                    },
+                                                    deploy_cli: {
+                                                        ...data.topology_template.node_templates.tic.interfaces.TIC.deploy_cli, inputs: {
+                                                            ...data.topology_template.node_templates.tic.interfaces.TIC.deploy_cli.inputs, extra_variables: `https://articonf2.firebaseio.com/user_profile/${userUID}/user_config.json`
+                                                        }
+                                                    },
+                                                    deploy_hlf_explorer: {
+                                                        ...data.topology_template.node_templates.tic.interfaces.TIC.deploy_hlf_explorer, inputs: {
+                                                            ...data.topology_template.node_templates.tic.interfaces.TIC.deploy_hlf_explorer.inputs, extra_variables: `https://articonf2.firebaseio.com/user_profile/${userUID}/user_config.json`
+                                                        }
+                                                    },
+                                                    deploy_orderer: {
+                                                        ...data.topology_template.node_templates.tic.interfaces.TIC.deploy_orderer, inputs: {
+                                                            ...data.topology_template.node_templates.tic.interfaces.TIC.deploy_orderer.inputs, extra_variables: `https://articonf2.firebaseio.com/user_profile/${userUID}/user_config.json`
+                                                        }
+                                                    },
+                                                    deploy_peers: {
+                                                        ...data.topology_template.node_templates.tic.interfaces.TIC.deploy_peers, inputs: {
+                                                            ...data.topology_template.node_templates.tic.interfaces.TIC.deploy_peers.inputs, extra_variables: `https://articonf2.firebaseio.com/user_profile/${userUID}/user_config.json`
+                                                        }
+                                                    },
+                                                    deploy_portainer: {
+                                                        ...data.topology_template.node_templates.tic.interfaces.TIC.deploy_portainer, inputs: {
+                                                            ...data.topology_template.node_templates.tic.interfaces.TIC.deploy_portainer.inputs, extra_variables: `https://articonf2.firebaseio.com/user_profile/${userUID}/user_config.json`
+                                                        }
+                                                    },
+                                                    deploy_swarm_visualizer: {
+                                                        ...data.topology_template.node_templates.tic.interfaces.TIC.deploy_swarm_visualizer, inputs: {
+                                                            ...data.topology_template.node_templates.tic.interfaces.TIC.deploy_swarm_visualizer.inputs, extra_variables: `https://articonf2.firebaseio.com/user_profile/${userUID}/user_config.json`
+                                                        }
+                                                    },
+                                                    initialize_hosts: {
+                                                        ...data.topology_template.node_templates.tic.interfaces.TIC.initialize_hosts, inputs: {
+                                                            ...data.topology_template.node_templates.tic.interfaces.TIC.initialize_hosts.inputs, extra_variables: `https://articonf2.firebaseio.com/user_profile/${userUID}/user_config.json`
+                                                        }
+                                                    },
+                                                    mount_fs: {
+                                                        ...data.topology_template.node_templates.tic.interfaces.TIC.mount_fs, inputs: {
+                                                            ...data.topology_template.node_templates.tic.interfaces.TIC.mount_fs.inputs, extra_variables: `https://articonf2.firebaseio.com/user_profile/${userUID}/user_config.json`
+                                                        }
+                                                    },
+                                                    prepare_docker_images: {
+                                                        ...data.topology_template.node_templates.tic.interfaces.TIC.prepare_docker_images, inputs: {
+                                                            ...data.topology_template.node_templates.tic.interfaces.TIC.prepare_docker_images.inputs, extra_variables: `https://articonf2.firebaseio.com/user_profile/${userUID}/user_config.json`
+                                                        }
+                                                    },
+                                                    spawn_swarm: {
+                                                        ...data.topology_template.node_templates.tic.interfaces.TIC.spawn_swarm, inputs: {
+                                                            ...data.topology_template.node_templates.tic.interfaces.TIC.spawn_swarm.inputs, extra_variables: `https://articonf2.firebaseio.com/user_profile/${userUID}/user_config.json`
+                                                        }
+                                                    }   
+                                                }
+                                            }
+                                        }
+                                        }
+                                    }
+                                })
                             setDefaultMsg("Haven't found TOSCA configuration, so we set a default one for you.")
                         })
                         .catch(e => console.log(e))
                 }
+                setIsLoading(false)
             })
-            .catch(e => console.log(e))
+            .catch(e => {
+                console.log(e)
+                setIsLoading(false)
+            })
         
     }, [userUID])
     async function updateToscaToDB() {
@@ -63,6 +216,7 @@ export default function ToscaConfig() {
         await firebase.database().ref('/user_profile/' + userUID).update({
             tosca_config: toscaLoaded
           })
+        uploadToscaButton(YAML.dump(toscaLoaded))  
         setIsLoading(false)
     }
     function addVm() {
@@ -118,12 +272,99 @@ export default function ToscaConfig() {
         // console.log(toscaLoaded.topology_template.node_templates)
         // console.log(updatedArr)
     }
-    toscaLoaded && console.log("TOSCA", toscaLoaded)
+    // toscaLoaded && console.log("TOSCA", toscaLoaded)
+
+    async function restoreDefaultsToDB() {
+        setIsLoading(true)
+        await axiosBase.get('https://raw.githubusercontent.com/qcdis-sdia/sdia-tosca/master/examples/TIC_planed_with_bank.yaml') 
+            .then(r => {
+                let data = YAML.load(r.data)
+                setToscaLoaded({
+                    ...data, topology_template: {
+                        ...data.topology_template, node_templates: {
+                            ...data.topology_template.node_templates, tic: {
+                                ...data.topology_template.node_templates.tic, interfaces: {
+                                    ...data.topology_template.node_templates.tic.interfaces, TIC: {
+                                        ...data.topology_template.node_templates.tic.interfaces.TIC, deploy_bank_app: {
+                                            ...data.topology_template.node_templates.tic.interfaces.TIC.deploy_bank_app, inputs: {
+                                                ...data.topology_template.node_templates.tic.interfaces.TIC.deploy_bank_app.inputs, extra_variables: `https://articonf2.firebaseio.com/user_profile/${userUID}/user_config.json`
+                                            }
+                                        },
+                                        deploy_ca: {
+                                            ...data.topology_template.node_templates.tic.interfaces.TIC.deploy_ca, inputs: {
+                                                ...data.topology_template.node_templates.tic.interfaces.TIC.deploy_ca.inputs, extra_variables: `https://articonf2.firebaseio.com/user_profile/${userUID}/user_config.json`
+                                            }
+                                        },
+                                        deploy_cli: {
+                                            ...data.topology_template.node_templates.tic.interfaces.TIC.deploy_cli, inputs: {
+                                                ...data.topology_template.node_templates.tic.interfaces.TIC.deploy_cli.inputs, extra_variables: `https://articonf2.firebaseio.com/user_profile/${userUID}/user_config.json`
+                                            }
+                                        },
+                                        deploy_hlf_explorer: {
+                                            ...data.topology_template.node_templates.tic.interfaces.TIC.deploy_hlf_explorer, inputs: {
+                                                ...data.topology_template.node_templates.tic.interfaces.TIC.deploy_hlf_explorer.inputs, extra_variables: `https://articonf2.firebaseio.com/user_profile/${userUID}/user_config.json`
+                                            }
+                                        },
+                                        deploy_orderer: {
+                                            ...data.topology_template.node_templates.tic.interfaces.TIC.deploy_orderer, inputs: {
+                                                ...data.topology_template.node_templates.tic.interfaces.TIC.deploy_orderer.inputs, extra_variables: `https://articonf2.firebaseio.com/user_profile/${userUID}/user_config.json`
+                                            }
+                                        },
+                                        deploy_peers: {
+                                            ...data.topology_template.node_templates.tic.interfaces.TIC.deploy_peers, inputs: {
+                                                ...data.topology_template.node_templates.tic.interfaces.TIC.deploy_peers.inputs, extra_variables: `https://articonf2.firebaseio.com/user_profile/${userUID}/user_config.json`
+                                            }
+                                        },
+                                        deploy_portainer: {
+                                            ...data.topology_template.node_templates.tic.interfaces.TIC.deploy_portainer, inputs: {
+                                                ...data.topology_template.node_templates.tic.interfaces.TIC.deploy_portainer.inputs, extra_variables: `https://articonf2.firebaseio.com/user_profile/${userUID}/user_config.json`
+                                            }
+                                        },
+                                        deploy_swarm_visualizer: {
+                                            ...data.topology_template.node_templates.tic.interfaces.TIC.deploy_swarm_visualizer, inputs: {
+                                                ...data.topology_template.node_templates.tic.interfaces.TIC.deploy_swarm_visualizer.inputs, extra_variables: `https://articonf2.firebaseio.com/user_profile/${userUID}/user_config.json`
+                                            }
+                                        },
+                                        initialize_hosts: {
+                                            ...data.topology_template.node_templates.tic.interfaces.TIC.initialize_hosts, inputs: {
+                                                ...data.topology_template.node_templates.tic.interfaces.TIC.initialize_hosts.inputs, extra_variables: `https://articonf2.firebaseio.com/user_profile/${userUID}/user_config.json`
+                                            }
+                                        },
+                                        mount_fs: {
+                                            ...data.topology_template.node_templates.tic.interfaces.TIC.mount_fs, inputs: {
+                                                ...data.topology_template.node_templates.tic.interfaces.TIC.mount_fs.inputs, extra_variables: `https://articonf2.firebaseio.com/user_profile/${userUID}/user_config.json`
+                                            }
+                                        },
+                                        prepare_docker_images: {
+                                            ...data.topology_template.node_templates.tic.interfaces.TIC.prepare_docker_images, inputs: {
+                                                ...data.topology_template.node_templates.tic.interfaces.TIC.prepare_docker_images.inputs, extra_variables: `https://articonf2.firebaseio.com/user_profile/${userUID}/user_config.json`
+                                            }
+                                        },
+                                        spawn_swarm: {
+                                            ...data.topology_template.node_templates.tic.interfaces.TIC.spawn_swarm, inputs: {
+                                                ...data.topology_template.node_templates.tic.interfaces.TIC.spawn_swarm.inputs, extra_variables: `https://articonf2.firebaseio.com/user_profile/${userUID}/user_config.json`
+                                            }
+                                        }   
+                                    }
+                                }
+                            }
+                            }
+                        }
+                    })
+                firebase.database().ref('/user_profile/' + userUID).update({
+                    tosca_config: toscaLoaded
+                    })
+            })
+            .catch(e => console.log(e))
+        setIsLoading(false)
+        console.log("Restored default TOSCA configuration")
+    }
     return(
         <div className="theBody">
             <h1>TOSCA Configuration</h1>
-            {defaultMsg && <h3><Message warning attached='bottom'><Icon name='warning' />{defaultMsg}<br /><Button onClick={() => {updateToscaToDB(); setDefaultMsg("")}}>Keep it as your configuration</Button><Button onClick={() => {setToscaLoaded(null); setDefaultMsg("")}}>Discard default configuration</Button></Message></h3>}
-            <span>{isLoading && "Loading..."}</span>
+            <FileUpload />
+            {defaultMsg && <h3><Message warning attached='bottom'><Icon name='warning' />{defaultMsg}<br /><Button onClick={() => {updateToscaToDB(); setDefaultMsg("")}}>Keep it as your configuration</Button><Button onClick={() => {setToscaLoaded(null); setDefaultMsg(""); history.goBack()}}>Discard default configuration</Button></Message></h3>}
+            {/* <span>{isLoading && <h4>Loading... <Loader type="ThreeDots" color="#08335e" height={50} width={50}/></h4>}</span> */}
             {
                 !defaultMsg && toscaLoaded !== null &&
                 <div>
@@ -148,9 +389,9 @@ export default function ToscaConfig() {
                                 </select></Grid.Column></Grid>
                             </Form.Group>
                             <Button type="submit">Add virtual machine</Button>
-                            {isLoading && <h4>Updating... <Loader type="ThreeDots" color="#08335e" height={50} width={50}/></h4>}
                         </Segment>
                     </Form>
+                    <Button floated='right' type="submit" onClick={restoreDefaultsToDB}>Restore default</Button>
                     <Button floated="right" onClick={removeVm}>Remove last virtual machine</Button> 
                     <Button onClick={updateToscaToDB}>Save Changes</Button>
                     {isLoading && <h4>Updating... <Loader type="ThreeDots" color="#08335e" height={50} width={50}/></h4>}

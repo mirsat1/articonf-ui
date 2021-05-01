@@ -4,7 +4,7 @@ import Header from "./components/Header"
 import Footer from "./components/Footer"
 import Dashboard from "./pages/Dashboard"
 import Deploy from "./pages/Deploy"
-import Deployment from "./pages/Deployment"
+import Deployer from "./pages/Deployer"
 import Deployed from "./pages/Deployed"
 import ContactUs from "./pages/ContactUs"
 import Home from "./pages/Home"
@@ -37,10 +37,11 @@ function App() {
     <div className="pageContainer">
       <Header />
       <PrivateRoute exact path="/" component={Home} />
+      <PrivateRoute exact path="/articonf-ui" component={Home} />
       <PrivateRoute exact path="/beta/testing" component={Home} />
       <PrivateRoute exact path="/beta/testing/dashboard" component={Dashboard} />
       <PrivateRoute exact path="/beta/testing/deploy" component={Deploy} />
-      <PrivateRoute exact path="/beta/testing/deploy/deployment" component={Deployment} />
+      <PrivateRoute exact path="/beta/testing/deploy/deployment" component={Deployer} />
       <PrivateRoute exact path="/beta/testing/deployed" component={Deployed} />
       <PrivateRoute exact path="/beta/testing/bank" component={TokenBank} />
       <PrivateRoute exact path="/beta/testing/userprofile" component={UserProfile} />

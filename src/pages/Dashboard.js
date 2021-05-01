@@ -1,75 +1,54 @@
-import React, { useContext, memo } from "react"
-import Dummy from "../components/DummyApi"
+import React, { useContext, memo, useEffect, useState } from "react"
+import { Link } from 'react-router-dom'
+import axiosBase from "../axios/axios-base"
 import {Context} from "../Context"
-import Loader from 'react-loader-spinner'
 import JSONPretty from 'react-json-prettify'
+import CustomTheme from 'react-json-prettify/dist/themes/arduinoLight'
+import YAML from 'js-yaml'
+import { Divider, Button, Segment, Grid, Label } from 'semantic-ui-react'
 
 
 function Dashboard() {
   const {
-    topologyTemplate,
-    plannedTopologyTemplate,
-    provisionedToscaTemplate, 
-    ecBtnClick, 
-    uploadToscaButton, 
-    topoBtnClick, 
-    planTopoBtn, 
-    findProvisioned, 
-    callDummyButton,  
-    isLoading,
-    findDeleted,
-    deleted
+    userUID
   } = useContext(Context)
+
+  const [ticConfig, setTicConfig] = useState(null)
+  const [toscaConfig, setToscaConfig] = useState(null)
+
+  useEffect(() => {
+    axiosBase.get(`user_profile/${userUID}.json`)
+        .then(res => {
+            setTicConfig(res.data.user_config)
+            setToscaConfig(res.data.tosca_config)
+        }
+        )
+        .catch(err => console.log(err))
+  }, [userUID])
 
   return (
     <div className="theBody" data-testid="dashPage">
-      <Dummy 
-        callApi={ecBtnClick} 
-        btnName={"Create EC2 credentials"} 
-        info={"Creates credentials EC2 credentials. This call is optional deployments will probably have credentials set by the admin"}
-      />
-      <Dummy 
-        callApi={uploadToscaButton} 
-        btnName={"Upload Tosca"} 
-        info={"Uploads and validates TOSCA template file. Depending on the type of CONF deployment CONF will have a set of pre-uploaded TOSCA templates"}
-      />
-      <Dummy 
-        callApi={topoBtnClick}
-        btnName={"Find topolog template by ID"} 
-        info={"Returns a single topology template."}
-      />
-      <Dummy 
-        callApi={planTopoBtn} 
-        btnName={"Find planed topolog template by ID"} 
-        info={"Returns a single topolog template."}
-      />
-      <Dummy 
-        callApi={findProvisioned} 
-        btnName={"Find provisioned topolog template by ID"} 
-        info={"Returns a single topolog template."}
-      />
-      <Dummy 
-        callApi={findDeleted} 
-        btnName={"Find deleted provision topology template"} 
-        info={"Finds and returns a deleted provision topology template"}
-      />
-      <Dummy 
-        callApi={callDummyButton} 
-        btnName={"Dummy API"} 
-        info={"This is just for testing!"}
-      />
-  <h1 style={{display: isLoading ? "block" : "none"}}>
-    Please wait...
-    <Loader
-      type="Watch"
-      color="#08335e"
-      height={100}
-      width={100}
-    /></h1>
-  <h5 style={{display: topologyTemplate ? "block" : "none"}} data-testid="topoTemplateID">Topology template: <JSONPretty json={topologyTemplate}/></h5>
-  <h5 style={{display: plannedTopologyTemplate ? "block" : "none"}} data-testid="planTopoTemplateID">Planned topology template: <JSONPretty json={plannedTopologyTemplate}/></h5>
-  <h5 style={{display: provisionedToscaTemplate ? "block" : "none"}} data-testid="provTopoTemplateID">Provisioned topology template: <JSONPretty json={provisionedToscaTemplate}/></h5>
-  <h5 style={{display: deleted ? "block" : "none"}} data-testid="deletedProv">Provisioned topology template: <JSONPretty json={deleted}/></h5>
+      <h1>Advanced Configuration</h1>
+      <Link to="/beta/testing/userconfigtic" style={{textAlign: "center"}}><Button>Configure TIC</Button></Link>
+      <Link to="/beta/testing/userconfigtosca" style={{textAlign: "center"}}><Button>Configure TOSCA</Button></Link>
+      <Segment >
+          <Grid columns={2}>
+              <Grid.Column>
+                  <Segment>
+                      <Label attached='top' size="large">Your TIC configuration: </Label>
+                      <JSONPretty theme={CustomTheme} json={YAML.dump(ticConfig)}/>
+                  </Segment>  
+              </Grid.Column>
+              <Grid.Column>
+                  <Segment>
+                      <Label attached='top' size="large">Your TOSCA configuration: </Label>
+                      <JSONPretty theme={CustomTheme} json={YAML.dump(toscaConfig)}/>
+                  </Segment> 
+              </Grid.Column>
+          </Grid>
+          <Divider vertical />
+      </Segment>
+      
     </div>
   )
 }
