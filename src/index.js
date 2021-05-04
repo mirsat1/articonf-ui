@@ -14,7 +14,7 @@ import 'semantic-ui-css/semantic.min.css'
 //                          new CONF endpoint                                  *
 // *****************************************************************************
 // axios.defaults.baseURL = ("https://conf.lab.uvalight.net:30001/orchestrator/")
-axios.defaults.baseURL = ("http://conf.lab.uvalight.net:30003/orchestrator/")
+axios.defaults.baseURL = ("https://conf.lab.uvalight.net:30002/orchestrator/")
 // const agent = new https.Agent({
 //   rejectUnauthorized: false,
 // })
