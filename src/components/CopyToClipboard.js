@@ -15,7 +15,7 @@ function CopyToClipboard(props) {
       };
 
       return(
-        <div>
+        <div style={{marginTop: "0.2em"}}>
             <Input
                 size='huge'
                 action={{

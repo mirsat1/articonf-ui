@@ -6,15 +6,18 @@ import JSONPretty from 'react-json-prettify'
 import CustomTheme from 'react-json-prettify/dist/themes/arduinoLight'
 import YAML from 'js-yaml'
 import { Divider, Button, Segment, Grid, Label } from 'semantic-ui-react'
+import NotProvider from "../components/NotProvider"
 
 
 function Dashboard() {
   const {
-    userUID
+    userUID,
+    role
   } = useContext(Context)
 
   const [ticConfig, setTicConfig] = useState(null)
   const [toscaConfig, setToscaConfig] = useState(null)
+  const UCProvider = role === "UCprovider1" || role === "UCprovider2" || role === "UCprovider3" || role === "UCprovider4"
 
   useEffect(() => {
     axiosBase.get(`user_profile/${userUID}.json`)
@@ -27,6 +30,8 @@ function Dashboard() {
   }, [userUID])
 
   return (
+    !UCProvider ?
+    <NotProvider /> :
     <div className="theBody" data-testid="dashPage">
       <h1>Advanced Configuration</h1>
       <Link to="/beta/testing/userconfigtic" style={{textAlign: "center"}}><Button>Configure TIC</Button></Link>

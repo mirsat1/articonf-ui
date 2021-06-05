@@ -10,15 +10,21 @@ div.container
 {
     font-family: Raleway;
     margin: 0 auto;
-	padding: 2em 3em;
-	text-align: left;
+    padding: 2em 10%;
+	/* padding: 2em 3em; */
+	text-align: right;
+}
+
+div.container .img
+{
+    float: left;
 }
 
 div.container .a
 {
     color: #FFF;
     text-decoration: none;
-    font: 20px Raleway;
+    font: 16px Raleway;
     margin: 0px 10px;
     padding: 10px 10px;
     position: relative;
