@@ -17,12 +17,13 @@ function Footer() {
                 <Grid.Column floated='right' width={3}>
                     <div>
                         <p>Follow us on Twitter: 
-                            <a style={{color: "#00acee"}} href="https://twitter.com/articonf/"><i className="ri-twitter-fill"></i></a>
+                            <a style={{color: "#00acee", float: "right"}} href="https://twitter.com/articonf/"><i className="ri-twitter-fill"></i></a>
                         </p>
+                        <br />
                         <p>Subscribe on YouTube: 
-                            <a style={{color: "#FF0000"}} href="https://www.youtube.com/channel/UCPvfXuOgmtrq8psLQb9yFVA"><i className="ri-youtube-fill"></i></a>
+                            <a style={{color: "#FF0000", float: "right"}} href="https://www.youtube.com/channel/UCPvfXuOgmtrq8psLQb9yFVA"><i className="ri-youtube-fill"></i></a>
                         </p>
-                        <p>Visit our page for more details about us: <a href={"https://articonf.eu/"}><img src="https://i.imgur.com/tgkmCTc.png" alt="articonflogo" /></a></p>
+                        <p><br />Visit our page: <a href={"https://articonf.eu/"}><img style={{float: "right"}} src="https://i.imgur.com/tgkmCTc.png" alt="articonflogo" /></a></p>
                     </div>
                 </Grid.Column>
             </Grid>
