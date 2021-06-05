@@ -5,6 +5,7 @@ import JSONPretty from 'react-json-prettify'
 import useToggler from "../hooks/useToggler"
 import CopyToClipboard from "../components/CopyToClipboard"
 import { Header, Icon, Button, Input, Form } from 'semantic-ui-react'
+import NotProvider from "../components/NotProvider"
 
 function Deployed() {
     const {
@@ -22,7 +23,8 @@ function Deployed() {
         setDeletedId,
         findDeleted,
         deleted,
-        initialiseIds
+        initialiseIds,
+        role
     } = useContext(Context)
     
     const [showDeployed, toggleShow] = useToggler()
@@ -37,6 +39,8 @@ function Deployed() {
     const [deleterId, setDeleterId] = useState()
     const [message, setMessage] = useState("")
     const [yesDisabler, setYesDisabler] = useState(false)
+
+    const UCProvider = role === "UCprovider1" || role === "UCprovider2" || role === "UCprovider3" || role === "UCprovider4"
 
 
     //<JSONPretty json={deployment.topology_template.node_templates.tic.attributes.service_urls}/>
@@ -58,6 +62,8 @@ function Deployed() {
     }
 
     return (
+        !UCProvider ?
+        <NotProvider /> :
         <div className='theBody' data-testid="findDeployPage">
             <h1 style={{textAlign: "center"}}>Find deployed topology template by ID</h1>
             <div style={{display: instuctions ? "block" : "none"}} data-testid="instructionsInFindDpl">

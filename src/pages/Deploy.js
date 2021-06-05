@@ -1,9 +1,15 @@
-import React from "react"
+import React, { useContext } from "react"
+import { Context } from '../Context'
 import { Link } from "react-router-dom"
 import { Button, Header } from "semantic-ui-react"
+import NotProvider from "../components/NotProvider"
 
 function Deploy() {
+    const { role } = useContext(Context)
+    const UCProvider = role === "UCprovider1" || role === "UCprovider2" || role === "UCprovider3" || role === "UCprovider4"
     return (
+        !UCProvider ?
+        <NotProvider /> :
         <div className="theBody">
             <h1 title="deployPage">Please consider the following: </h1><br />
             <p data-testid="paragraphInDeploy">
@@ -19,7 +25,6 @@ function Deploy() {
                 <Button data-testid="deployBtnDeployPg">Deploy</Button>
             </Link>
         </div>
-        
     )
 }
 

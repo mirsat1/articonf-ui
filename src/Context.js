@@ -19,6 +19,7 @@ function ContextProvider({children}) {
   const [topologyTemplate, setTopologyTemplate] = useState()
   const [plannedTopologyTemplate, setPlannedTopologyTemplate] = useState()
   const [id, setId] = useState()
+  const [role, setRole] = useState(null)
   const [plannedToscaTemplate, setPlannedToscaTemplate] = useState(null)
   const [provisionToscaTemplate, setProvisionToscaTemplate] = useState(null)
   const [provisionedToscaTemplate, setProvisionedToscaTemplate] = useState()
@@ -243,17 +244,26 @@ function ContextProvider({children}) {
     if (currentUser) {
       axios.get(`https://articonf2.firebaseio.com/user_profile/${userUID}/IDs.json`)
         .then(res => {
-          if(res.data.toscaID) setId(res.data.toscaID);
-          if(res.data.planID) setPlannedToscaTemplate(res.data.planID);
-          if(res.data.provisionID) setProvisionToscaTemplate(res.data.provisionID);
-          if(res.data.deploymentID) setDeployedToscaId(res.data.deploymentID);
-          // console.log(res)
+          if (res.data) {
+            if(res.data.toscaID) setId(res.data.toscaID);
+            if(res.data.planID) setPlannedToscaTemplate(res.data.planID);
+            if(res.data.provisionID) setProvisionToscaTemplate(res.data.provisionID);
+            if(res.data.deploymentID) setDeployedToscaId(res.data.deploymentID);
+            console.log("response", res)
+          }
         })
         .catch(err => console.log(err))
       
+      axios.get(`https://articonf2.firebaseio.com/user_profile/${userUID}/role.json`)
+        .then(res => {
+          if(res.data) setRole(res.data)
+        })
+        .catch(err => console.log(err))
+
       firebase.database().ref('users/' + userUID + '/IDs').set({
         email: userEmail
       })
+
       if (id){
         firebase.database().ref('user_profile/' + userUID + '/IDs').update({
           toscaID: id
@@ -274,14 +284,20 @@ function ContextProvider({children}) {
           deploymentID: deployedToscaId
         })
       }
+      if (role){
+        firebase.database().ref('user_profile/' + userUID).update({
+          role: role
+        })
+      }
     }
+    // console.log("role: ", role)
     if (!currentUser) {
       setId(null)
       setPlannedToscaTemplate(null);
       setProvisionToscaTemplate(null);
       setDeployedToscaId(null);
     }
-  }, [currentUser, userUID, userEmail, id, plannedToscaTemplate, provisionToscaTemplate, deployedToscaId])
+  }, [currentUser, userUID, userEmail, id, plannedToscaTemplate, provisionToscaTemplate, deployedToscaId, role])
 
 
   useEffect(() => {
@@ -686,6 +702,10 @@ function uploadToscaButton(tosca) {
     setId(id)
   }
 
+  function setUpRole(role) {
+    setRole(role)
+  }
+
   function initialiseIds() {
     alert("This will erase all your ID's that you have obtained or entered!")
     setId(null)
@@ -702,7 +722,7 @@ function uploadToscaButton(tosca) {
     setProvisionToscaTemplate(null)
     setDeployedToscaId(null)
     setIsDeleted(null)
-    
+    setRole(null) 
   }
 
   // console.log("User signed out and the ui initialised all ID states", plannedToscaTemplate)
@@ -735,6 +755,7 @@ function uploadToscaButton(tosca) {
       usersRef,
       topologyTemplate,
       id,
+      role,
       plannedToscaTemplate,
       plannedTopologyTemplate,
       provisionToscaTemplate,
@@ -764,6 +785,7 @@ function uploadToscaButton(tosca) {
       setDeploymentId,
       setDeletedId,
       setToscaId,
+      setUpRole,
       findDeleted,
       deleted,
       initialiseIds,

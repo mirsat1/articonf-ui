@@ -6,7 +6,9 @@
     bottom: 0;
     left: 0;
     padding: 1rem;
-    height: 249px;
+    padding-left: 10%;
+    padding-right: 10%;
+    height: auto;
     background-color: #08335e;
     align-content: center;
     text-align: left;
@@ -15,7 +17,6 @@
 
 .footer .footerImg {
     float: left;
-    margin-top: 15px;
 }
 
 .footer p {
