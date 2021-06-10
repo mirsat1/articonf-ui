@@ -3,9 +3,8 @@ import NotProvider from '../components/NotProvider'
 import axios from 'axios'
 import firebase from 'firebase/app'
 import { Context } from '../Context'
-import { Button, Form, Icon, Grid, Segment, Label } from "semantic-ui-react"
+import { Button, Form, Icon, Grid, Segment, Label, Dimmer, Loader } from "semantic-ui-react"
 import CopyToClipboard from '../components/CopyToClipboard'
-import Loader from 'react-loader-spinner'
 import useToggler from '../hooks/useToggler'
 
 export default function Smart() {
@@ -32,7 +31,7 @@ export default function Smart() {
     const [tokenCreated, setTokenCreated] = useState(false)
 
     // Use case provider role checkup
-    const UCProvider = role === "UCprovider1" || role === "UCprovider2" || role === "UCprovider3" || role === "UCprovider4"
+    const UCProvider = (RegExp("UCprovider").test(role))
 
     // Get 
     useEffect(() => {
@@ -133,12 +132,9 @@ export default function Smart() {
                 loading 
                 &&
                 <div>
-                <h3>Loading <Loader
-                    type="ThreeDots"
-                    color="#08335e"
-                    height={50}
-                    width={50}
-                />
+                <h3>Loading <Dimmer active>
+                        <Loader size='massive'>Loading</Loader>
+                    </Dimmer>
                 </h3>  
                 </div>
             }

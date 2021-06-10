@@ -19,6 +19,7 @@ import ToscaConfig from './components/ToscaConfig'
 import Heap from "reactjs-heap"
 import { Button } from "semantic-ui-react"
 import Smart from "./pages/Smart"
+import Tac from "./pages/Tac"
 
 function App() {
   let history = useHistory();
@@ -50,6 +51,7 @@ function App() {
       <PrivateRoute exact path="/beta/testing/deploy/deployment" component={Deployer} />
       <PrivateRoute exact path="/beta/testing/deployed" component={Deployed} />
       <PrivateRoute exact path="/beta/testing/smart" component={Smart} />
+      <PrivateRoute exact path="/beta/testing/tac" component={Tac} />
       <PrivateRoute exact path="/beta/testing/bank" component={TokenBank} />
       <PrivateRoute exact path="/beta/testing/monitoring" component={Monitoring} />
       <PrivateRoute exact path="/beta/testing/userprofile" component={UserProfile} />

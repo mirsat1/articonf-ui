@@ -3,12 +3,12 @@ import { Context } from '../Context'
 import firebase from "firebase/app";
 import axiosBase from '../axios/axios-base'
 import YAML from 'js-yaml'
-import JSONPretty from 'react-json-prettify'
-import CustomTheme from 'react-json-prettify/dist/themes/arduinoLight'
+// import JSONPretty from 'react-json-prettify'
+// import CustomTheme from 'react-json-prettify/dist/themes/arduinoLight'
 import FileUpload from './FileUpload'
-import { Button, Form, Input, Label, Grid, Segment, Message, Icon } from 'semantic-ui-react'
-import Loader from 'react-loader-spinner'
+import { Button, Form, Input, Label, Grid, Segment, Message, Icon, Loader, Dimmer } from 'semantic-ui-react'
 import { useHistory } from 'react-router-dom';
+import Dummy from './DummyApi';
 
 
 export default function ToscaConfig() {
@@ -393,9 +393,16 @@ export default function ToscaConfig() {
                     </Form>
                     <Button floated='right' type="submit" onClick={restoreDefaultsToDB}>Restore default</Button>
                     <Button floated="right" onClick={removeVm}>Remove last virtual machine</Button> 
-                    <Button onClick={updateToscaToDB}>Save Changes</Button>
-                    {isLoading && <h4>Updating... <Loader type="ThreeDots" color="#08335e" height={50} width={50}/></h4>}
-                    <JSONPretty theme={CustomTheme} json={toscaLoaded} />
+                    <Button onClick={updateToscaToDB} style={{marginBottom: "0.4em"}}>Save Changes</Button>
+                    <Dummy
+                        modalBtnName="Show TOSCA"
+                        headerInfo="Your TOSCA topology template"
+                        data={toscaLoaded}
+                    />
+                    {isLoading && <Dimmer active>
+                                    <Loader size='massive'>Loading</Loader>
+                                </Dimmer>}
+                    {/* <JSONPretty theme={CustomTheme} json={toscaLoaded} /> */}
                 </div>
             }
         </div>

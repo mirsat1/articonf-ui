@@ -9,7 +9,7 @@ import Role from "../components/Role"
 
 export default function UserProfile() {
     const { userEmail, id, plannedToscaTemplate, provisionToscaTemplate, deployedToscaId, setUpRole, role, userUID } = useContext(Context)
-    const UCProvider = role === "UCprovider1" || role === "UCprovider2" || role === "UCprovider3" || role === "UCprovider4"
+    const UCProvider = (RegExp("UCprovider").test(role))
     
     async function resetRole() {
         await firebase.database().ref('user_profile/' + userUID + '/role').remove()
