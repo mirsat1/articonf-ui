@@ -5,6 +5,7 @@ import smart from "./axios/axios-smart"
 import YAML from "js-yaml"
 import app from "./firebase"
 import firebase from "firebase/app";
+import elasticsearch from 'elasticsearch'
 import "firebase/database";
 // import axiosBase from "./axios/axios-base"
 
@@ -239,6 +240,22 @@ function ContextProvider({children}) {
   const usersRef = firebase.database().ref("users/" + userUID + "/");
   const usersProfileIDsRef = firebase.database().ref("user_profile/" + userUID + "/IDs");
   userUID && usersRef.onDisconnect().remove()
+
+  const client = new elasticsearch.Client({
+    host: "localhost:9200",
+    maxRetries: 1
+  }) 
+
+  client.ping({
+      // ping usually has a 3000ms timeout
+      requestTimeout: 1000
+  }, function (error) {
+      if (error) {
+          console.log('TAC services are down!');
+      } else {
+      console.log('All is well');
+      }
+  });
   
   useEffect(() => {
     if (currentUser) {
@@ -753,6 +770,7 @@ function uploadToscaButton(tosca) {
     <Context.Provider value={{
       currentUser,
       usersRef,
+      client,
       topologyTemplate,
       id,
       role,

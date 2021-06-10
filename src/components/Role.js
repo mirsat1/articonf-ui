@@ -36,6 +36,7 @@ export default function Role() {
                             Role
                         </label>
                         <select onChange={e => setRole(e.target.value)} defaultValue="UCuser1">
+                            <option value="UCprovider">dApp provider</option>
                             <option value="UCuser1">Use case user - Crowd journalism</option>
                             <option value="UCuser2">Use case user - Smart energy</option>
                             <option value="UCuser3">Use case user - Video opinion</option>

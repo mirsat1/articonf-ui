@@ -17,7 +17,7 @@ export default function Dummy(props) {
           onClose={() => setOpen(false)}
           onOpen={() => setOpen(true)}
           open={open}
-          trigger={<Button onClick={props.callApi}>{props.modalBtnName}</Button>}
+          trigger={<Button onClick={props.callApi} color="blue">{props.modalBtnName}</Button>}
       >
           <Modal.Header>{props.headerInfo}</Modal.Header>
             <Modal.Content scrolling>

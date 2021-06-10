@@ -40,7 +40,7 @@ function Deployed() {
     const [message, setMessage] = useState("")
     const [yesDisabler, setYesDisabler] = useState(false)
 
-    const UCProvider = role === "UCprovider1" || role === "UCprovider2" || role === "UCprovider3" || role === "UCprovider4"
+    const UCProvider = (RegExp("UCprovider").test(role))
 
 
     //<JSONPretty json={deployment.topology_template.node_templates.tic.attributes.service_urls}/>

@@ -17,7 +17,7 @@ function Dashboard() {
 
   const [ticConfig, setTicConfig] = useState(null)
   const [toscaConfig, setToscaConfig] = useState(null)
-  const UCProvider = role === "UCprovider1" || role === "UCprovider2" || role === "UCprovider3" || role === "UCprovider4"
+  const UCProvider = (RegExp("UCprovider").test(role))
 
   useEffect(() => {
     axiosBase.get(`user_profile/${userUID}.json`)

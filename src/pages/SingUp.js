@@ -114,6 +114,7 @@ const SignUp = ({ history }) => {
               Role
             </label>
             <select onChange={e => setRole(e.target.value)} defaultValue="UCuser1">
+              <option value="UCprovider">dApp provider</option>
               <option value="UCprovider1">Use case provider - Crowd journalism</option>
               <option value="UCprovider2">Use case provider - Smart energy</option>
               <option value="UCprovider3">Use case provider - Video opinion</option>
