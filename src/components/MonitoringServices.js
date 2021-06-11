@@ -1,11 +1,29 @@
-import React from 'react'
+import React, { useContext, useEffect } from 'react'
 import useToggler from '../hooks/useToggler'
-import { Header, Icon, Button, Popup } from 'semantic-ui-react'
+import { Header, Icon, Button, Popup, Message } from 'semantic-ui-react'
+import { Context } from '../Context'
+
+import CopyToClipboard from './CopyToClipboard'
 
 export default function MonitoringServices() {
+    const {
+        findDeployed,
+        deployment
+    } = useContext(Context)
     const [showInfo, toggleInfo] = useToggler()
     const content = showInfo ? 'less' : 'more'
+    
+    const ip_addr = deployment && JSON.stringify(deployment.topology_template.node_templates.compute.attributes.public_ip)
+    const kubeDashboard = deployment && "https://" + ip_addr.substring(1, ip_addr.length-1) + ":30384"
+    const grafana = deployment && "http://" + ip_addr.substring(1, ip_addr.length-1) + ":31925"
+    const prometheusGUI = deployment && "http://" + ip_addr.substring(1, ip_addr.length-1) + ":30090"
+    // const prometheusMetricEP = deployment && "https://" + ip_addr.substring(1, ip_addr.length-1) + ":30443"
+
+    // console.log(deployment)
+
+    useEffect(findDeployed, [])
     return (
+        deployment ?
         <div>
             <Popup content={'Click here to show ' + content + ' detailed information about the services'} trigger={
                 <Button  onClick={toggleInfo} icon>
@@ -13,7 +31,7 @@ export default function MonitoringServices() {
                 </Button>
                 } />
             <div style={{textAlign: "center"}}>
-                <Header style={{margin: "1.2em"}} icon>
+                <Header as="a" href={kubeDashboard} target="_blank" style={{margin: "1.2em"}} icon>
                     <Icon>
                     <img src={process.env.PUBLIC_URL + "/images/kube.png"} alt="Kubernetes Dashboard" height="100" width="100"/>
                     </Icon>
@@ -27,21 +45,21 @@ export default function MonitoringServices() {
                     </Header.Subheader>
                 </Header>
                 {/* <i className="ri-arrow-right-circle-fill ri-fw ri-3x"></i> */}
-                <Header style={{margin: "1.2em"}} icon>
+                <Header as="a" href={prometheusGUI} target="_blank" style={{margin: "1.2em"}} icon>
                     <Icon>
                     <img src={process.env.PUBLIC_URL + "/images/prometheus.png"} alt="Prometheus" height="100" width="100"/>
                     </Icon>
                     Prometheus
                 </Header>
                 {/* <i className="ri-arrow-right-circle-fill ri-fw ri-3x"></i> */}
-                <Header style={{margin: "1.2em"}} icon>
+                <Header as="a" href={grafana} target="_blank" style={{margin: "1.2em"}} icon>
                     <Icon>
                         <img src={process.env.PUBLIC_URL + "/images/grafana.png"} alt="Grafana" height="100" width="100"/>
                     </Icon>
                     Grafana
                 </Header>
                 {/* <i className="ri-arrow-right-circle-fill ri-fw ri-3x"></i> */}
-                <Header style={{margin: "1.2em"}} icon>
+                <Header as="a" href="http://15.237.93.29:8081/" target="_blank" style={{margin: "1.2em"}} icon>
                     <Icon>
                         <img src={process.env.PUBLIC_URL + "/images/kibana.png"} alt="Kibana" height="100" width="100"/>
                     </Icon>
@@ -52,14 +70,21 @@ export default function MonitoringServices() {
                 {
                     showInfo &&
                     <div>
+                        <h3>Kubernetes Dashboard token:</h3>
+                        <CopyToClipboard name="Smart token" inputValue={deployment.topology_template.node_templates.kubernetes.attributes.tokens[0].token} />
+                        <Message
+                            icon="info"
+                            header="Grafana username: admin"
+                            content="Grafana password: prom-operator"
+                        />
                         <Header as='h2'>
                             <img src={process.env.PUBLIC_URL + "/images/kube.png"} alt="Kubernetes Dashboard" height="100" width="100"/>
                             <Header.Content>
                             Kubernetes Dashboard
                             <Header.Subheader>
-                            You can use Dashboard to deploy containerized applications to a Kubernetes cluster, troubleshoot your containerized application, and manage the cluster resources. <br />
-                            You can use Dashboard to get an overview of applications running on your cluster, as well as for creating or modifying individual Kubernetes resources (such as <br />
-                            Deployments, Jobs, DaemonSets, etc). For example, you can scale a Deployment, initiate a rolling update, restart a pod or deploy new applications using a deploy wizard.
+                            You can use Dashboard to deploy containerized applications to a Kubernetes cluster, troubleshoot your containerized application, and manage the cluster resources. You can use Dashboard to get an overview of applications <br />
+                            running on your cluster, as well as for creating or modifying individual Kubernetes resources (such as Deployments, Jobs, DaemonSets, etc). For example, you can scale a Deployment, initiate a rolling update, restart a pod <br />
+                            or deploy new applications using a deploy wizard.
                             </Header.Subheader>
                             </Header.Content>
                         </Header>
@@ -96,5 +121,14 @@ export default function MonitoringServices() {
                 }
             </div>
         </div>
+        :
+        <Message
+            error
+            header='It seems that you are missing a deployment'
+            list={[
+            'You can get a deployment at Deployment tab in the header menu.',
+            'Enter it manually in the Find deployment tab in the menu header.',
+            ]}
+        />
     )
 }
