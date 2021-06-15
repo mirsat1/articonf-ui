@@ -3,7 +3,7 @@ import NotProvider from '../components/NotProvider'
 import axios from 'axios'
 import firebase from 'firebase/app'
 import { Context } from '../Context'
-import { Button, Form, Icon, Grid, Segment, Label, Dimmer, Loader, Message } from "semantic-ui-react"
+import { Button, Form, Icon, Grid, Segment, Label, Dimmer, Loader, Message, Input } from "semantic-ui-react"
 import CopyToClipboard from '../components/CopyToClipboard'
 import useToggler from '../hooks/useToggler'
 import useRequestInfo from '../hooks/useRequestInfo'
@@ -28,19 +28,30 @@ export default function Smart() {
         name: null
     })
     const [mapLen, setMapLen] = useState(1)
+    const [numOfKeys, setNumOfKeys] = useState(1)
     const [keyName, setKeyName] = useState("")
     const [show, toggle] = useToggler(false)
     const [tokenCreated , setTokenCreated] = useState(false)
     const [tokenSucces, onTokenSucces] = useRequestInfo("")
     const [ucSucces, onUcSucces] = useRequestInfo("")
+    const [layerSuccess, onLayerSuccess] = useRequestInfo("")
     const [mappingSucces, onMappingSucces] = useRequestInfo("")
     const [tableSucces, onTableSucces] = useRequestInfo("")
     const [useCases, setUseCases] = useState(null)
+    const [layer, setLayer] = useState({
+        cluster_properties: [],
+          name: null,
+          properties: [],
+          table: null,
+          use_case: null
+    })
+    const [clusterProp, setClusterProp] = useState("")
+    const [layerProp, setLayerProp] = useState("")
 
     // function that will create as many form fields as the users enters in the input bellow and also will create object!!
     function numOfMap(num) {
         let content = []
-        for (var i = 0; i < num; i++ ) {
+        for (var i = 0; i < num; i++) {
             content.push(<Grid columns={2}>
                             <Grid.Column><input style={{marginBottom: "0.4em"}} onChange={e => setKeyName(e.target.value)} placeholder="Key" required/></Grid.Column>
                             <Grid.Column><input style={{marginBottom: "0.4em"}} onChange={e => setTable({...table, mappings: {...table.mappings, [keyName]: e.target.value}})} placeholder="Value" required/></Grid.Column>
@@ -48,7 +59,20 @@ export default function Smart() {
         }
         return content
     }
-    console.log("table2: ", table)
+
+    function numOfMap2(num) {
+        let content = []
+        for (var i = 0; i < num; i++) {
+            content.push(<Grid columns={2}>
+                            <Grid.Column><input style={{marginBottom: "0.4em"}} onChange={e => setMapping({...mapping, internal: e.target.value})} placeholder="Key" required/></Grid.Column>
+                            <Grid.Column><input style={{marginBottom: "0.4em"}} onChange={e => setMapping({...mapping, external: e.target.value})} placeholder="Value" required/></Grid.Column>
+                        </Grid>)
+        }
+        return content
+    }
+
+    console.log("layer: ", layer)
+    console.log("use-case-name: ", ucName)
     // Use case provider role checkup
     const UCProvider = (RegExp("UCprovider").test(role))
     
@@ -217,6 +241,33 @@ export default function Smart() {
             })
     }
 
+    function createLayer() {
+        setLoading(true)
+        setHasError({isError: false})
+        axios({
+            method: "POST",
+            url: `https://articonf1.itec.aau.at:30420/api/layers`,
+            data: layer,
+            headers: { "Content-Type": "application/json", "Authorization": token }
+        })
+            .then(res => {
+                setLoading(false)
+                setHasError({isError: false})
+                onLayerSuccess("Success")
+                setTimeout(() => onLayerSuccess(""), 3000)
+            })
+            .catch(err => {
+                setLoading(false)
+                if (err.response) {
+                    err.response.data.detail ? setHasError({isError: true, errorMessage: err.response.data.detail}) : setHasError({isError: true, errorMessage: err.response.data})
+                }  else {
+                    setHasError({isError: true, errorMessage: err.message})
+                }
+                onLayerSuccess("Failed")
+                setTimeout(() => onLayerSuccess(""), 3000)
+            })
+    }
+
     // console.log("Table: ", table)
     // console.log("Mappings: ", mapping)
 
@@ -241,7 +292,7 @@ export default function Smart() {
             {
                 show &&
                 <div>
-                    <Segment>
+                    <Segment style={{height: "100%"}} >
                         <Form onSubmit={createToke}>
                             <Form.Field>
                             <input style={{marginBottom: "0.4em"}} onChange={e => setSmartUser({...smartUser, username: e.target.value})} placeholder="Username" required/>
@@ -273,7 +324,7 @@ export default function Smart() {
                 <div>
                     <Grid>
                     <Grid.Column>
-                        <Segment raised>
+                        <Segment style={{height: "100%"}} raised>
                             <Label as='a' color='black' ribbon>
                             Use-case
                             </Label><br /><br />
@@ -299,7 +350,7 @@ export default function Smart() {
                 </Grid>
                 <Grid columns={2}>
                         <Grid.Column>
-                            <Segment raised>
+                            <Segment style={{height: "100%"}} raised>
                                 <Label as='a' color='black' ribbon>
                                 Table
                                 </Label><br /><br />
@@ -308,7 +359,7 @@ export default function Smart() {
                                         Create mappings for the new table
                                     </Label><br /><br />
                                     <Form.Field>
-                                        <input style={{marginBottom: "0.4em"}} onChange={e => setMapLen(e.target.value)} type="number" min="1" placeholder="How many fields do you want to create?"/>
+                                        <input style={{marginBottom: "0.6em"}} onChange={e => setMapLen(e.target.value)} type="number" min="1" placeholder="How many fields do you want to create?"/>
                                         {numOfMap(mapLen)}
                                     </Form.Field>
                                     <Label color='red' horizontal ribbon>
@@ -335,7 +386,7 @@ export default function Smart() {
                             </Segment>
                         </Grid.Column>
                         <Grid.Column>
-                            <Segment raised>
+                            <Segment style={{height: "100%"}} raised>
                                 <Label as='a' color='black' ribbon="right">
                                 Mappings
                                 </Label><br /><br />
@@ -344,20 +395,18 @@ export default function Smart() {
                                 </Label><br /><br />
                                 <Form onSubmit={createMapping}>
                                     <Form.Field>
-                                        <input onChange={e => setTableName(e.target.value)} placeholder="Enter the name of the table you want to add new mapping" required/>
+                                        <select style={{marginBottom: "0.4em"}} onChange={e => setUcName(e.target.value)}>
+                                            {useCases && useCases.map(element => <option value={element.name}>{element.name}</option>)}
+                                        </select>
                                     </Form.Field>
                                     <Form.Field>
-                                        <input style={{marginBottom: "0.4em"}} onChange={e => setUcName(e.target.value)} placeholder="Enter the name of the use-case wher you wish to create the mappins" required/>
+                                        <input onChange={e => setTableName(e.target.value)} placeholder="Enter the name of the table you want to add new mapping" required/>
                                     </Form.Field>
                                     <Label color='red' ribbon="right">
                                         Mapping names
                                     </Label><br /><br />
-                                    <Form.Field>
-                                        <input style={{marginBottom: "0.4em"}} onChange={e => setMapping({...mapping, internal: e.target.value})} placeholder="Enter the key name" required/>
-                                    </Form.Field>
-                                    <Form.Field>
-                                        <input style={{marginBottom: "0.4em"}} onChange={e => setMapping({...mapping, external: e.target.value})} placeholder="Enter the key value" required/>
-                                    </Form.Field>
+                                    <input style={{marginBottom: "0.6em"}}  type="number" min="1" onChange={e => setNumOfKeys(e.target.value)} placeholder="Enter how many fields you want to map in the table" />
+                                    {numOfMap2(numOfKeys)}
                                     <Grid columns={2}>
                                         <Grid.Column width={13}>
                                             {mappingSucces === "Failed" && <Message color='red'><Icon name="thumbs down outline" />{mappingSucces}</Message>}
@@ -371,6 +420,46 @@ export default function Smart() {
                             </Segment>
                         </Grid.Column>
                     </Grid>
+                    <Segment raised>
+                                <Label as='a' color='black' ribbon="left">
+                                Layers
+                                </Label><br /><br />
+                                <Label color='red' ribbon="left">
+                                    Cluster properties
+                                </Label><br /><br />
+                                <p>Cluster properties added: {layer.cluster_properties.length}</p>
+                                <Input style={{marginBottom: "0.4em", width: "100%"}} action={<Button onClick={(e) => {layer.cluster_properties.push(clusterProp); setClusterProp("")}} icon="add"/>} placeholder="Add cluster propertie" value={clusterProp} onChange={e => setClusterProp(e.target.value)}/><br />
+                                <Label color='red' ribbon="left">
+                                    Properties
+                                </Label><br /><br />
+                                <p>Properties added: {layer.properties.length}</p>
+                                <Input style={{marginBottom: "0.4em", width: "100%"}} action={<Button onClick={(e) => {layer.properties.push(layerProp); setLayerProp("")}} icon="add"/>} placeholder="Add propertie" value={layerProp} onChange={e => setLayerProp(e.target.value)}/><br />
+                                <Label color='red' ribbon="left">
+                                    Table and Use case
+                                </Label><br /><br />
+                                <Form onSubmit={createLayer}>
+                                    <Form.Field>
+                                        <input style={{marginBottom: "0.4em"}} onChange={e => setLayer({...layer, name: e.target.value})} placeholder="Enter the name of the layer" required/>
+                                    </Form.Field>
+                                    <Form.Field>
+                                        <select style={{marginBottom: "0.4em"}} onChange={e => setLayer({...layer, use_case: e.target.value})}>
+                                            {useCases && useCases.map(element => <option value={element.name}>{element.name}</option>)}
+                                        </select>
+                                    </Form.Field>
+                                    <Form.Field>
+                                        <input onChange={e => setLayer({...layer, table: e.target.value})} placeholder="Enter the name of the table you want to add new layer" required/>
+                                    </Form.Field>
+                                    <Grid columns={2}>
+                                        <Grid.Column width={13}>
+                                            {layerSuccess === "Failed" && <Message color='red'><Icon name="thumbs down outline" />{layerSuccess}</Message>}
+                                            {layerSuccess === "Success" && <Message color='yellow'><Icon name="thumbs up outline" />{layerSuccess}</Message>}
+                                        </Grid.Column>
+                                        <Grid.Column width={3}>
+                                            <Button floated="right" type="submit" style={{marginBottom: "0.4em"}}>Add layer</Button>
+                                        </Grid.Column>
+                                    </Grid>
+                                </Form>
+                            </Segment>
                 </div>}
         </div>
         :
