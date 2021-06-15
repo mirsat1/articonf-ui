@@ -9,6 +9,7 @@ function TokenBank() {
      
     return (
         <div className="theBody">
+            <h1>Analitycs and visualizations</h1>
             <div>
                 {role === "UCprovider1" && <div>
                     <h3>Crowd journaism dashboard</h3>

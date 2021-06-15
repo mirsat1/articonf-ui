@@ -24,22 +24,34 @@ export default function Smart() {
     })
     const [tableName, setTableName] = useState("")
     const [table, setTable] = useState({
-        mappings: {
-            dough: "",
-            name: ""
-        },
-        name: ""
+        mappings: {},
+        name: null
     })
+    const [mapLen, setMapLen] = useState(1)
+    const [keyName, setKeyName] = useState("")
     const [show, toggle] = useToggler(false)
     const [tokenCreated , setTokenCreated] = useState(false)
     const [tokenSucces, onTokenSucces] = useRequestInfo("")
     const [ucSucces, onUcSucces] = useRequestInfo("")
     const [mappingSucces, onMappingSucces] = useRequestInfo("")
     const [tableSucces, onTableSucces] = useRequestInfo("")
+    const [useCases, setUseCases] = useState(null)
 
+    // function that will create as many form fields as the users enters in the input bellow and also will create object!!
+    function numOfMap(num) {
+        let content = []
+        for (var i = 0; i < num; i++ ) {
+            content.push(<Grid columns={2}>
+                            <Grid.Column><input style={{marginBottom: "0.4em"}} onChange={e => setKeyName(e.target.value)} placeholder="Key" required/></Grid.Column>
+                            <Grid.Column><input style={{marginBottom: "0.4em"}} onChange={e => setTable({...table, mappings: {...table.mappings, [keyName]: e.target.value}})} placeholder="Value" required/></Grid.Column>
+                        </Grid>)
+        }
+        return content
+    }
+    console.log("table2: ", table)
     // Use case provider role checkup
     const UCProvider = (RegExp("UCprovider").test(role))
-
+    
     // Get 
     useEffect(() => {
         setLoading(true)
@@ -49,6 +61,25 @@ export default function Smart() {
             setLoading(false)
             if(res.data) {
                 setToken(res.data)
+                console.log(res.data)
+                axios({
+                    method: "GET",
+                    url: 'https://articonf1.itec.aau.at:30420/api/use-cases',
+                    headers: { "Content-Type": "application/json", "Authorization": res.data }
+                })
+                .then(res => {
+                    setLoading(false)
+                    setHasError({isError: false})
+                    setUseCases(res.data)
+                })
+                .catch(err => {
+                    setLoading(false)
+                    if (err.response) {
+                        err.response.data.detail ? setHasError({isError: true, errorMessage: err.response.data.detail}) : setHasError({isError: true, errorMessage: err.response.data})
+                    }  else {
+                        setHasError({isError: true, errorMessage: err.message})
+                    }
+                })
             } else {
                 setHasError({isError: true, errorMessage: "Got empty token! Try getting a new one from SMART"})
             }
@@ -62,7 +93,7 @@ export default function Smart() {
             }
         })
     }, [userUID])
-    // console.log("Token: ", token)
+    // console.log("Use-Cases: ", useCases)
 
     async function createToke() {
         setLoading(true)
@@ -277,10 +308,8 @@ export default function Smart() {
                                         Create mappings for the new table
                                     </Label><br /><br />
                                     <Form.Field>
-                                        <input style={{marginBottom: "0.4em"}} onChange={e => setTable({...table, mappings: {...table.mappings, dough: e.target.value}})} placeholder="Enter path of the mapping" required/>
-                                    </Form.Field>
-                                    <Form.Field>
-                                        <input style={{marginBottom: "0.4em"}} onChange={e => setTable({...table, mappings: {...table.mappings, name: e.target.value}})} placeholder="Enter the name of mapping" required/>
+                                        <input style={{marginBottom: "0.4em"}} onChange={e => setMapLen(e.target.value)} type="number" min="1" placeholder="How many fields do you want to create?"/>
+                                        {numOfMap(mapLen)}
                                     </Form.Field>
                                     <Label color='red' horizontal ribbon>
                                         Add neme of the new table
@@ -289,7 +318,9 @@ export default function Smart() {
                                         <input style={{marginBottom: "0.4em"}} onChange={e => setTable({...table, name: e.target.value})} placeholder="Enter the name for the table" required/>
                                     </Form.Field>
                                     <Form.Field>
-                                        <input style={{marginBottom: "0.5em"}} onChange={e => setUcName(e.target.value)} placeholder="Enter the name of the use-case wher you wish to create the table" required/>
+                                        <select style={{marginBottom: "0.4em"}} onChange={e => setUcName(e.target.value)}>
+                                            {useCases && useCases.map(element => <option value={element.name}>{element.name}</option>)}
+                                        </select>
                                     </Form.Field>
                                     <Grid columns={2}>
                                         <Grid.Column width={13}>
