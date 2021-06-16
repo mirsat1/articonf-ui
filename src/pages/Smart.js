@@ -3,7 +3,7 @@ import NotProvider from '../components/NotProvider'
 import axios from 'axios'
 import firebase from 'firebase/app'
 import { Context } from '../Context'
-import { Button, Form, Icon, Grid, Segment, Label, Dimmer, Loader, Message, Input } from "semantic-ui-react"
+import { Button, Form, Icon, Grid, Segment, Label, Dimmer, Loader, Message, Input, Dropdown } from "semantic-ui-react"
 import CopyToClipboard from '../components/CopyToClipboard'
 import useToggler from '../hooks/useToggler'
 import useRequestInfo from '../hooks/useRequestInfo'
@@ -34,6 +34,8 @@ export default function Smart() {
     const [tokenCreated , setTokenCreated] = useState(false)
     const [tokenSucces, onTokenSucces] = useRequestInfo("")
     const [ucSucces, onUcSucces] = useRequestInfo("")
+    const [ownerTrainDataSucces, onOwnerTrainDataSucces] = useRequestInfo("")
+    const [ownerTrainDataSucces2, onOwnerTrainDataSucces2] = useRequestInfo("")
     const [layerSuccess, onLayerSuccess] = useRequestInfo("")
     const [mappingSucces, onMappingSucces] = useRequestInfo("")
     const [tableSucces, onTableSucces] = useRequestInfo("")
@@ -47,6 +49,18 @@ export default function Smart() {
     })
     const [clusterProp, setClusterProp] = useState("")
     const [layerProp, setLayerProp] = useState("")
+    const [smartUserRole, setSmartUserRole] = useState(null)
+    console.log("Smart user role: ", smartUserRole)
+    const smartoRoleSelectOptions = [
+        { key: 'owner', text: 'Owner', value: 'owner' },
+        { key: 'developer', text: 'Developer', value: 'developer' },
+        { key: 'user', text: 'User', value: 'user' }
+    ]
+    const [selectedGlobalHyperparametersFile, setSelectedGlobalHyperparametersFile] = useState(null)
+    const [selectedPreprocessingFile, setSelectedPreprocessingFile] = useState(null)
+    const [selectedModelFile, setSelectedModelFile] = useState(null)
+    const [selectedDatasetFile1, setSelectedDatasetFile1] = useState(null)
+    const [selectedDatasetFile2, setSelectedDatasetFile2] = useState(null)
 
     // function that will create as many form fields as the users enters in the input bellow and also will create object!!
     function numOfMap(num) {
@@ -69,6 +83,22 @@ export default function Smart() {
                         </Grid>)
         }
         return content
+    }
+
+    function onGlobalHyperparametersFileChange(event) {
+        setSelectedGlobalHyperparametersFile(event.target.files[0])
+    }
+    function onPreprocessingFileChange(event) {
+        setSelectedPreprocessingFile(event.target.files[0])
+    }
+    function onModelFileChange(event) {
+        setSelectedModelFile(event.target.files[0])
+    }
+    function onDatasetFile1Change(event) {
+        setSelectedDatasetFile1(event.target.files[0])
+    }
+    function onDatasetFile2Change(event) {
+        setSelectedDatasetFile2(event.target.files[0])
     }
 
     console.log("layer: ", layer)
@@ -268,6 +298,93 @@ export default function Smart() {
             })
     }
 
+    function getOwnersTrainData() {
+        setLoading(true)
+        setHasError({isError: false})
+        axios({
+            method: "GET",
+            url: `https://articonf1.itec.aau.at:30420/Owners/use_case/${ucName}/last_train`,
+            headers: { "Content-Type": "application/json", "Authorization": token }
+        })
+            .then(res => {
+                setLoading(false)
+                setHasError({isError: false})
+                onOwnerTrainDataSucces("Success")
+                setTimeout(() => onOwnerTrainDataSucces(""), 3000)
+            })
+            .catch(err => {
+                setLoading(false)
+                if (err.response) {
+                    err.response.data.detail ? setHasError({isError: true, errorMessage: err.response.data.detail}) : setHasError({isError: true, errorMessage: err.response.data})
+                }  else {
+                    setHasError({isError: true, errorMessage: err.message})
+                }
+                onOwnerTrainDataSucces("Failed")
+                setTimeout(() => onOwnerTrainDataSucces(""), 3000)
+            })
+    }
+
+    function postOwnerDataTraining() {
+        setLoading(true)
+        setHasError({isError: false})
+        const formData = new FormData()
+
+        formData.append(
+            'global_hyperparameters',
+            selectedGlobalHyperparametersFile,
+            selectedGlobalHyperparametersFile.name
+        )
+        formData.append(
+            'preprocessing',
+            selectedPreprocessingFile,
+            selectedPreprocessingFile.name
+        )
+        formData.append(
+            'model',
+            selectedModelFile,
+            selectedModelFile.name
+        )
+        formData.append(
+            'dataset_file1',
+            selectedDatasetFile1,
+            selectedDatasetFile1.name
+        )
+        formData.append(
+            'dataset_file2',
+            selectedDatasetFile2,
+            selectedDatasetFile2.name
+        )
+        /////////////// INSPECTING FORM DATA METHODS/////////////
+        // for (var pair of formData.entries()) {
+        //     console.log(pair[0] + ', ' + pair[1]); 
+        // }
+        // new Response(formData).text().then(console.log)
+        /////////////////////////////////////////////////////////
+
+        axios({
+            method: "post",
+            url: `https://articonf1.itec.aau.at:30420//Owners/use_cases/${ucName}/upload_and_train`,
+            data: formData,
+            headers: { "Content-Type": "multipart/form-data", "Access-Control-Allow-Origin": "*", "Access-Control-Allow-Methods": "DELETE, POST, GET, OPTIONS" },
+          })
+            .then(function (response) {
+                setLoading(false)
+                setHasError({isError: false})
+                onOwnerTrainDataSucces2("Success")
+                setTimeout(() => onOwnerTrainDataSucces2(""), 3000)
+            })
+            .catch(function (err) {
+                setLoading(false)
+                if (err.response) {
+                    err.response.data.detail ? setHasError({isError: true, errorMessage: err.response.data.detail}) : setHasError({isError: true, errorMessage: err.response.data})
+                }  else {
+                    setHasError({isError: true, errorMessage: err.message})
+                }
+                onOwnerTrainDataSucces2("Failed")
+                setTimeout(() => onOwnerTrainDataSucces2(""), 3000)
+            })
+    }
+
     // console.log("Table: ", table)
     // console.log("Mappings: ", mapping)
 
@@ -460,6 +577,100 @@ export default function Smart() {
                                     </Grid>
                                 </Form>
                             </Segment>
+                            <Dropdown
+                                button
+                                className='icon'
+                                floating
+                                labeled
+                                icon='user plus'
+                                options={smartoRoleSelectOptions}
+                                value={smartUserRole}
+                                search
+                                text='Select SMART role'
+                                onChange={(e, {value}) => setSmartUserRole(value)}
+                            />
+                            {!smartUserRole && <Message>You need to select your role as a SMART user in order to open more SMART configurations!</Message>}
+                            {smartUserRole === "owner" &&
+                            <Grid columns={2}>
+                                <Grid.Column>
+                                    <Segment style={{height: "100%"}} raised>
+                                        <Label as='a' color='black' ribbon>
+                                        Train data
+                                        </Label><br /><br />
+                                        <Form onSubmit={getOwnersTrainData}>
+                                            <Label color='red' horizontal ribbon>
+                                                Get last train session data
+                                            </Label><br /><br />
+                                            <Form.Field>
+                                                <select style={{marginBottom: "0.4em"}} onChange={e => setUcName(e.target.value)}>
+                                                    {useCases && useCases.map(element => <option value={element.name}>{element.name}</option>)}
+                                                </select>
+                                            </Form.Field>
+                                            <Grid columns={2}>
+                                                <Grid.Column width={13}>
+                                                    {ownerTrainDataSucces === "Failed" && <Message color='red'><Icon name="thumbs down outline" />{ownerTrainDataSucces}</Message>}
+                                                    {ownerTrainDataSucces === "Success" && <Message color='yellow'><Icon name="thumbs up outline" />{ownerTrainDataSucces}</Message>}
+                                                </Grid.Column>
+                                                <Grid.Column width={3}>
+                                                    <Button floated="right" type="submit" style={{marginBottom: "0.4em"}}>Get last train session data</Button>
+                                                </Grid.Column>
+                                            </Grid>
+                                        </Form>
+                                    </Segment>
+                                </Grid.Column>
+                                <Grid.Column>
+                                    <Segment style={{height: "100%"}} raised>
+                                        <Label as='a' color='black' ribbon="right">
+                                        Train data
+                                        </Label><br /><br />
+                                        <Form onSubmit={postOwnerDataTraining}>
+                                            <Label color='red' ribbon="right">
+                                                Name of the Use-Case to upload to
+                                            </Label><br /><br />
+                                            <Form.Field>
+                                                <select style={{marginBottom: "0.4em"}} onChange={e => setUcName(e.target.value)}>
+                                                    {useCases && useCases.map(element => <option value={element.name}>{element.name}</option>)}
+                                                </select>
+                                            </Form.Field>
+                                            <Label color='red' ribbon="right">
+                                                Upload the files required for the federated training
+                                            </Label><br /><br />
+                                            <Form.Field>
+                                            <Segment>
+                                                <input type="file" onChange={onGlobalHyperparametersFileChange} required/>
+                                                <p>File containing the global hyperparameters</p>
+                                            </Segment>
+                                            <Segment>
+                                                <input type="file" onChange={onPreprocessingFileChange} required/>
+                                                <p>File containing the preprocessing</p>
+                                            </Segment>
+                                            <Segment>
+                                                <input type="file" onChange={onModelFileChange} required/>
+                                                <p>File containing the keras model</p>
+                                            </Segment>
+                                            <Segment>
+                                                <input type="file" onChange={onDatasetFile1Change} required/>
+                                                <p>File1 of the dataset. Functionality is use_case dependendent. (i.e. True Data)</p>
+                                            </Segment>
+                                            <Segment>
+                                                <input type="file" onChange={onDatasetFile2Change} required/>
+                                                <p>File2 of the dataset. Functionality is use_case dependendent. (i.e. False Data)</p>
+                                            </Segment>
+                                            </Form.Field>
+                                            <Grid columns={2}>
+                                                <Grid.Column width={13}>
+                                                    {ownerTrainDataSucces2 === "Failed" && <Message color='red'><Icon name="thumbs down outline" />{ownerTrainDataSucces2}</Message>}
+                                                    {ownerTrainDataSucces2 === "Success" && <Message color='yellow'><Icon name="thumbs up outline" />{ownerTrainDataSucces2}</Message>}
+                                                </Grid.Column>
+                                                <Grid.Column width={3}>
+                                                    <Button floated="right" type="submit" style={{marginBottom: "0.4em"}}>Train</Button>
+                                                </Grid.Column>
+                                            </Grid>
+                                        </Form>
+                                    </Segment>
+                                </Grid.Column>
+                            </Grid>
+                            }
                 </div>}
         </div>
         :
