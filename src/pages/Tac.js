@@ -1,5 +1,6 @@
 import React, { useContext, useState, useEffect } from 'react'
 import Axios from 'axios'
+import tacApi from '../axios/axios-tac'
 import { Context } from '../Context'
 import NotProvider from '../components/NotProvider'
 import { Button, Dimmer, Loader, Grid, Segment, Label, Form, Popup, Icon, Message} from 'semantic-ui-react'
@@ -7,7 +8,7 @@ import useRequestInfo from '../hooks/useRequestInfo'
 import useToggler from '../hooks/useToggler'
 
 export default function Tac() {
-    const { role, userUID, client } = useContext(Context)
+    const { role, userUID } = useContext(Context)
     const [ucName, setUcName] = useState("")
     const [tableName, setTableName] = useState("")
     const [layerName, setLayerName] = useState("Impact_Layer")
@@ -68,9 +69,9 @@ export default function Tac() {
     function createTacIndex() {
         setIsLoading(true)
         setHasError({isError: false})
-        Axios({
+        tacApi({
             method: "PUT", 
-            url: `http://localhost:9200/${index}`,
+            url: `${index}`,
             data: createIndex,
             headers: { "Content-Type": "application/json" }
         })
@@ -110,49 +111,7 @@ export default function Tac() {
     // }
     // 30101 |||| 30103
     
-    // async function ingestSmartToTac() {
-    //     // setIsLoading(true)
-    //     setHasError({isError: false})
-    //     try {
-    //         const response = await Axios({
-    //             method: "get",
-    //             url: `https://articonf1.itec.aau.at:${port}/api/use-cases/${ucName}/tables/${tableName}/layers/${layerName}/${reqType}`,
-    //             headers: { "Content-Type": "application/json", "Authorization": token }
-    //         })
-    //         const newArr = response.data.map(k => {
-    //             const oldObj = k
-    //             oldObj.location = {lat: k.geolocation_latitude, lon: k.geolocation_longitude}
-    //             return oldObj
-    //         })
-    //         // for (var ix = 0; ix < newArr.length; ix = ix + 2) {
-    //         //     newArr.splice(ix, 0, { "index" : { "_index" : index, "_id" : ix } })
-    //         // }
-    //         // console.log(newArr)
-    //         for (var i = 0; i < newArr.length; i++ ) {
-    //             Axios({
-    //                 method: "POST",
-    //                 url: `http://localhost:9200/${index}/_doc/${i}`,
-    //                 data: newArr[i],
-    //                 headers: { "Content-Type": "application/json" }
-    //             }).then(console.log(`Ingested: ${i}`))
-    //             .catch(err => {
-    //                 console.log(err)
-    //             })
-    //         }
-    //         setIsLoading(false)
-    //         setHasError({isError: false})
-    //         onIngest("Success")
-    //         setTimeout(() => onIngest(""), 3000)
-    //     } catch (err) {
-    //         setIsLoading(false)
-    //         setHasError({isError: true, errorMessage: err.response.data})
-    //         onIngest("Failed")
-    //         setTimeout(() => onIngest(""), 3000)
-    //         console.log(err)
-    //     }
-    // }
-    async function ingestApiToES(e) {
-        // e.preventDefault();
+    async function ingestSmartToTac() {
         setIsLoading(true)
         setHasError({isError: false})
         try {
@@ -162,10 +121,10 @@ export default function Tac() {
                 headers: { "Content-Type": "application/json", "Authorization": token }
             })
             if (response.data.length === 0) {
-                    setHasError({isError: true, errorMessage: "Recived empty object from smart!"})
-                    setIsLoading(false)
-                    onIngest("Failed")
-                    setTimeout(() => onIngest(""), 3000)
+                setHasError({isError: true, errorMessage: "Recived empty object from smart!"})
+                setIsLoading(false)
+                onIngest("Failed")
+                setTimeout(() => onIngest(""), 3000)
             }
             const newArr = response.data.map(k => {
                 const oldObj = k
@@ -173,28 +132,27 @@ export default function Tac() {
                 return oldObj
             })
             for (var i = 0; i < newArr.length; i++ ) {
-                client.create({
-                    index: index, // name your index
-                    type: "_doc", // describe the data thats getting created
-                    id: i, // increment ID every iteration
-                    body: newArr[i] // *** THIS ASSUMES YOUR DATA FILE IS FORMATTED LIKE SO: [{prop: val, prop2: val2}, {prop:...}, {prop:...}]
-                }, function(error, response) {
-                    if (error) {
+                tacApi({
+                    method: "POST",
+                    url: `${index}/_doc/${i}`,
+                    data: newArr[i],
+                    headers: { "Content-Type": "application/json" }
+                }).then(() => {
+                    setIsLoading(false)
+                    setHasError({...hasError, isError: false})
+                    if (ingest === "") {
+                        onIngest("Success")
+                        setTimeout(() => onIngest(""), 3000) 
+                    }
+                })
+                .catch(error => {
                     setHasError({...hasError, errorMessage: error.message})
                     setIsLoading(false)
-                    onIngest("Failed")
-                    setTimeout(() => onIngest(""), 3000)
-                    console.log("error in loop", error)
-                    return;
+                    if (ingest === "") {
+                        onIngest("Failed")
+                        setTimeout(() => onIngest(""), 3000) 
                     }
-                    else {
-                        console.log(response)
-                    setIsLoading(false)
-                    onIngest("Success")
-                    setTimeout(() => onIngest(""), 3000)
-                    // console.log(response);  //  I don't recommend this but I like having my console flooded with stuff.  It looks cool.  Like I'm compiling a kernel really fast.
-                }
-                });
+                })
             }
         } catch (e) {
             setIsLoading(false)
@@ -202,87 +160,171 @@ export default function Tac() {
             onIngest("Failed")
             setTimeout(() => onIngest(""), 3000)
         }
-        // e.target.reset()
     }
+
+
+    // async function ingestApiToES(e) {
+    //     // e.preventDefault();
+    //     setIsLoading(true)
+    //     setHasError({isError: false})
+    //     try {
+    //         const response = await Axios({
+    //             method: "get",
+    //             url: `https://articonf1.itec.aau.at:${port}/api/use-cases/${ucName}/tables/${tableName}/layers/${layerName}/${reqType}`,
+    //             headers: { "Content-Type": "application/json", "Authorization": token }
+    //         })
+    //         if (response.data.length === 0) {
+    //                 setHasError({isError: true, errorMessage: "Recived empty object from smart!"})
+    //                 setIsLoading(false)
+    //                 onIngest("Failed")
+    //                 setTimeout(() => onIngest(""), 3000)
+    //         }
+    //         const newArr = response.data.map(k => {
+    //             const oldObj = k
+    //             oldObj.location = {lat: k.geolocation_latitude, lon: k.geolocation_longitude}
+    //             return oldObj
+    //         })
+    //         for (var i = 0; i < newArr.length; i++ ) {
+    //             client.create({
+    //                 index: index, // name your index
+    //                 type: "_doc", // describe the data thats getting created
+    //                 id: i, // increment ID every iteration
+    //                 body: newArr[i] // *** THIS ASSUMES YOUR DATA FILE IS FORMATTED LIKE SO: [{prop: val, prop2: val2}, {prop:...}, {prop:...}]
+    //             }, function(error, response) {
+    //                 if (error) {
+    //                 setHasError({...hasError, errorMessage: error.message})
+    //                 setIsLoading(false)
+    //                 onIngest("Failed")
+    //                 setTimeout(() => onIngest(""), 3000)
+    //                 // console.log("error in loop", error)
+    //                 return;
+    //                 }
+    //                 else {
+    //                 setIsLoading(false)
+    //                 onIngest("Success")
+    //                 setTimeout(() => onIngest(""), 3000)
+    //                 // console.log(response);  //  I don't recommend this but I like having my console flooded with stuff.  It looks cool.  Like I'm compiling a kernel really fast.
+    //             }
+    //             });
+    //         }
+    //     } catch (e) {
+    //         setIsLoading(false)
+    //         setHasError({isError: true, errorMessage: e.message})
+    //         onIngest("Failed")
+    //         setTimeout(() => onIngest(""), 3000)
+    //     }
+    //     // e.target.reset()
+    // }
+
 
     function deleteIndex() {
         setIsLoading(true)
         setHasError({isError: false})
-        client.indices.delete({
-            index: index
-        }, (err, response) => {
-            if (err) {
-                setIsLoading(false)
-                setHasError({isError: true, errorMessage: err.message})
-                onDelIndex("Failed")
-                setTimeout(() => onDelIndex(""), 3000)
-                return
-            } else {
-                setIsLoading(false)
-                setHasError({isError: false})
-                onDelIndex("Success")
-                setTimeout(() => onDelIndex(""), 3000)
-            }
+        tacApi({
+            method: "DELETE",
+            url: `${index}`,
+            headers: { "Content-Type": "application/json" }
+        })
+        .then(() => {
+            setIsLoading(false)
+            setHasError({isError: false})
+            onDelIndex("Success")
+            setTimeout(() => onDelIndex(""), 3000)
+        })
+        .catch(err => {
+            setIsLoading(false)
+            setHasError({isError: true, errorMessage: err.message})
+            onDelIndex("Failed")
+            setTimeout(() => onDelIndex(""), 3000)
         })
     }
 
     function putMappings(e) {
         setIsLoading(true)
         setHasError({isError: false})
-        client.indices.putMapping({
-            index: index,
-            body: {
-                "properties": {
-                    [fieldName]: {
-                        "type": fieldType
-                    }
+        const body = {
+            "properties": {
+                [fieldName]: {
+                    "type": fieldType
                 }
             }
-        }, (error, response) => {
-            if (error) {
-                setIsLoading(false)
-                setHasError({isError: true, errorMessage: error.message})
-                onMappings("Failed")
-                setTimeout(() => onMappings(""), 3000)
-                return
-            } else {
-                setIsLoading(false)
-                setHasError({isError: false})
-                onMappings("Success")
-                setTimeout(() => onMappings(""), 3000)
-            }
+        }
+        tacApi({
+            method: "PUT",
+            url: `${index}/_mapping`,
+            data: body,
+            headers: { "Content-Type": "application/json" }
+        })
+        .then(() => {
+            setIsLoading(false)
+            setHasError({isError: false})
+            onMappings("Success")
+            setTimeout(() => onMappings(""), 3000)
+        })
+        .catch(err => {
+            setIsLoading(false)
+            setHasError({isError: true, errorMessage: err.message})
+            onMappings("Failed")
+            setTimeout(() => onMappings(""), 3000)
         })
     }
 
-    function putDateMappings(e) {
+    function putDateMappings() {
         setIsLoading(true)
-        client.indices.putMapping({
-            index: index,
-            body: {
-                "properties": {
-                    [fieldName]: {
-                        "type": fieldType,
-                        "format": dateFormat
-                    }
+        setHasError({isError: false})
+        const body = {
+            "properties": {
+                [fieldName]: {
+                    "type": fieldType,
+                    "format": dateFormat
                 }
             }
-        }, (error, response) => {
-            if (error) {
-                setIsLoading(false)
-                console.error(error)
-                return
-            } else {
-                setIsLoading(false)
-                console.log(response)
-            }
+        }
+        tacApi({
+            method: "PUT",
+            url: `${index}/_mapping`,
+            data: body,
+            headers: { "Content-Type": "application/json" }
         })
+        .then(() => {
+            setIsLoading(false)
+            setHasError({isError: false})
+            onMappings("Success")
+            setTimeout(() => onMappings(""), 3000)
+        })
+        .catch(err => {
+            setIsLoading(false)
+            setHasError({isError: true, errorMessage: err.message})
+            onMappings("Failed")
+            setTimeout(() => onMappings(""), 3000)
+        })
+
     }
 
-    //   console.log("Production", production)
-    //   console.log("Energy Consumption", energyConsumption)
-    //   console.log("Heating Consumption", heatingConsumption)
-    //   console.log("Energy ROI", energyRoi)
-    //   console.log("Heating ROI", heatRoi)
+    // function putDateMappings(e) {
+    //     setIsLoading(true)
+    //     client.indices.putMapping({
+    //         index: index,
+    //         body: {
+    //             "properties": {
+    //                 [fieldName]: {
+    //                     "type": fieldType,
+    //                     "format": dateFormat
+    //                 }
+    //             }
+    //         }
+    //     }, (error, response) => {
+    //         if (error) {
+    //             setIsLoading(false)
+    //             console.error(error)
+    //             return
+    //         } else {
+    //             setIsLoading(false)
+    //             console.log(response)
+    //         }
+    //     })
+    // }
+
    return (
         UCProvider ?
         <div className="theBody">
@@ -359,7 +401,7 @@ export default function Tac() {
                         <Label color='red' horizontal ribbon>
                             Ingest data from SMART
                         </Label><br /><br />
-                        <Form onSubmit={ingestApiToES}>
+                        <Form onSubmit={ingestSmartToTac}>
                             <Form.Field>
                                 <input style={{marginBottom: "0.4em"}} onChange={e => setIndex(e.target.value)} placeholder="Enter the name of the index where the data you want to be ingested" required/>    
                                 <input style={{marginBottom: "0.4em"}} onChange={e => setUcName(e.target.value)} placeholder="Enter the name of the use-case" required/>
@@ -436,7 +478,6 @@ export default function Tac() {
                     </Segment>
                 </Grid.Column>
             </Grid>
-
         </div> :
         <NotProvider />
    )

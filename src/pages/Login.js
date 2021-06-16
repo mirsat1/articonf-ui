@@ -6,7 +6,9 @@ import firebase from "firebase/app";
 import { Context } from "../Context";
 import { Link } from "react-router-dom";
 import { Button, Form } from 'semantic-ui-react'
+import ResetPassword from "../components/ResetPassword";
 import Loader from 'react-loader-spinner'
+import useToggler from "../hooks/useToggler";
 
 const Login = ({ history }) => {
   // const [userLogged, setUserLogged] = useState(null)
@@ -20,6 +22,7 @@ const Login = ({ history }) => {
   // }, [])
   const [userCount, setUserCount] = useState(null)
   const [hasError, setHasError] = useState("")
+  const [show, toggle] = useToggler(false)
   
   useEffect(() => {
     const usersRef = firebase.database().ref('users/')
@@ -75,7 +78,9 @@ const Login = ({ history }) => {
           
           <Button type="submit" disabled={userCount >= 9} title="loginButton">Log in</Button>
         </Form>
+      <Button floated="left" onClick={toggle}>Forgot password?</Button><br />
       </div>
+      {show && <ResetPassword />}
       {
         isLogging 
         &&
