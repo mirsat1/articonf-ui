@@ -36,6 +36,9 @@ export default function Smart() {
     const [ucSucces, onUcSucces] = useRequestInfo("")
     const [ownerTrainDataSucces, onOwnerTrainDataSucces] = useRequestInfo("")
     const [ownerTrainDataSucces2, onOwnerTrainDataSucces2] = useRequestInfo("")
+    const [developerTrainDataSucces, onDeveloperTrainDataSucces] = useRequestInfo("")
+    const [developerTrainDataSucces2, onDeveloperTrainDataSucces2] = useRequestInfo("")
+    const [userTrainEval, onUserTrainEval] = useRequestInfo("")
     const [layerSuccess, onLayerSuccess] = useRequestInfo("")
     const [mappingSucces, onMappingSucces] = useRequestInfo("")
     const [tableSucces, onTableSucces] = useRequestInfo("")
@@ -61,6 +64,10 @@ export default function Smart() {
     const [selectedModelFile, setSelectedModelFile] = useState(null)
     const [selectedDatasetFile1, setSelectedDatasetFile1] = useState(null)
     const [selectedDatasetFile2, setSelectedDatasetFile2] = useState(null)
+    const [devId, setDevId] = useState(null)
+    const [userDataEntry, setUserDataEntry] = useState(null)
+    const [selectedDevDatasetFile1, setSelectedDevDatasetFile1] = useState(null)
+    const [selectedDevDatasetFile2, setSelectedDevDatasetFile2] = useState(null)
 
     // function that will create as many form fields as the users enters in the input bellow and also will create object!!
     function numOfMap(num) {
@@ -84,7 +91,7 @@ export default function Smart() {
         }
         return content
     }
-
+    // file change for Owners data trainer
     function onGlobalHyperparametersFileChange(event) {
         setSelectedGlobalHyperparametersFile(event.target.files[0])
     }
@@ -99,6 +106,13 @@ export default function Smart() {
     }
     function onDatasetFile2Change(event) {
         setSelectedDatasetFile2(event.target.files[0])
+    }
+    //fiel change for Developers data trainer
+    function onDevDatasetFile1Change(event) {
+        setSelectedDevDatasetFile1(event.target.files[0])
+    }
+    function onDevDatasetFile2Change(event) {
+        setSelectedDevDatasetFile2(event.target.files[0])
     }
 
     console.log("layer: ", layer)
@@ -363,7 +377,7 @@ export default function Smart() {
 
         axios({
             method: "post",
-            url: `https://articonf1.itec.aau.at:30420//Owners/use_cases/${ucName}/upload_and_train`,
+            url: `https://articonf1.itec.aau.at:30420/Owners/use_cases/${ucName}/upload_and_train`,
             data: formData,
             headers: { "Content-Type": "multipart/form-data", "Access-Control-Allow-Origin": "*", "Access-Control-Allow-Methods": "DELETE, POST, GET, OPTIONS" },
           })
@@ -382,6 +396,104 @@ export default function Smart() {
                 }
                 onOwnerTrainDataSucces2("Failed")
                 setTimeout(() => onOwnerTrainDataSucces2(""), 3000)
+            })
+    }
+
+    function getDevelopersTrainData() {
+        setLoading(true)
+        setHasError({isError: false})
+        axios({
+            method: "GET",
+            url: `https://articonf1.itec.aau.at:30420/Developers/use_case/${ucName}/last_train`,
+            headers: { "Content-Type": "application/json", "Authorization": token }
+        })
+            .then(res => {
+                setLoading(false)
+                setHasError({isError: false})
+                onDeveloperTrainDataSucces("Success")
+                setTimeout(() => onDeveloperTrainDataSucces(""), 3000)
+            })
+            .catch(err => {
+                setLoading(false)
+                if (err.response) {
+                    err.response.data.detail ? setHasError({isError: true, errorMessage: err.response.data.detail}) : setHasError({isError: true, errorMessage: err.response.data})
+                }  else {
+                    setHasError({isError: true, errorMessage: err.message})
+                }
+                onDeveloperTrainDataSucces("Failed")
+                setTimeout(() => onDeveloperTrainDataSucces(""), 3000)
+            })
+    }
+
+    function postDevelopersDataTraining() {
+        setLoading(true)
+        setHasError({isError: false})
+        const formData = new FormData()
+
+        formData.append(
+            'dataset_file1',
+            selectedDevDatasetFile1,
+            selectedDevDatasetFile1.name
+        )
+        formData.append(
+            'dataset_file2',
+            selectedDevDatasetFile2,
+            selectedDevDatasetFile2.name
+        )
+        /////////////// INSPECTING FORM DATA METHODS/////////////
+        // for (var pair of formData.entries()) {
+        //     console.log(pair[0] + ', ' + pair[1]); 
+        // }
+        // new Response(formData).text().then(console.log)
+        /////////////////////////////////////////////////////////
+
+        axios({
+            method: "post",
+            url: `https://articonf1.itec.aau.at:30420/Developers/use_cases/${ucName}/developer_id/${devId}/upload_and_train:`,
+            data: formData,
+            headers: { "Content-Type": "multipart/form-data", "Access-Control-Allow-Origin": "*", "Access-Control-Allow-Methods": "DELETE, POST, GET, OPTIONS" },
+          })
+            .then(function (response) {
+                setLoading(false)
+                setHasError({isError: false})
+                onDeveloperTrainDataSucces2("Success")
+                setTimeout(() => onDeveloperTrainDataSucces2(""), 3000)
+            })
+            .catch(function (err) {
+                setLoading(false)
+                if (err.response) {
+                    err.response.data.detail ? setHasError({isError: true, errorMessage: err.response.data.detail}) : setHasError({isError: true, errorMessage: err.response.data})
+                }  else {
+                    setHasError({isError: true, errorMessage: err.message})
+                }
+                onDeveloperTrainDataSucces2("Failed")
+                setTimeout(() => onDeveloperTrainDataSucces2(""), 3000)
+            })
+    }
+
+    function trainEval() {
+        setLoading(true)
+        setHasError({isError: false})
+        axios({
+            method: "GET",
+            url: `https://articonf1.itec.aau.at:30420/Users/use_case/${ucName}/data_entry/${userDataEntry}/check_article`,
+            headers: { "Content-Type": "application/json", "Authorization": token }
+        })
+            .then(res => {
+                setLoading(false)
+                setHasError({isError: false})
+                onUserTrainEval("Success")
+                setTimeout(() => onUserTrainEval(""), 3000)
+            })
+            .catch(err => {
+                setLoading(false)
+                if (err.response) {
+                    err.response.data.detail ? setHasError({isError: true, errorMessage: err.response.data.detail}) : setHasError({isError: true, errorMessage: err.response.data})
+                }  else {
+                    setHasError({isError: true, errorMessage: err.message})
+                }
+                onUserTrainEval("Failed")
+                setTimeout(() => onUserTrainEval(""), 3000)
             })
     }
 
@@ -487,6 +599,7 @@ export default function Smart() {
                                     </Form.Field>
                                     <Form.Field>
                                         <select style={{marginBottom: "0.4em"}} onChange={e => setUcName(e.target.value)}>
+                                            <option>--Select Use-Case--</option>
                                             {useCases && useCases.map(element => <option value={element.name}>{element.name}</option>)}
                                         </select>
                                     </Form.Field>
@@ -513,6 +626,7 @@ export default function Smart() {
                                 <Form onSubmit={createMapping}>
                                     <Form.Field>
                                         <select style={{marginBottom: "0.4em"}} onChange={e => setUcName(e.target.value)}>
+                                            <option>--Select Use-Case--</option>
                                             {useCases && useCases.map(element => <option value={element.name}>{element.name}</option>)}
                                         </select>
                                     </Form.Field>
@@ -560,6 +674,7 @@ export default function Smart() {
                                     </Form.Field>
                                     <Form.Field>
                                         <select style={{marginBottom: "0.4em"}} onChange={e => setLayer({...layer, use_case: e.target.value})}>
+                                            <option>--Select Use-Case--</option>
                                             {useCases && useCases.map(element => <option value={element.name}>{element.name}</option>)}
                                         </select>
                                     </Form.Field>
@@ -603,6 +718,7 @@ export default function Smart() {
                                             </Label><br /><br />
                                             <Form.Field>
                                                 <select style={{marginBottom: "0.4em"}} onChange={e => setUcName(e.target.value)}>
+                                                    <option>--Select the name of the Use-Case to upload to--</option>
                                                     {useCases && useCases.map(element => <option value={element.name}>{element.name}</option>)}
                                                 </select>
                                             </Form.Field>
@@ -629,6 +745,7 @@ export default function Smart() {
                                             </Label><br /><br />
                                             <Form.Field>
                                                 <select style={{marginBottom: "0.4em"}} onChange={e => setUcName(e.target.value)}>
+                                                    <option>--Select the name of the Use-Case to upload to--</option>
                                                     {useCases && useCases.map(element => <option value={element.name}>{element.name}</option>)}
                                                 </select>
                                             </Form.Field>
@@ -670,6 +787,110 @@ export default function Smart() {
                                     </Segment>
                                 </Grid.Column>
                             </Grid>
+                            }
+                            {smartUserRole === "developer" &&
+                            <Grid columns={2}>
+                                <Grid.Column>
+                                    <Segment style={{height: "100%"}} raised>
+                                        <Label as='a' color='black' ribbon>
+                                        Train data
+                                        </Label><br /><br />
+                                        <Form onSubmit={getDevelopersTrainData}>
+                                            <Label color='red' horizontal ribbon>
+                                                Get last train session data
+                                            </Label><br /><br />
+                                            <Form.Field>
+                                                <select style={{marginBottom: "0.4em"}} onChange={e => setUcName(e.target.value)}>
+                                                    <option>--Select the name of the Use-Case to upload to--</option>
+                                                    {useCases && useCases.map(element => <option value={element.name}>{element.name}</option>)}
+                                                </select>
+                                            </Form.Field>
+                                            <Grid columns={2}>
+                                                <Grid.Column width={13}>
+                                                    {developerTrainDataSucces === "Failed" && <Message color='red'><Icon name="thumbs down outline" />{developerTrainDataSucces}</Message>}
+                                                    {developerTrainDataSucces === "Success" && <Message color='yellow'><Icon name="thumbs up outline" />{developerTrainDataSucces}</Message>}
+                                                </Grid.Column>
+                                                <Grid.Column width={3}>
+                                                    <Button floated="right" type="submit" style={{marginBottom: "0.4em"}}>Get last train session data</Button>
+                                                </Grid.Column>
+                                            </Grid>
+                                        </Form>
+                                    </Segment>
+                                </Grid.Column>
+                                <Grid.Column>
+                                    <Segment style={{height: "100%"}} raised>
+                                        <Label as='a' color='black' ribbon="right">
+                                        Train data
+                                        </Label><br /><br />
+                                        <Form onSubmit={postDevelopersDataTraining}>
+                                            <Label color='red' ribbon="right">
+                                                Name of the Use-Case to upload to
+                                            </Label><br /><br />
+                                            <Form.Field>
+                                                <select style={{marginBottom: "0.4em"}} onChange={e => setUcName(e.target.value)}>
+                                                    <option>--Select the name of the Use-Case to upload to--</option>
+                                                    {useCases && useCases.map(element => <option value={element.name}>{element.name}</option>)}
+                                                </select>
+                                            </Form.Field>
+                                            <Form.Field>
+                                                <input style={{marginBottom: "0.6em"}} onChange={e => setDevId(e.target.value)} placeholder="Id used to uniquely identify the developer who starts the training"/>
+                                            </Form.Field>
+                                            <Label color='red' ribbon="right">
+                                                Upload the files required for the federated training
+                                            </Label><br /><br />
+                                            <Form.Field>
+                                            <Segment>
+                                                <input type="file" onChange={onDevDatasetFile1Change} required/>
+                                                <p>File1 of the dataset. Functionality is use_case dependendent. (i.e. True Data)</p>
+                                            </Segment>
+                                            <Segment>
+                                                <input type="file" onChange={onDevDatasetFile2Change} required/>
+                                                <p>File2 of the dataset. Functionality is use_case dependendent. (i.e. False Data)</p>
+                                            </Segment>
+                                            </Form.Field>
+                                            <Grid columns={2}>
+                                                <Grid.Column width={13}>
+                                                    {developerTrainDataSucces2 === "Failed" && <Message color='red'><Icon name="thumbs down outline" />{developerTrainDataSucces2}</Message>}
+                                                    {developerTrainDataSucces2 === "Success" && <Message color='yellow'><Icon name="thumbs up outline" />{developerTrainDataSucces2}</Message>}
+                                                </Grid.Column>
+                                                <Grid.Column width={3}>
+                                                    <Button floated="right" type="submit" style={{marginBottom: "0.4em"}}>Train</Button>
+                                                </Grid.Column>
+                                            </Grid>
+                                        </Form>
+                                    </Segment>
+                                </Grid.Column>
+                            </Grid>
+                            }
+                            {smartUserRole === "user" &&
+                                <Segment style={{height: "100%"}} raised>
+                                    <Label as='a' color='black' ribbon>
+                                    Train data
+                                    </Label><br /><br />
+                                    <Form onSubmit={trainEval}>
+                                        <Label color='red' horizontal ribbon>
+                                            Get last train session data
+                                        </Label><br /><br />
+                                        <Form.Field>
+                                            <select style={{marginBottom: "0.4em"}} onChange={e => setUcName(e.target.value)}>
+                                                <option>--Select the name of the Use-Case to upload to--</option>
+                                                {useCases && useCases.map(element => <option value={element.name}>{element.name}</option>)}
+                                            </select>
+                                        </Form.Field>
+                                        <Form.Field>
+                                            <input style={{marginBottom: "0.6em"}} onChange={e => setUserDataEntry(e.target.value)} placeholder='Data to be verified/parsed by the trained model. I.e: "Santa Claus is actually real. A new study revealed..." etc.'/>
+                                        </Form.Field>
+                                        <Grid columns={2}>
+                                            <Grid.Column width={13}>
+                                                {userTrainEval === "Failed" && <Message color='red'><Icon name="thumbs down outline" />{userTrainEval}</Message>}
+                                                {userTrainEval === "Success" && <Message color='yellow'><Icon name="thumbs up outline" />{userTrainEval}</Message>}
+                                            </Grid.Column>
+                                            <Grid.Column width={3}>
+                                                <Button floated="right" type="submit" style={{marginBottom: "0.4em"}}>Get last train session data</Button>
+                                            </Grid.Column>
+                                        </Grid>
+                                    </Form>
+                                </Segment>
                             }
                 </div>}
         </div>
