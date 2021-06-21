@@ -32,6 +32,8 @@ function ContextProvider({children}) {
   const [deleted, setDeleted] = useState()
   const [name, setName] = useState()
   const [amountLayer, setAmountLayer] = useState()
+  const [smartToken, setSmartToken] = useState(null)
+  const [tacToken, setTacToken] = useState(null)
   const defaultTicConfig = {
     "LOG_LEVEL": "INFO",
     "INSTALL_BANK_CHAINCODE": "y",
@@ -314,7 +316,7 @@ function ContextProvider({children}) {
       setProvisionToscaTemplate(null);
       setDeployedToscaId(null);
     }
-  }, [currentUser, userUID, userEmail, id, plannedToscaTemplate, provisionToscaTemplate, deployedToscaId, role])
+  }, [currentUser, userUID, userEmail, id, plannedToscaTemplate, provisionToscaTemplate, deployedToscaId, role, smartToken, tacToken])
 
 
   useEffect(() => {
@@ -329,7 +331,15 @@ function ContextProvider({children}) {
     })
   }, [])
 
-  
+  function getSmartTacTokens() {
+    axios.get(`https://articonf2.firebaseio.com/user_profile/${userUID}/smart_token/token.json`)
+      .then(res => setSmartToken('Basic ' + window.btoa(res.data)))
+      .catch(err => console.log(err.message))
+
+      axios.get(`https://articonf2.firebaseio.com/user_profile/${userUID}/tac_token/token.json`)
+        .then(res => setTacToken('Basic ' + window.btoa(res.data)))
+        .catch(err => console.log(err.message))
+  }
   
   function ecBtnClick() {
   //   let myHeaders = new Headers()
@@ -774,6 +784,9 @@ function uploadToscaButton(tosca) {
       topologyTemplate,
       id,
       role,
+      tacToken,
+      smartToken,
+      getSmartTacTokens,
       plannedToscaTemplate,
       plannedTopologyTemplate,
       provisionToscaTemplate,
