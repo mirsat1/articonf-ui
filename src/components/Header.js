@@ -16,8 +16,6 @@ export default function Header() {
             {UCProvider && <Link to="/beta/testing/deploy" className="a" title="deployLink">Deploy</Link>}
             {UCProvider && <Link to="/beta/testing/dashboard" className="a">Advance Configuration</Link>}
             {UCProvider && <Link to="/beta/testing/deployed" className="a">Find Deployed Topology</Link>}
-            {UCProvider && <Link to="/beta/testing/smart" className="a">SMART</Link>}
-            {UCProvider && <Link to="/beta/testing/tac" className="a">TAC</Link>}
             <Link to="/beta/testing/bank" className="a">Analitycs & Visualisations</Link>
             <Link to="/beta/testing/monitoring" className="a">Monitoring</Link>
             <Link to="/beta/testing/contact" className="a" title="contactUs">Contact Us</Link>
