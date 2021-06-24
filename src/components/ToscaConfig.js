@@ -99,7 +99,7 @@ export default function ToscaConfig() {
                         })
                 }
                 if(!r.data) {
-                    axiosBase.get('https://raw.githubusercontent.com/qcdis-sdia/sdia-tosca/master/examples/TIC_planed_with_bank.yaml') 
+                    axiosBase.get('https://raw.githubusercontent.com/qcdis-sdia/sdia-tosca/master/examples/tic_n_mog.yaml') 
                         .then(r => {
                             let data = YAML.load(r.data)
                             setToscaLoaded({
@@ -156,6 +156,11 @@ export default function ToscaConfig() {
                                                     mount_fs: {
                                                         ...data.topology_template.node_templates.tic.interfaces.TIC.mount_fs, inputs: {
                                                             ...data.topology_template.node_templates.tic.interfaces.TIC.mount_fs.inputs, extra_variables: `https://articonf2.firebaseio.com/user_profile/${userUID}/user_config.json`
+                                                        }
+                                                    },
+                                                    purge_swarm: {
+                                                        ...data.topology_template.node_templates.tic.interfaces.TIC.purge_swarm, inputs: {
+                                                            ...data.topology_template.node_templates.tic.interfaces.TIC.purge_swarm.inputs, extra_variables: `https://articonf2.firebaseio.com/user_profile/${userUID}/user_config.json`
                                                         }
                                                     },
                                                     prepare_docker_images: {
