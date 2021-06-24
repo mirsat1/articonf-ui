@@ -1,6 +1,6 @@
 import React, { useContext, useEffect } from 'react'
 import useToggler from '../hooks/useToggler'
-import { Header, Icon, Button, Popup, Message, Dimmer, Loader } from 'semantic-ui-react'
+import { Header, Icon, Button, Popup, Message, Dimmer, Loader, Segment, Grid } from 'semantic-ui-react'
 import { Context } from '../Context'
 
 import CopyToClipboard from './CopyToClipboard'
@@ -15,8 +15,8 @@ export default function MonitoringServices() {
     const content = showInfo ? 'less' : 'more'
     
     const ip_addr = deployment && JSON.stringify(deployment.topology_template.node_templates.compute.attributes.public_ip)
-    const kubeDashboard = deployment && "https://" + ip_addr.substring(1, ip_addr.length-1) + ":30384"
-    const grafana = deployment && "http://" + ip_addr.substring(1, ip_addr.length-1) + ":31925"
+    const kubeDashboard = deployment && "https://" + ip_addr.substring(1, ip_addr.length-1) + ":31483"
+    const grafana = deployment && "http://" + ip_addr.substring(1, ip_addr.length-1) + ":30691"
     const prometheusGUI = deployment && "http://" + ip_addr.substring(1, ip_addr.length-1) + ":30090"
     // const prometheusMetricEP = deployment && "https://" + ip_addr.substring(1, ip_addr.length-1) + ":30443"
 
@@ -36,45 +36,60 @@ export default function MonitoringServices() {
                     </Button>
                     } />
                 <div style={{textAlign: "center"}}>
-                    <Header as="a" href={kubeDashboard} target="_blank" style={{margin: "1.2em"}} icon>
-                        <Icon>
-                        <img src={process.env.PUBLIC_URL + "/images/kube.png"} alt="Kubernetes Dashboard" height="100" width="100"/>
-                        </Icon>
-                        Kubernetes Dashboard
-                        <Header.Subheader style={{textAlign: "left"}}>
-                            Click this icon to open the kubernetes dashboard
-                        </Header.Subheader>
-                    </Header>
-                    {/* <i className="ri-arrow-right-circle-fill ri-fw ri-3x"></i> */}
-                    <Header as="a" href={prometheusGUI} target="_blank" style={{margin: "1.2em"}} icon>
-                        <Icon>
-                        <img src={process.env.PUBLIC_URL + "/images/prometheus.png"} alt="Prometheus" height="100" width="100"/>
-                        </Icon>
-                        Prometheus
-                        <Header.Subheader>
-                            Click this icon to open the Prometheus web GUI
-                        </Header.Subheader>
-                    </Header>
-                    {/* <i className="ri-arrow-right-circle-fill ri-fw ri-3x"></i> */}
-                    <Header as="a" href={grafana} target="_blank" style={{margin: "1.2em"}} icon>
-                        <Icon>
-                            <img src={process.env.PUBLIC_URL + "/images/grafana.png"} alt="Grafana" height="100" width="100"/>
-                        </Icon>
-                        Grafana
-                        <Header.Subheader>
-                            Click this icon to open Grafana
-                        </Header.Subheader>
-                    </Header>
-                    {/* <i className="ri-arrow-right-circle-fill ri-fw ri-3x"></i> */}
-                    <Header as="a" href="http://15.237.93.29:8081/" target="_blank" style={{margin: "1.2em"}} icon>
-                        <Icon>
-                            <img src={process.env.PUBLIC_URL + "/images/kibana.png"} alt="Kibana" height="100" width="100"/>
-                        </Icon>
-                        Kibana
-                        <Header.Subheader>
-                            Click this icon to open Kibana
-                        </Header.Subheader>
-                    </Header>
+                    <Grid columns={4}>
+                        <Grid.Column>
+                            <Segment placeholder>
+                                <Header as="a" href={kubeDashboard} target="_blank" style={{margin: "1.2em"}} icon>
+                                    <Icon>
+                                    <img src={process.env.PUBLIC_URL + "/images/kube.png"} alt="Kubernetes Dashboard" height="100" width="100"/>
+                                    </Icon>
+                                    Kubernetes Dashboard
+                                    <Header.Subheader style={{textAlign: "center"}}>
+                                        Click this icon to open the kubernetes dashboard
+                                    </Header.Subheader>
+                                </Header>
+                            </Segment>
+                        </Grid.Column>
+                        <Grid.Column>
+                            <Segment placeholder>
+                                <Header as="a" href={prometheusGUI} target="_blank" style={{margin: "1.2em"}} icon>
+                                    <Icon>
+                                    <img src={process.env.PUBLIC_URL + "/images/prometheus.png"} alt="Prometheus" height="100" width="100"/>
+                                    </Icon>
+                                    Prometheus
+                                    <Header.Subheader style={{textAlign: "center"}}>
+                                        Click this icon to open the Prometheus web GUI
+                                    </Header.Subheader>
+                                </Header>
+                            </Segment>
+                        </Grid.Column>
+                        <Grid.Column>
+                            <Segment placeholder>
+                                <Header as="a" href={grafana} target="_blank" style={{margin: "1.2em"}} icon>
+                                    <Icon>
+                                        <img src={process.env.PUBLIC_URL + "/images/grafana.png"} alt="Grafana" height="100" width="100"/>
+                                    </Icon>
+                                    Grafana
+                                    <Header.Subheader style={{textAlign: "center"}}>
+                                        Click this icon to open Grafana
+                                    </Header.Subheader>
+                                </Header>
+                            </Segment>
+                        </Grid.Column>
+                        <Grid.Column>
+                            <Segment placeholder>
+                                <Header as="a" href="http://15.237.93.29:8081/" target="_blank" style={{margin: "1.2em"}} icon>
+                                    <Icon>
+                                        <img src={process.env.PUBLIC_URL + "/images/kibana.png"} alt="Kibana" height="100" width="100"/>
+                                    </Icon>
+                                    Kibana
+                                    <Header.Subheader style={{textAlign: "center"}}>
+                                        Click this icon to open Kibana
+                                    </Header.Subheader>
+                                </Header>
+                            </Segment>
+                        </Grid.Column>
+                    </Grid>
                 </div>
                 <div>
                     {
