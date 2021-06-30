@@ -748,6 +748,7 @@ function uploadToscaButton(tosca) {
     setPlannedToscaTemplate(null)
     setProvisionToscaTemplate(null)
     setDeployedToscaId(null)
+    setDeployment(null)
     setIsDeleted(null)
     setRole(null) 
   }

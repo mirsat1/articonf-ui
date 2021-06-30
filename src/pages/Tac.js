@@ -68,11 +68,18 @@ export default function Tac() {
     // tacApi.defaults.headers.common['Authorization'] = auth;
     
     // Encrypt
-    // var ciphertext = CryptoJS.AES.encrypt('secret_key_to_be_encrypted', 'string that will give access to decription').toString();
+    // var ciphertext = CryptoJS.AES.encrypt('string to be encrypted', 'string that I need to decrypt').toString();
  
     // Decrypt
     // var bytes  = CryptoJS.AES.decrypt('string_to_be_decripted', 'string that will give access to decription');
     // var originalText = bytes.toString(CryptoJS.enc.Utf8);
+
+    // function updateSecretToBase() {
+    //     app.database().ref('tac_token').set({
+    //         token: ciphertext
+    //     })
+    //     console.log("Enc set to base!")
+    // }
     
 
 
@@ -459,6 +466,7 @@ export default function Tac() {
         UCProvider ?
         <div className="theBody">
             <h1>Tool for Analitycs and Cognition</h1>
+            {/* <Button onClick={updateSecretToBase}>Opaa</Button> */}
             <Dropdown button icon='setting' simple text="TAC User" className='button icon' labeled>
                 <Dropdown.Menu>
                 <Dropdown.Header icon='user' content='Configure TAC user'/>

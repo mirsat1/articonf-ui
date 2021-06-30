@@ -4,7 +4,7 @@ import Loader from 'react-loader-spinner'
 import JSONPretty from 'react-json-prettify'
 import useToggler from "../hooks/useToggler"
 import CopyToClipboard from "../components/CopyToClipboard"
-import { Header, Icon, Button, Input, Form } from 'semantic-ui-react'
+import { Header, Icon, Button, Input, Form, Popup, Grid, Segment } from 'semantic-ui-react'
 import NotProvider from "../components/NotProvider"
 
 function Deployed() {
@@ -31,6 +31,7 @@ function Deployed() {
     const [showDeleted, toggleDeleted] = useToggler()
     const [showDialog, toggleDialog] = useToggler()
     const [deleteDialog, toggleDeleteDialog] = useToggler()
+    const [showInfo, toggleInfo] = useToggler()
     const [instuctions, toggleInstructions] = useToggler()
     const [showVid, toggleShowVid] = useToggler()
     const [planerId, setPlanerId] = useState()
@@ -39,6 +40,8 @@ function Deployed() {
     const [deleterId, setDeleterId] = useState()
     const [message, setMessage] = useState("")
     const [yesDisabler, setYesDisabler] = useState(false)
+
+    const content = showInfo ? 'less' : 'more'
 
     const UCProvider = (RegExp("UCprovider").test(role))
 
@@ -180,61 +183,133 @@ function Deployed() {
                 deployment 
                 && 
                 <div data-testid="links">
-                    <Header as="a" href={hyperLedgerLink} target="_blank" icon>
-                        <Icon>
-                        <img src={process.env.PUBLIC_URL + "/images/Hyperledger.png"} alt="HyperLedger" height="100" width="100"/>
-                        </Icon>
-                        HyperLedger Explorer
-                        <Header.Subheader style={{textAlign: "left"}}>
-                        Click this icont to go to HyperLedger explorer.<br />
-                        Hyperledger Explorer is a user-friendly<br />
-                        Web application tool used to view, invoke, deploy<br /> 
-                        or query blocks, transactions and associated data,<br /> 
-                        network information (name, status, list of nodes),<br />
-                        chain codes and transaction families, as well as any <br />
-                        other relevant information stored in the ledger.
-                        </Header.Subheader>
-                    </Header>
+                    <Popup content={'Click here to show ' + content + ' detailed information about the services'} trigger={
+                    <Button  onClick={toggleInfo} floated="left" icon>
+                        <Icon name="question circle outline" />
+                    </Button>
+                    } />
+                    <Grid columns={4}>
+                        <Grid.Column>
+                            <Segment placeholder>
+                                <Header as="a" href={hyperLedgerLink} target="_blank" icon>
+                                    <Icon>
+                                    <img src={process.env.PUBLIC_URL + "/images/Hyperledger.png"} alt="HyperLedger" height="100" width="100"/>
+                                    </Icon>
+                                    HyperLedger Explorer
+                                    <Header.Subheader style={{textAlign: "center"}}>
+                                    Click this icon to go to HyperLedger explorer.
+                                    </Header.Subheader>
+                                </Header>
+                            </Segment>
+                        </Grid.Column>
+                        <Grid.Column>
+                            <Segment placeholder>
+                                <Header as="a" href={portainerLink} target="_blank" icon>
+                                    <Icon>
+                                    <img src={process.env.PUBLIC_URL + "/images/portainerimg.png"} alt="Portainer" height="100" width="100"/>
+                                    </Icon>
+                                    Portainer
+                                    <Header.Subheader style={{textAlign: "center"}}>
+                                    Click this icon to go to Portainer.
+                                    </Header.Subheader>
+                                </Header>
+                            </Segment>
+                        </Grid.Column>
+                        <Grid.Column>
+                            <Segment placeholder>
+                                <Header as="a" href={blockChainLink} target="_blank" icon>
+                                    <Icon>
+                                        <img src={process.env.PUBLIC_URL + "/images/docker.png"} alt="Docker Swarm" height="100" width="100"/>
+                                    </Icon>
+                                    Docker Swarm Visualizer
+                                    <Header.Subheader style={{textAlign: "center"}}>
+                                    Click this icon to go to Docker swarm visualizer.
+                                    </Header.Subheader>
+                                </Header>
+                            </Segment>
+                        </Grid.Column>
+                        <Grid.Column>
+                            <Segment placeholder>
+                                <Header as="a" href={tokenBank} target="_blank" icon>
+                                    <Icon>
+                                        <img src={process.env.PUBLIC_URL + "/images/bank.png"} alt="Token Bank" height="100" width="100"/>
+                                    </Icon>
+                                    Sample dApp
+                                    <Header.Subheader style={{textAlign: "center"}}>
+                                    Click this icon to go to the sample dApp.
+                                    </Header.Subheader>
+                                </Header>
+                            </Segment>
+                        </Grid.Column>
+                    </Grid>
+                    
                     {/* <i className="ri-arrow-right-circle-fill ri-fw ri-3x"></i> */}
-                    <Header as="a" href={portainerLink} target="_blank" icon>
-                        <Icon>
-                        <img src={process.env.PUBLIC_URL + "/images/portainerimg.png"} alt="Portainer" height="100" width="100"/>
-                        </Icon>
-                        Portainer
-                        <Header.Subheader style={{textAlign: "left", marginLeft: "1.5em"}}>
-                        Click this icon to go to Portainer. <br />
-                        Portainer makes managing containerized software <br />
-                        environments quick and easy by giving users a <br />
-                        simple 'click-to-configure' UI that anyone can learn
-                        </Header.Subheader>
-                    </Header>
+                    
                     {/* <i className="ri-arrow-right-circle-fill ri-fw ri-3x"></i> */}
-                    <Header as="a" href={blockChainLink} target="_blank" icon>
-                        <Icon>
-                            <img src={process.env.PUBLIC_URL + "/images/docker.png"} alt="Docker Swarm" height="100" width="100"/>
-                        </Icon>
-                        Docker Swarm Visualizer
-                        <Header.Subheader style={{textAlign: "left", marginLeft: "1.5em"}}>
-                        Click this icon to go to Docker swarm visualizer. <br />
-                        Docker swarm visualizer is a fancy tool which <br />
-                        visualized the Swarm Cluster setup. It displays <br />
-                        containers running on each node in the form of visuals.
-                        </Header.Subheader>
-                    </Header>
+                    
                     {/* <i className="ri-arrow-right-circle-fill ri-fw ri-3x"></i> */}
-                    <Header as="a" href={tokenBank} target="_blank" icon>
-                        <Icon>
-                            <img src={process.env.PUBLIC_URL + "/images/bank.png"} alt="Token Bank" height="100" width="100"/>
-                        </Icon>
-                        Token Bank
-                        <Header.Subheader style={{textAlign: "left", marginLeft: "1.5em"}}>
-                        Click this icon to go to the sample app. <br />
-                        The Articonf bank app is a simple application to <br />
-                        demonstrate the interaction of a web application <br />
-                        with the deployed blockchain network with a sample <br />
-                        smart contract.
-                        </Header.Subheader>
-                    </Header>
+                    
+                    {
+                        showInfo &&
+                        <div style={{textAlign: "justify", marginTop: "2em"}}>
+                            <Segment>
+                                <Header as='h2'>
+                                    <img src={process.env.PUBLIC_URL + "/images/Hyperledger.png"} alt="HyperLedger" height="100" width="100"/>
+                                    <Header.Content>
+                                    HyperLedger Explorer
+                                    <Header.Subheader>
+                                        Hyperledger Explorer is a user-friendly
+                                        Web application tool used to view, invoke, deploy
+                                        or query blocks, transactions and associated data,
+                                        network information (name, status, list of nodes),
+                                        chain codes and transaction families,<br /> as well as any
+                                        other relevant information stored in the ledger.
+                                    </Header.Subheader>
+                                    </Header.Content>
+                                </Header>
+                            </Segment>
+                            <Segment>
+                                <Header as='h2'>
+                                    <img src={process.env.PUBLIC_URL + "/images/portainerimg.png"} alt="Portainer" height="100" width="100"/>
+                                    <Header.Content>
+                                        Portainer
+                                    <Header.Subheader>
+                                        Portainer makes managing containerized software
+                                        environments quick and easy by giving users a
+                                        simple 'click-to-configure' UI that anyone can learn.
+                                    </Header.Subheader>
+                                    </Header.Content>
+                                </Header>
+                            </Segment>
+                            <Segment>
+                                <Header as='h2'>
+                                    <img src={process.env.PUBLIC_URL + "/images/docker.png"} alt="Docker Swarm" height="100" width="100"/>
+                                    <Header.Content>
+                                    Docker Swarm Visualizer
+                                    <Header.Subheader>
+                                        Docker swarm visualizer is a fancy tool which
+                                        visualized the Swarm Cluster setup. It displays
+                                        containers running on each node in the form of visuals.
+                                    </Header.Subheader>
+                                    </Header.Content>
+                                </Header>
+                            </Segment>
+                            <Segment>
+                                <Header as='h2'>
+                                    <img src={process.env.PUBLIC_URL + "/images/bank.png"} alt="Token Bank" height="100" width="100"/>
+                                    <Header.Content>
+                                        Sample dApp
+                                    <Header.Subheader>
+                                        The Articonf bank app is a simple application to
+                                        demonstrate the interaction of a web application
+                                        with the deployed blockchain network with a sample
+                                        smart contract.
+                                    </Header.Subheader>
+                                    </Header.Content>
+                                </Header>
+                            </Segment>
+                        </div>
+                    }
                 </div> 
             }
             <div className="login-form">
