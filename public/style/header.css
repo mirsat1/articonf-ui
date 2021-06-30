@@ -10,15 +10,15 @@ div.container
 {
     font-family: Raleway;
     margin: 0 auto;
-    padding: 2em 5%;
+    padding: 2em 10%;
 	/* padding: 2em 3em; */
 	text-align: right;
 }
 
-div.container .img
+/* div.container .img
 {
     float: left;
-}
+} */
 
 div.container .a
 {
