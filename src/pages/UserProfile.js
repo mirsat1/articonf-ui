@@ -1,7 +1,7 @@
-import React, { useContext } from 'react'
+import React, { useContext, useState } from 'react'
 import { Context } from "../Context"
 import firebase from "firebase/app"
-import { Button, Segment, Image, Grid } from "semantic-ui-react"
+import { Button, Segment, Image, Grid, Header, Icon } from "semantic-ui-react"
 
 import useToggler from '../hooks/useToggler'
 import UserProfileSetup from '../components/UserProfileSetup'
@@ -12,6 +12,7 @@ import Role from "../components/Role"
 export default function UserProfile() {
     const { userEmail, id, plannedToscaTemplate, provisionToscaTemplate, deployedToscaId, setUpRole, role, userUID } = useContext(Context)
     const [show, toggler] = useToggler(false)
+    const [cursor, setCursor] = useState("arrow")
     const UCProvider = (RegExp("UCprovider").test(role))
     const user = firebase.auth().currentUser
     
@@ -36,9 +37,20 @@ export default function UserProfile() {
                         <p style={{fontSize: '16px'}}><strong>Email Verified: </strong>{user.emailVerified ? "Yes" : "No"}</p>
                         <p style={{fontSize: '16px'}}><strong>Role: </strong>{UCProvider ? 'dApp provider' : (role && 'dApp consumer')}{!role && 'You need to assign role!'}</p>
                         <Button onClick={toggler}>Setup profile</Button>
-                        {show && <UserProfileSetup />}
-                        <Button onClick={resetRole}>Reset role</Button>
-                        {!role && <Role />}
+                        {show && 
+                        <div>
+                            <UserProfileSetup toggle={toggler}/>
+                            <Segment>
+                                <Header as="a" style={{cursor: cursor, marginRight: "0.4em"}} onMouseEnter={() => setCursor("pointer")} onMouseLeave={() => setCursor("arrow")} onClick={resetRole}>
+                                    <Icon.Group size="huge">
+                                        <Icon name='user'/>
+                                        <Icon corner color="teal" name='refresh'/>
+                                    </Icon.Group>
+                                    Reset role
+                                </Header>
+                            </Segment>
+                            {!role && <Role />}
+                        </div>}
                     </Segment>
                </Grid.Column>
                <Grid.Column width={2}>

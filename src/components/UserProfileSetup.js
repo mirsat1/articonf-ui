@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
 import app from '../firebase'
-import { Form, Button, Modal, Message, Dimmer, Loader, Segment } from 'semantic-ui-react'
+import { Form, Button, Modal, Message, Dimmer, Loader, Segment, Label, Divider, Header, Icon } from 'semantic-ui-react'
 import firebase from 'firebase'
 
-export default function UserProfileSetup() {
+export default function UserProfileSetup(props) {
     const [open, setOpen] = useState(false)
     const [userEmail, setUserEmail] = useState(null)
     const [userPassword, setUserPassword] = useState(null)
@@ -13,13 +13,14 @@ export default function UserProfileSetup() {
     const [hasError, setHasError] = useState({isError: false, errorMessage: null})
     const [isLoading, setIsLoading] = useState(false)
     const [verifyEmail, setVerifyEmail] = useState(null)
+    const [cursor, setCursor] = useState("arrow")
 
     const user = app.auth().currentUser
 
-    async function updateUserProfile() {
+    function updateUserName() {
         setIsLoading(true)
         setHasError({...hasError, isError:false})
-        userDisplayName && await user.updateProfile({
+        userDisplayName && user.updateProfile({
             displayName: userDisplayName
           }).then(() => {
             setIsLoading(false)
@@ -30,9 +31,12 @@ export default function UserProfileSetup() {
             setHasError({isError: true, errorMessage: error.message})
             console.log(error)
           });
+    }
+
+    function updateUserPhoto() {
         setIsLoading(true)
         setHasError({...hasError, isError:false})  
-        userPhotoURL && await user.updateProfile({
+        userPhotoURL && user.updateProfile({
             photoURL: userPhotoURL
             }).then(() => {
                 setIsLoading(false)
@@ -42,7 +46,7 @@ export default function UserProfileSetup() {
                 setIsLoading(false)
                 setHasError({isError: true, errorMessage: error.message})
                 console.log(error)
-            });   
+            }); 
     }
 
     function emailUpdate() {
@@ -85,7 +89,7 @@ export default function UserProfileSetup() {
                 setIsLoading(false)
                 setHasError({...hasError, isError:false})
                 setOpen(false)
-                console.log("Changed success")
+                console.log("Changed password")
               }).catch((error) => {
                 setIsLoading(false)
                 setHasError({isError: true, errorMessage: error.message})
@@ -103,11 +107,13 @@ export default function UserProfileSetup() {
         setIsLoading(true)
         setHasError({...hasError, isError:false})
         if (user.emailVerified) {
+            setIsLoading(false)
+            setHasError({...hasError, isError:true, errorMessage: "Email already verified!"})
             setVerifyEmail("Email already verified!")
         } else {
             app.auth().currentUser.sendEmailVerification()
                 .then(() => {
-                    setIsLoading(true)
+                    setIsLoading(false)
                     setHasError({...hasError, isError:false})
                     setVerifyEmail("Email verification sent!")
                 });
@@ -116,24 +122,56 @@ export default function UserProfileSetup() {
 
     return (
         <div>
+            <Divider horizontal>
+                <Header as='h4'>
+                    <Icon name='user' />
+                    User profile setup
+                </Header>
+            </Divider>
             {isLoading && <Dimmer active>
                 <Loader size='massive'>Loading</Loader>
             </Dimmer>}
-            <div className="login-form">
+                <Button onClick={props.toggle} floated="right" circular icon="close" color="red"/><br /><br />
+            <div>
                 <Segment>
-                <Form onSubmit={updateUserProfile}>
+                <Label attached='top'>Change username</Label>
+                <Form onSubmit={updateUserName}>
                     <input style={{marginBottom: '0.5em'}} onChange={e => setUserDisplayName(e.target.value)} placeholder="Enter your username"/>
+                    <Button type="submit">Update</Button>
+                </Form>
+                </Segment>
+                <Segment>
+                <Label attached='top'>Change photo</Label>
+                <Form onSubmit={updateUserPhoto}>
                     <input style={{marginBottom: '0.5em'}} onChange={e => setUserPhotoURL(e.target.value)} placeholder="Enter your photo url"/>
                     <Button type="submit">Update</Button>
                 </Form>
                 </Segment>
-                <Button onClick={emailVerification}>Verify email</Button>
+                <Segment>
+                    <Header as="a" style={{cursor: cursor, marginRight: "0.4em"}} onMouseEnter={() => setCursor("pointer")} onMouseLeave={() => setCursor("arrow")} onClick={emailVerification}>
+                        <Icon.Group size="huge">
+                            <Icon name='mail'/>
+                            <Icon corner color="teal" name='check'/>
+                        </Icon.Group>
+                        Verify email
+                    </Header>
+                </Segment>
                 <p>{verifyEmail}</p>
                 <Modal
                     onClose={() => setOpen(false)}
                     onOpen={() => setOpen(true)}
                     open={open}
-                    trigger={<Button color="blue">Change email</Button>}
+                    trigger={
+                        <Segment>
+                            <Header as="a" style={{cursor: cursor, marginRight: "0.4em"}} onMouseEnter={() => setCursor("pointer")} onMouseLeave={() => setCursor("arrow")}>
+                                <Icon.Group size="huge">
+                                    <Icon name='mail'/>
+                                    <Icon corner color="teal" name='refresh'/>
+                                </Icon.Group>
+                                Change email
+                            </Header>
+                        </Segment>
+                        }
                 >
                 <Modal.Header>Change email</Modal.Header>
                         <Modal.Content scrolling>
@@ -170,7 +208,17 @@ export default function UserProfileSetup() {
                     onClose={() => setOpen(false)}
                     onOpen={() => setOpen(true)}
                     open={open}
-                    trigger={<Button color="blue">Change password</Button>}
+                    trigger={
+                        <Segment>
+                            <Header as="a" style={{cursor: cursor}} onMouseEnter={() => setCursor("pointer")} onMouseLeave={() => setCursor("arrow")}>
+                                <Icon.Group size="huge">
+                                    <Icon name='key'/>
+                                    <Icon corner color="teal" name='refresh'/>
+                                </Icon.Group>
+                                Change password
+                            </Header>
+                        </Segment>
+                    }
                 >
                 <Modal.Header>Change password</Modal.Header>
                         <Modal.Content scrolling>
@@ -178,6 +226,7 @@ export default function UserProfileSetup() {
                             Change your password
                         </Modal.Description>
                         <Form onSubmit={changePassword} autoComplete="nope">
+                            <input style={{marginBottom: '0.5em'}} onChange={e => setUserEmail(e.target.value)} type="email" placeholder="Enter your email"/>
                             <input style={{marginBottom: '0.5em'}} onChange={e => setUserPassword(e.target.value)} type="password" placeholder="Old password"/>
                             <input style={{marginBottom: '0.5em'}} onChange={e => setNewPassword(e.target.value)} type="password" placeholder="New password"/>
                         </Form>
@@ -191,7 +240,7 @@ export default function UserProfileSetup() {
                             content="OK"
                             labelPosition='right'
                             icon='checkmark'
-                            onClick={emailUpdate}
+                            onClick={changePassword}
                             positive
                         />
                         <Button

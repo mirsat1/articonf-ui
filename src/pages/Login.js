@@ -80,7 +80,7 @@ const Login = ({ history }) => {
         </Form>
       <Button floated="left" onClick={toggle}>Forgot password?</Button><br />
       </div>
-      {show && <ResetPassword />}
+      {show && <ResetPassword />}<br />
       {
         isLogging 
         &&
