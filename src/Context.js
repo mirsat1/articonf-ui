@@ -5,7 +5,7 @@ import smart from "./axios/axios-smart"
 import YAML from "js-yaml"
 import app from "./firebase"
 import firebase from "firebase/app";
-import elasticsearch from 'elasticsearch'
+// import elasticsearch from 'elasticsearch'
 import "firebase/database";
 // import axiosBase from "./axios/axios-base"
 
@@ -243,21 +243,25 @@ function ContextProvider({children}) {
   const usersProfileIDsRef = firebase.database().ref("user_profile/" + userUID + "/IDs");
   userUID && usersRef.onDisconnect().remove()
 
-  const client = new elasticsearch.Client({
-    host: "localhost:9200",
-    maxRetries: 1
-  }) 
+  // const client = new elasticsearch.Client({
+  //   host: "http://15.237.93.29:8082/",
+  //   auth: {
+  //     username: "elastic",
+  //     password: "changeme",
+  //   },
+  //   maxRetries: 1
+  // }) 
 
-  client.ping({
-      // ping usually has a 3000ms timeout
-      requestTimeout: 1000
-  }, function (error) {
-      if (error) {
-          console.log('TAC services are down!');
-      } else {
-      console.log('All is well');
-      }
-  });
+  // client.ping({
+  //     // ping usually has a 3000ms timeout
+  //     requestTimeout: 1000
+  // }, function (error) {
+  //     if (error) {
+  //         console.log('TAC services are down!');
+  //     } else {
+  //     console.log('All is well');
+  //     }
+  // });
   
   useEffect(() => {
     if (currentUser) {
@@ -333,7 +337,7 @@ function ContextProvider({children}) {
 
   function getSmartTacTokens() {
     axios.get(`https://articonf2.firebaseio.com/user_profile/${userUID}/smart_token/token.json`)
-      .then(res => setSmartToken('Basic ' + window.btoa(res.data)))
+      .then(res => setSmartToken(res.data))
       .catch(err => console.log(err.message))
 
       axios.get(`https://articonf2.firebaseio.com/user_profile/${userUID}/tac_token/token.json`)
@@ -781,7 +785,6 @@ function uploadToscaButton(tosca) {
     <Context.Provider value={{
       currentUser,
       usersRef,
-      client,
       topologyTemplate,
       id,
       role,

@@ -66,20 +66,20 @@ export default function Tac() {
     // let encoded = window.btoa(TAC_API_KEY)
     // let auth = 'Basic ' + encoded
     // tacApi.defaults.headers.common['Authorization'] = auth;
-    
+    console.log("SMART_TOKEN: ", smartToken)
     // Encrypt
-    // var ciphertext = CryptoJS.AES.encrypt('string to be encrypted', 'string that I need to decrypt').toString();
+    var ciphertext = CryptoJS.AES.encrypt('elastic:changeme', 'secret tac key').toString();
  
     // Decrypt
     // var bytes  = CryptoJS.AES.decrypt('string_to_be_decripted', 'string that will give access to decription');
     // var originalText = bytes.toString(CryptoJS.enc.Utf8);
 
-    // function updateSecretToBase() {
-    //     app.database().ref('tac_token').set({
-    //         token: ciphertext
-    //     })
-    //     console.log("Enc set to base!")
-    // }
+    function updateSecretToBase() {
+        app.database().ref('tac_token').set({
+            token: ciphertext
+        })
+        console.log("Enc set to base!")
+    }
     
 
 
@@ -276,7 +276,7 @@ export default function Tac() {
                     method: "POST",
                     url: `ui-${index}/_doc/${newArr[i].UniqueID}`,
                     data: newArr[i],
-                    headers: { "Content-Type": "application/json" }
+                    headers: { "Content-Type": "application/json", "Authorization": tacToken }
                 }).then(() => {
                     setIsLoading(false)
                     setHasError({...hasError, isError: false})
@@ -466,7 +466,7 @@ export default function Tac() {
         UCProvider ?
         <div className="theBody">
             <h1>Tool for Analitycs and Cognition</h1>
-            {/* <Button onClick={updateSecretToBase}>Opaa</Button> */}
+            <Button onClick={updateSecretToBase}>Opaa</Button>
             <Dropdown button icon='setting' simple text="TAC User" className='button icon' labeled>
                 <Dropdown.Menu>
                 <Dropdown.Header icon='user' content='Configure TAC user'/>

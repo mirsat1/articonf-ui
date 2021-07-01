@@ -6,7 +6,7 @@ import YAML from 'js-yaml'
 // import JSONPretty from 'react-json-prettify'
 // import CustomTheme from 'react-json-prettify/dist/themes/arduinoLight'
 import FileUpload from './FileUpload'
-import { Button, Form, Input, Label, Grid, Segment, Message, Icon, Loader, Dimmer } from 'semantic-ui-react'
+import { Button, Form, Input, Label, Grid, Segment, Message, Icon, Loader, Dimmer, Divider } from 'semantic-ui-react'
 import { useHistory } from 'react-router-dom';
 import Dummy from './DummyApi';
 
@@ -21,7 +21,7 @@ export default function ToscaConfig() {
     const history = useHistory()
     useEffect(() => {
         setIsLoading(true)
-        // axiosBase('https://raw.githubusercontent.com/qcdis-sdia/sdia-tosca/master/examples/mog.yaml')
+        // axiosBase('https://raw.githubusercontent.com/qcdis-sdia/sdia-tosca/master/examples/TIC_planed_with_bank.yaml')
         axiosBase.get(`user_profile/${userUID}/tosca_config.json`)
             .then(r => {
                 if(r.data) {
@@ -340,6 +340,11 @@ export default function ToscaConfig() {
                                                 ...data.topology_template.node_templates.tic.interfaces.TIC.mount_fs.inputs, extra_variables: `https://articonf2.firebaseio.com/user_profile/${userUID}/user_config.json`
                                             }
                                         },
+                                        purge_swarm: {
+                                            ...data.topology_template.node_templates.tic.interfaces.TIC.purge_swarm, inputs: {
+                                                ...data.topology_template.node_templates.tic.interfaces.TIC.purge_swarm.inputs, extra_variables: `https://articonf2.firebaseio.com/user_profile/${userUID}/user_config.json`
+                                            }
+                                        },
                                         prepare_docker_images: {
                                             ...data.topology_template.node_templates.tic.interfaces.TIC.prepare_docker_images, inputs: {
                                                 ...data.topology_template.node_templates.tic.interfaces.TIC.prepare_docker_images.inputs, extra_variables: `https://articonf2.firebaseio.com/user_profile/${userUID}/user_config.json`
@@ -368,6 +373,7 @@ export default function ToscaConfig() {
         <div className="theBody">
             <h1>TOSCA Configuration</h1>
             <FileUpload />
+            <Divider horizontal>Or</Divider>
             {defaultMsg && <h3><Message warning attached='bottom'><Icon name='warning' />{defaultMsg}<br /><Button onClick={() => {updateToscaToDB(); setDefaultMsg("")}}>Keep it as your configuration</Button><Button onClick={() => {setToscaLoaded(null); setDefaultMsg(""); history.goBack()}}>Discard default configuration</Button></Message></h3>}
             {/* <span>{isLoading && <h4>Loading... <Loader type="ThreeDots" color="#08335e" height={50} width={50}/></h4>}</span> */}
             {
