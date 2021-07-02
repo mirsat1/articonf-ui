@@ -112,8 +112,8 @@ export default function Header() {
                 </Link>
                 :
                 <Link to="/login" className="a">
-                    <Menu.Item as='a'>
-                        <Icon name='power' style={{color: "white"}}/>
+                    <Menu.Item as='a' style={{color: "white"}}>
+                        <Icon name='power'/>
                         Sign In
                     </Menu.Item>
                 </Link>
