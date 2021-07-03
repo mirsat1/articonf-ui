@@ -15,7 +15,7 @@ export default function Header() {
 
     const handleItemClick = (e, { name }) => setActiveMenuItem(name)
     // const countDown = count === 0 ? 0 : count - 1
-    // just a comment
+    // just a comment2
     return (
         <div>
             <Sticky> 
