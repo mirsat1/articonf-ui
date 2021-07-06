@@ -1,13 +1,17 @@
-import {useState} from "react"
+import { useState } from "react";
 
 function useToggler(defaultOnValue = false) {
-    const [isToggledOn, setIsToggledOn] = useState(defaultOnValue)
+  const [isToggledOn, setIsToggledOn] = useState(defaultOnValue);
 
-    function toggle() {
-        setIsToggledOn(prev => !prev)
-    }
+  function toggle() {
+    setIsToggledOn((prev) => !prev);
+  }
 
-    return [isToggledOn, toggle]
+  function toggleFalse() {
+    setIsToggledOn(false);
+  }
+
+  return [isToggledOn, toggle, toggleFalse];
 }
 
-export default useToggler
+export default useToggler;

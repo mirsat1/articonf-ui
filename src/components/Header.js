@@ -11,7 +11,7 @@ export default function Header() {
   const { currentUser, usersRef, initialiseIdsOnSignOut, role } =
     useContext(Context);
   const [activeMenuItem, setActiveMenuItem] = useState("home");
-  const [showMenu, toggleMenu] = useToggler(true);
+  const [showMenu, toggleMenu, toggleMenuFalse] = useToggler(true);
   const UCProvider = RegExp("UCprovider").test(role);
   const notHomeOrContact =
     activeMenuItem === "home" || activeMenuItem === "Message us" ? false : true;
@@ -141,6 +141,7 @@ export default function Header() {
         icon="labeled"
         vertical
         visible={showMenu}
+        onHide={toggleMenuFalse}
       >
         <Link to="/beta/testing" className="a" title="navHome">
           <Menu.Item
