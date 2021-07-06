@@ -11,7 +11,11 @@ function useToggler(defaultOnValue = false) {
     setIsToggledOn(false);
   }
 
-  return [isToggledOn, toggle, toggleFalse];
+  function toggleTrue() {
+    setIsToggledOn(true);
+  }
+
+  return [isToggledOn, toggle, toggleFalse, toggleTrue];
 }
 
 export default useToggler;
