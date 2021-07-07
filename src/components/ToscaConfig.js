@@ -5,7 +5,7 @@ import axiosBase from "../axios/axios-base";
 import YAML from "js-yaml";
 // import JSONPretty from 'react-json-prettify'
 // import CustomTheme from 'react-json-prettify/dist/themes/arduinoLight'
-import FileUpload from "./FileUpload";
+// import FileUpload from "./FileUpload";
 import {
   Button,
   Form,
@@ -17,7 +17,6 @@ import {
   Icon,
   Loader,
   Dimmer,
-  Divider,
 } from "semantic-ui-react";
 import { useHistory } from "react-router-dom";
 import Dummy from "./DummyApi";
@@ -603,9 +602,9 @@ export default function ToscaConfig() {
   }
   return (
     <div className="theBody">
-      <h1>TOSCA Configuration</h1>
-      <FileUpload />
-      <Divider horizontal>Or</Divider>
+      <h1>Co-located and Orchestrated Network Fabric (CONF) Configuration</h1>
+      {/* <FileUpload />
+      <Divider horizontal>Or</Divider> */}
       {defaultMsg && (
         <h3>
           <Message warning attached="bottom">

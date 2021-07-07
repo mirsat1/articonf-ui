@@ -23,6 +23,7 @@ export default function UserConfig() {
   const [hasError, setHasError] = useState(false);
   const [defaultMsg, setDefaultMsg] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  // const [peerName, setPeerName] = useState("");
   const history = useHistory();
 
   console.log("TIC CONF: ", ticConfig);
@@ -116,8 +117,6 @@ export default function UserConfig() {
     ticConfig.peerservices.push(`{{${peer}}}`);
     console.log(ticConfig);
   }
-
-  function removePeer() {}
 
   function setUpPeers() {
     let content = [];
@@ -318,6 +317,7 @@ export default function UserConfig() {
   return (
     <div className="theBody">
       <h1>TIC Configuration</h1>
+
       {defaultMsg && (
         <h3>
           <Message warning attached="bottom">
@@ -348,7 +348,6 @@ export default function UserConfig() {
       {!defaultMsg && ticConfig && (
         <div>
           <Button onClick={addPeer}>Add peer</Button>
-
           <Form onSubmit={updateToDB}>
             <Grid columns={2}>
               <Grid.Column>
