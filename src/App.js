@@ -47,46 +47,18 @@ function App() {
       <PrivateRoute exact path="/" component={Home} />
       <PrivateRoute exact path="/articonf-ui" component={Home} />
       <PrivateRoute exact path="/beta/testing" component={Home} />
-      <PrivateRoute
-        exact
-        path="/beta/testing/dashboard"
-        component={Dashboard}
-      />
+      <PrivateRoute exact path="/beta/testing/dashboard" component={Dashboard} />
       <PrivateRoute exact path="/beta/testing/deploy" component={Deploy} />
-      <PrivateRoute
-        exact
-        path="/beta/testing/deploy/deployment"
-        component={Deployer}
-      />
-      <PrivateRoute
-        exact
-        path="/beta/testing/deploy/app"
-        component={DeployApp}
-      />
+      <PrivateRoute exact path="/beta/testing/deploy/deployment" component={Deployer} />
+      <PrivateRoute exact path="/beta/testing/deploy/app" component={DeployApp} />
       <PrivateRoute exact path="/beta/testing/deployed" component={Deployed} />
       <PrivateRoute exact path="/beta/testing/smart" component={Smart} />
       <PrivateRoute exact path="/beta/testing/tac" component={Tac} />
       <PrivateRoute exact path="/beta/testing/bank" component={TokenBank} />
-      <PrivateRoute
-        exact
-        path="/beta/testing/monitoring"
-        component={Monitoring}
-      />
-      <PrivateRoute
-        exact
-        path="/beta/testing/userprofile"
-        component={UserProfile}
-      />
-      <PrivateRoute
-        exact
-        path="/beta/testing/userconfigtic"
-        component={UserConfig}
-      />
-      <PrivateRoute
-        exact
-        path="/beta/testing/userconfigtosca"
-        component={ToscaConfig}
-      />
+      <PrivateRoute exact path="/beta/testing/monitoring" component={Monitoring} />
+      <PrivateRoute exact path="/beta/testing/userprofile" component={UserProfile} />
+      <PrivateRoute exact path="/beta/testing/userconfigtic" component={UserConfig} />
+      <PrivateRoute exact path="/beta/testing/userconfigtosca" component={ToscaConfig} />
       <Route exact path="/beta/testing/contact" component={ContactUs} />
       <Route exact path="/login" component={Login} />
       <Route exact path="/singup" component={SingUp} />

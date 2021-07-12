@@ -17,6 +17,7 @@
     "js-yaml": "^3.14.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
+    "react-flow-renderer": "^9.6.3",
     "react-iframe": "^1.8.0",
     "react-json-prettify": "^0.2.0",
     "react-loader-spinner": "^3.1.14",
