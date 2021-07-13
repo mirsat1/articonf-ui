@@ -8,6 +8,7 @@ import ColorSelectorNode from "../components/FlowNodes/ColorSelectorNode";
 import ConfNode from "../components/FlowNodes/ConfNode";
 import DeployNode from "../components/FlowNodes/DeployNode";
 import DeployNodeApp from "../components/FlowNodes/DeployNodeApp";
+import ButtonEdge from "../components/FlowEdges/ButtonEdge";
 
 const onLoad = (reactFlowInstance) => {
   console.log("flow loaded:", reactFlowInstance);
@@ -23,6 +24,9 @@ function Home() {
     confNode: ConfNode,
     deployNode: DeployNode,
     deployAppNode: DeployNodeApp,
+  };
+  const edgeTypes = {
+    buttonedge: ButtonEdge,
   };
 
   return (
@@ -98,6 +102,7 @@ function Home() {
             onConnect={onConnect}
             onLoad={onLoad}
             nodeTypes={nodeTypes}
+            edgeTypes={edgeTypes}
             snapToGrid={true}
             snapGrid={[15, 15]}
             preventScrolling={false}

@@ -22,7 +22,7 @@ export default [
         </>
       ),
     },
-    position: { x: 250, y: 100 },
+    position: { x: 250, y: 150 },
   },
   {
     id: "3",
@@ -34,7 +34,7 @@ export default [
       ),
     },
     sourcePosition: "right",
-    position: { x: 100, y: 200 },
+    position: { x: 100, y: 250 },
     style: {
       background: "#D6D5E6",
       color: "#333",
@@ -85,7 +85,7 @@ export default [
       color: "#333",
       width: 180,
     },
-    position: { x: 250, y: 300 },
+    position: { x: 250, y: 350 },
   },
   {
     id: "6",
@@ -97,7 +97,7 @@ export default [
       ),
     },
     sourcePosition: "right",
-    position: { x: 100, y: 400 },
+    position: { x: 100, y: 450 },
   },
   {
     id: "7",
@@ -111,7 +111,7 @@ export default [
       width: 180,
     },
     targetPosition: "left",
-    position: { x: 400, y: 400 },
+    position: { x: 400, y: 450 },
   },
   {
     id: "8",
@@ -123,7 +123,7 @@ export default [
         </>
       ),
     },
-    position: { x: 250, y: 500 },
+    position: { x: 250, y: 550 },
   },
   {
     id: "4",
@@ -136,7 +136,7 @@ export default [
       color: "#333",
       width: 180,
     },
-    position: { x: 400, y: 200 },
+    position: { x: 400, y: 250 },
   },
   //   {
   //     id: "7",
@@ -151,6 +151,10 @@ export default [
     source: "1",
     target: "2",
     arrowHeadType: "arrowclosed",
+    type: "buttonedge",
+    data: {
+      content: "Navigate to Advance Configuration",
+    },
   },
   // EDGE FROM ADV. CONF. TO TIC CONF.
   {
@@ -158,34 +162,11 @@ export default [
     source: "2",
     target: "3",
     arrowHeadType: "arrowclosed",
-  },
-  // {
-  //   id: "e3-4",
-  //   source: "2",
-  //   target: "4",
-  //   arrowHeadType: "arrowclosed",
-  // },
-  // EDGE FROM CONF CONF. TO DEPLOY
-  {
-    id: "e4-5",
-    source: "4",
-    target: "5",
-    arrowHeadType: "arrowclosed",
-  },
-  // EDGE FROM DEPLOY TO DEPLOY TIC
-  {
-    id: "e5-6",
-    source: "5",
-    target: "6",
-    arrowHeadType: "arrowclosed",
-  },
-  // EDGE FROM DEPLOY TO DEPLOY APP
-  {
-    id: "e5-7",
-    source: "6",
-    target: "7",
-    targetHandle: "b",
-    arrowHeadType: "arrowclosed",
+    type: "buttonedge",
+    data: {
+      content:
+        "From Advance Configuration page, you need to click the segment that is stating TIC Settings. And from there take default or do your own configurations",
+    },
   },
   // EDGO FROM TIC CONF. TO CONF CONF.
   {
@@ -194,6 +175,45 @@ export default [
     target: "4",
     targetHandle: "b",
     arrowHeadType: "arrowclosed",
+    type: "buttonedge",
+    data: {
+      content:
+        "After you got your TIC settings, now you need to head to CONF Settings. Same as before, you take a default configuration or you configurate it on your own",
+    },
+  },
+  // EDGE FROM CONF CONF. TO DEPLOY
+  {
+    id: "e4-5",
+    source: "4",
+    target: "5",
+    arrowHeadType: "arrowclosed",
+    type: "buttonedge",
+    data: {
+      content: "Now, since you setup TIC and CONF its time to deploy ARTICONF. Head to Deploy page",
+    },
+  },
+  // EDGE FROM DEPLOY TO DEPLOY TIC
+  {
+    id: "e5-6",
+    source: "5",
+    target: "6",
+    arrowHeadType: "arrowclosed",
+    type: "buttonedge",
+    data: {
+      content: "Head to Deploy TIC and follow the instructions present there",
+    },
+  },
+  // EDGE FROM DEPLOY TO DEPLOY APP
+  {
+    id: "e5-7",
+    source: "6",
+    target: "7",
+    targetHandle: "b",
+    arrowHeadType: "arrowclosed",
+    type: "buttonedge",
+    data: {
+      content: "After you deployed TIC, now its time to deploy your application",
+    },
   },
   // EDGE FROM DEPLOY APP TO TEST
   {
@@ -201,6 +221,10 @@ export default [
     source: "7",
     target: "8",
     arrowHeadType: "arrowclosed",
+    type: "buttonedge",
+    data: {
+      content: "Now you have deployed everything. Next step is to test what you have deployed. Head to Find and Test Topology",
+    },
   },
   // EDGE ONLY FOR APP FROM ADV. CONF TO CONF CONF.
   {
